@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity
                         Gson gson = new Gson();
                         mPlcList = gson.fromJson(s, new TypeToken<List<INfo_Bean>>() {
                         }.getType());
-                       
+
                         for (int i = 0; i < mPlcList.size(); i++) {
                             mList.add(mPlcList.get(i).getDeviceName());
                         }
@@ -249,12 +249,13 @@ public class MainActivity extends AppCompatActivity
 
     private void getPlcInfo() {
         //OkGo.get(Constants.PLCINFO + mUrl + "/")
-        OkGo.get("http://"+SPCache.getString(Constants.IP,"127.0.0.1")+":"+SPCache.getString(Constants.PORT,"8089")+"/test/")
+        OkGo.get("http://"+SPCache.getString(Constants.IP,"127.0.0.1")+":"+SPCache.getString(Constants.PORT,"8089")+"/test/"+mUrl+"/")
                 .tag(this)
                 .execute(new StringDialogCallback(this) {
                     @Override
                     public void onSuccess(String s, Call call, Response response) {
                         Gson gson = new Gson();
+
                         INfo_Bean bean = gson.fromJson(s, INfo_Bean.class);
 
                         display_home(bean);
