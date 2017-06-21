@@ -1,0 +1,75 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+
+    defaultConfig {
+        applicationId "com.tianxin.tianxin"
+        minSdkVersion 15
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+        vectorDrawables.useSupportLibrary = true
+    }
+    buildTypes {
+        /**
+         * 这里分为两种方式
+         * 方式一：在调试开发时 打开log打印开关输出log信息方便到吗调试 并且不关联混淆配置文件
+         * 方式二：在app正式打包时 关闭log打印开关，不输出log打印信息，关联app打包混淆配置文件以实现代码混淆
+         */
+        debug {
+            buildConfigField "boolean", "LOG_DEBUG", "true"
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        release {
+            buildConfigField "boolean", "LOG_DEBUG", "false"
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    //recyclerview  V7包
+    //cardview  V7包
+    //版本号使用 + 可以自动引用最新版
+    //版本号使用 + 可以自动引用最新版
+    //版本号使用 + 可以自动引用最新版
+    //注解框架
+    //json解析框架
+    //图片加载框架
+    //Klog  log打印工具
+    //类似QQ空间，微信朋友圈，微博主页等，展示图片的九宫格控件
+    //完全仿微信的图片选择，并且提供了多种图片加载接口，选择图片后可以旋转，可以裁剪成矩形或圆形，可以配置各种其他的参数
+    //主要是常用自定义控件的类库
+    //透明导航栏
+    compile project(':RxRxTools-library')
+    //recyclviwe的封装adapter 说明：https://github.com/CymChad/BaseRecyclerViewAdapterHelper/wiki
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:design:25.3.1'
+    compile 'com.android.support:recyclerview-v7:25.3.1'
+    compile 'com.android.support:cardview-v7:25.3.1'
+    compile 'com.lzy.net:okgo:2.1.4'
+    //版本号使用 + 可以自动引用最新版
+    compile 'com.lzy.net:okrx:0.1.2'
+    //版本号使用 + 可以自动引用最新版
+    compile 'com.lzy.net:okserver:1.1.3'
+    //版本号使用 + 可以自动引用最新版
+    compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'com.google.code.gson:gson:2.7'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.github.zhaokaiqiang.klog:library:1.6.0'
+    compile 'com.lzy.widget:ninegridview:0.2.1'
+    compile 'com.lzy.widget:imagepicker:0.3.2'
+    compile 'com.lzy.widget:view-core:0.2.1'
+    compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
+    compile 'com.jrummyapps:animated-svg-view:1.0.1'
+    compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.18'
+    compile 'com.android.support:support-vector-drawable:25.3.1'
+    testCompile 'junit:junit:4.12'
+    compile 'com.kyleduo.switchbutton:library:1.4.6'
+}

@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".activity.MainActivity"
+    tools:showIn="@layout/app_bar_main">
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/home_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:orientation="vertical">
+
+                <ImageView
+
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:adjustViewBounds="true"
+                    android:gravity="center_vertical"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/pic11"/>
+
+                <TextView
+                    android:id="@+id/tv_home_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="8dp"
+                    android:text="PLC编号：00000"
+                    android:textColor="@color/rect"
+                    android:textSize="18sp"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                </android.support.v7.widget.RecyclerView>
+                <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="40dp"-->
+                <!--android:layout_marginLeft="16dp"-->
+                <!--android:layout_marginRight="16dp"-->
+                <!--android:orientation="horizontal">-->
+
+                <!--<TextView-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_weight="1"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:text="TEMP:"-->
+                <!--android:textColor="@color/black"-->
+                <!--android:textSize="18sp"/>-->
+
+                <!--<EditText-->
+                <!--android:id="@+id/tv_home_temp"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_weight="1"-->
+                <!--android:hint="TEMP"/>-->
+                <!--</LinearLayout>-->
+
+                <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="40dp"-->
+                <!--android:layout_marginLeft="16dp"-->
+                <!--android:layout_marginRight="16dp"-->
+                <!--android:orientation="horizontal">-->
+
+                <!--<TextView-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_weight="1"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:text="Jacket_Temp:"-->
+                <!--android:textColor="@color/black"-->
+                <!--android:textSize="18sp"/>-->
+
+                <!--<EditText-->
+                <!--android:id="@+id/tv_home_jacket"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_weight="1"-->
+                <!--android:hint="Jacket_Temp"/>-->
+                <!--</LinearLayout>-->
+
+                <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="40dp"-->
+                <!--android:layout_marginLeft="16dp"-->
+                <!--android:layout_marginRight="16dp"-->
+                <!--android:orientation="horizontal">-->
+
+                <!--<TextView-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_weight="1"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:text="DO:"-->
+                <!--android:textColor="@color/black"-->
+                <!--android:textSize="18sp"/>-->
+
+                <!--<EditText-->
+                <!--android:id="@+id/tv_home_do"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_weight="1"-->
+                <!--android:hint="DO"/>-->
+                <!--</LinearLayout>-->
+
+                <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="40dp"-->
+                <!--android:layout_marginLeft="16dp"-->
+                <!--android:layout_marginRight="16dp"-->
+                <!--android:orientation="horizontal">-->
+
+                <!--<TextView-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_weight="1"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:text="pH:"-->
+                <!--android:textColor="@color/black"-->
+                <!--android:textSize="18sp"/>-->
+
+                <!--<EditText-->
+                <!--android:id="@+id/tv_home_ph"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_weight="1"-->
+                <!--android:hint="pH"/>-->
+                <!--</LinearLayout>-->
+
+                <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="40dp"-->
+                <!--android:layout_marginLeft="16dp"-->
+                <!--android:layout_marginRight="16dp"-->
+                <!--android:orientation="horizontal">-->
+
+                <!--<TextView-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_weight="1"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:text="O2:"-->
+                <!--android:textColor="@color/black"-->
+                <!--android:textSize="18sp"/>-->
+
+                <!--<EditText-->
+                <!--android:id="@+id/tv_home_o2"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_weight="1"-->
+                <!--android:hint="O2"/>-->
+                <!--</LinearLayout>-->
+
+                <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="40dp"-->
+                <!--android:layout_marginLeft="16dp"-->
+                <!--android:layout_marginRight="16dp"-->
+                <!--android:orientation="horizontal">-->
+
+                <!--<TextView-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_weight="1"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:text="Stir:"-->
+                <!--android:textColor="@color/black"-->
+                <!--android:textSize="18sp"/>-->
+
+                <!--<EditText-->
+                <!--android:id="@+id/tv_home_mix"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_weight="1"-->
+                <!--android:hint="Stir"/>-->
+                <!--</LinearLayout>-->
+
+                <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="40dp"-->
+                <!--android:layout_marginLeft="16dp"-->
+                <!--android:layout_marginRight="16dp"-->
+                <!--android:orientation="horizontal">-->
+
+                <!--<TextView-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_weight="1"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:text="Jacket_pv:"-->
+                <!--android:textColor="@color/black"-->
+                <!--android:textSize="18sp"/>-->
+
+                <!--<EditText-->
+                <!--android:id="@+id/tv_home_av"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_weight="1"-->
+                <!--android:hint="Jacket_pv"/>-->
+                <!--</LinearLayout>-->
+
+                <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="40dp"-->
+                <!--android:layout_marginLeft="16dp"-->
+                <!--android:layout_marginRight="16dp"-->
+                <!--android:orientation="horizontal">-->
+
+                <!--<TextView-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_weight="1"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:text="Base:"-->
+                <!--android:textColor="@color/black"-->
+                <!--android:textSize="18sp"/>-->
+
+                <!--<EditText-->
+                <!--android:id="@+id/tv_home_base"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_weight="1"-->
+                <!--android:hint="Base"/>-->
+                <!--</LinearLayout>-->
+
+                <TextView
+                    android:id="@+id/tv_home_current_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="8dp"
+                    android:text="数据更新时间：2017-04-20 18:00:00"
+                    android:textColor="@color/rect"
+                    android:textSize="18sp"/>
+            </LinearLayout>
+
+        </ScrollView>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <com.tianxin.tianxin.view.WheelView
+        android:id="@+id/main_wv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+</RelativeLayout>

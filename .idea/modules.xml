@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/RxRxTools-library/RxRxTools-library.iml" filepath="$PROJECT_DIR$/RxRxTools-library/RxRxTools-library.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TianXin.iml" filepath="$PROJECT_DIR$/TianXin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+    </modules>
+  </component>
+</project>
