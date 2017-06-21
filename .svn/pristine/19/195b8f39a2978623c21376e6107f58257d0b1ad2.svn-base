@@ -1,0 +1,442 @@
+<div class="h1" id="issues">
+<h1>Bugs / Issues
+  <a class="sectionlink" href="<!--#echo var="GUIDE_ISSUES_PAGE" -->#issues"
+    title="Link to this section">&para;</a>
+</h1>
+
+<!--#include virtual="issues.toc.html" -->
+
+<p>Subversion isn't perfect software.  It contains bugs, lacks
+features, and has room for improvement like any other piece of
+software.  Like most software projects, the Subversion project makes
+use of an issue tracking tool to manage known outstanding issues with
+the software.  But perhaps <em>unlike</em> most software projects, we
+try to keep our issue tracker relatively free of debris.  It's not
+that we don't want to hear about Subversion's problems&nbsp;&mdash; after
+all, we can't fix what we don't know is broken.  It's just that we've
+found a mismanaged issue tracker to be more of a hindrance than a
+help.</p>
+
+<p>This mail pretty much says it all (except that nowadays you should
+post to the users@ list before posting to the dev@ list):</p>
+
+<pre>
+   From: Karl Fogel &lt;kfogel@collab.net&gt;
+   Subject: Please ask on the list before filing a new issue.
+   To: dev@subversion.tigris.org
+   Date: Tue, 30 Jul 2002 10:51:24 (CDT)
+   
+   Folks, we're getting tons of new issues, which is a Good Thing in
+   general, but some of them don't really belong in the issue tracker.
+   They're things that would be better solved by a quick conversation
+   here on the dev list.  Compilation problems, behavior questions,
+   feature ideas that have been discussed before, that sort of thing.
+   
+   *Please* be more conservative about filing issues.  The issues
+   database is physically much more cumbersome than email.  It wastes
+   people's time to have conversations in the issues database that should
+   be had in email.  (This is not a libel against the issue tracker, it's
+   just a result of the fact that the issues database is for permanent
+   storage and flow annotation, not for real-time conversation.)
+   
+   If you encounter a situation where Subversion is clearly behaving
+   wrongly, or behaving opposite to what the documentation says, then
+   it's okay to file the issue right away (after searching to make sure
+   it isn't already filed, of course!).  But if you're
+   
+      a) Requesting a new feature, or
+      b) Having build problems, or
+      c) Not sure what the behavior should be, or
+      d) Disagreeing with current intended behavior, or
+      e) Not TOTALLY sure that others would agree this is a bug, or
+      f) For any reason at all not sure this should be filed,
+   
+   ...then please post to the dev list first.  You'll get a faster
+   response, and others won't be forced to use the issues database to
+   have the initial real-time conversations.
+   
+   Nothing is lost this way.  If we eventually conclude that it should be
+   in the issue tracker, then we can still file it later, after the
+   description and reproduction recipe have been honed on the dev list.
+   
+   Thank you,
+   -Karl
+</pre>
+
+<p>The following are the policies that we ask folks to abide by when
+reporting problems or requested enhancements to Subversion.</p>
+
+<div class="h2" id="reporting-bugs">
+<h2>How to report a bug
+  <a class="sectionlink" href="<!--#echo var="GUIDE_ISSUES_PAGE" -->#reporting-bugs"
+    title="Link to this section">&para;</a>
+</h2>
+
+<p>First, make sure it's a bug.  If Subversion does not behave the way
+you expect, look in the documentation and mailing list archives for
+evidence that it should behave the way you expect.  Of course, if it's
+a common-sense thing, like Subversion just destroyed your data and
+caused smoke to pour out of your monitor, then you can trust your
+judgement.  But if you're not sure, go ahead and ask on the users
+mailing list first, <a href="mailto:users@subversion.apache.org"
+>users@subversion.apache.org</a>, or ask in IRC, <a
+href="irc://irc.freenode.net/#svn">irc.freenode.net, channel #svn</a>.</p>
+
+<p>You should
+also <a href="http://subversion.apache.org/reporting-issues.html#queries"
+>search in the bug tracker</a> to see if anyone has already reported
+this bug.</p>
+
+<p>Once you've established that it's a bug, and that we don't know
+about it already, the most important thing you can do is come up with
+a simple description and reproduction recipe.  For example, if the
+bug, as you initially found it, involves five files over ten commits,
+try to make it happen with just one file and one commit.  The simpler
+the reproduction recipe, the more likely a developer is to
+successfully reproduce the bug and fix it.</p>
+
+<p>When you write up the reproduction recipe, don't just write a prose
+description of what you did to make the bug happen.  Instead, give a
+literal transcript of the exact series of commands you ran, and their
+output.  Use cut-and-paste to do this.  If there are files involved,
+be sure to include the names of the files, and even their content if
+you think it might be relevant.  The very best thing is to package
+your reproduction recipe as a script; that helps us a lot.  Here's an
+example of such a script: <a href="repro-template.sh">repro-template.sh
+</a> for Unix-like systems and the Bourne shell, or <a
+href="repro-template.bat">repro-template.bat</a> for Windows shell
+(contributed by Paolo Compieta); we'd welcome the contribution
+of a similar template script for other systems.</p>
+
+<p style="font-style: italic;">Quick sanity check: you *are* running
+the most recent version of Subversion, right? :-) Possibly the bug has
+already been fixed; you should test your reproduction recipe against
+the most recent Subversion development tree.</p>
+
+<p>In addition to the reproduction recipe, we'll also need a complete
+description of the environment in which you reproduced the bug.  That
+means:</p>
+
+<ul>
+<li>Your operating system</li>
+<li>The release and/or revision of Subversion</li>
+<li>The compiler and configuration options you built Subversion with</li>
+<li>Any private modifications you made to your Subversion</li>
+<li>The version of Berkeley DB you're running Subversion with, if any</li>
+<li>Anything else that could possibly be relevant.  Err on the side
+    of too much information, rather than too little.</li>
+</ul>
+
+<p>Once you have all this, you're ready to write the report.  Start
+out with a clear description of what the bug is.  That is, say how you
+expected Subversion to behave, and contrast that with how it actually
+behaved.  While the bug may seem obvious to you, it may not be so
+obvious to someone else, so it's best to avoid a guessing game.
+Follow that with the environment description, and the reproduction
+recipe.  If you also want to include speculation as to the cause, and
+even a patch to fix the bug, that's great&nbsp;&mdash; see the <a
+href="<!--#echo var="GUIDE_GENERAL_PAGE" -->#patches">patch submission guidelines</a>.</p>
+
+<p>Post all of this information to <a
+href="mailto:dev@subversion.apache.org"
+>dev@subversion.apache.org</a>, or if you have already been there and
+been asked to file an issue, then go to the <a
+href="http://subversion.apache.org/reporting-issues.html">issue
+tracker</a> and follow the instructions there.</p>
+
+<p>Thanks.  We know it's a lot of work to file an effective bug
+report, but a good report can save hours of a developer's time, and
+make the bug much more likely to get fixed.</p>
+
+</div>  <!-- reporting-bugs -->
+
+
+<div class="h2" id="bugs-where">
+<h2>Where to report a bug
+  <a class="sectionlink" href="<!--#echo var="GUIDE_ISSUES_PAGE" -->#bugs-where"
+    title="Link to this section">&para;</a>
+</h2>
+
+<ul>
+
+<li><p>If the bug is in Subversion itself, send mail to
+    <a href="mailto:users@subversion.apache.org"
+                   >users@subversion.apache.org</a>.
+    Once it's confirmed as a bug, someone, possibly you, can enter it
+    into the <a href="http://subversion.apache.org/reporting-issues.html"
+    >issue tracker</a>.  (Or if you're pretty sure about the bug, go
+    ahead and post directly to our development
+    list, <a href="mailto:dev@subversion.apache.org"
+    >dev@subversion.apache.org</a>.  But if you're not sure, it's
+    better to post to <a href="mailto:users@subversion.apache.org"
+    >users@</a> first; someone there can tell you whether the behavior
+    you encountered is expected or not.)</p></li>
+
+<li><p>If the bug is in the APR library, please report it to both of
+    these mailing lists:
+    <a href="mailto:dev@apr.apache.org">dev@apr.apache.org</a>,
+    <a href="mailto:dev@subversion.apache.org"
+                   >dev@subversion.apache.org</a>.</p></li>
+
+<li><p>If the bug is in the Neon HTTP library, please report it to:
+     <a href="mailto:neon@webdav.org">neon@webdav.org</a>,
+     <a href="mailto:dev@subversion.apache.org"
+                    >dev@subversion.apache.org</a>.</p></li>
+
+<li><p>If the bug is in the Apache Serf HTTP library, please report it to:
+     <a href="mailto:dev@serf.apache.org">dev@serf.apache.org</a>,
+     <a href="mailto:dev@subversion.apache.org"
+                    >dev@subversion.apache.org</a>.</p></li>
+
+<li><p>If the bug is in Apache HTTPD 2.x, please report it to both of
+     these mailing lists: <a href="mailto:dev@httpd.apache.org"
+     >dev@httpd.apache.org</a>,
+     <a href="mailto:dev@subversion.apache.org"
+     >dev@subversion.apache.org</a>.
+     The Apache httpd developer mailing list is high-traffic, so your
+     bug report post has the possibility to be overlooked.  You may also 
+     file a bug report at <a href="http://httpd.apache.org/bug_report.html"
+     >http://httpd.apache.org/bug_report.html</a>.</p></li>
+
+<li><p>If the bug is in your rug, please give it a hug and keep it
+    snug.</p></li>
+
+</ul>
+
+</div> <!-- bugs-where -->
+
+
+<div class="h2" id="milestones">
+<h2>Milestone management
+  <a class="sectionlink" href="<!--#echo var="GUIDE_ISSUES_PAGE" -->#milestones"
+    title="Link to this section">&para;</a>
+</h2>
+
+<p>Issue tracker milestones are an important aspect of how the
+Subversion developers organize their efforts and communicate with each
+other and with the Subversion user base.  With the exception of some
+milestones used primarily when doing high-level
+<a href="#issue-triage">issue triage</a>, the project's issue tracker
+milestones tend to be named to reflect release version numbers and
+variations thereof.  Milestones are used for slightly different
+purposes depending on the state of the issue, so it's important to
+understand those distinctions.</p>
+
+<div class="h3" id="milestones-open">
+<h3>Milestones for open issues
+  <a class="sectionlink" href="<!--#echo var="GUIDE_ISSUES_PAGE" -->#milestones-open"
+    title="Link to this section">&para;</a>
+</h3>
+
+<p>For open issues (those whose status is <tt>OPEN</tt>,
+<tt>IN PROGRESS</tt>, or <tt>REOPENED</tt>), the milestone
+indicates the Subversion release for which the developers are
+targeting the resolution of that issue.  In the general case, we use
+milestones of the form <tt><em>MINORVERSION</em>-consider</tt> to
+indicate that the resolution of an issue is being considered as
+something we'd like to release in <em>MINORVERSION</em>.0.  For
+example, a feature we think we can and should add to Subversion 1.9.0
+will get a <tt>1.9-consider</tt> milestone.  For obvious reasons, the
+accuracy of these release targets gets increasingly worse the farther
+into the future you look and, as such, users are encouraged
+to <em>not</em> treat them as binding promises from the developer
+community.</p>
+
+<p>At any given time, there is work toward "the next big release"
+happening in the community.  As that release begins to take shape, the
+developers will get a better feel for which issues are "must-haves"
+for the release (also known as "release blockers"), which ones are
+"nice-to-haves", and which ones should be deferred to a future release
+altogether.  Issue milestones are the mechanism used to carry the
+results of those decisions.  An issue that is deemed to be a release
+blocker will be moved from the <tt><em>MINORVERSION</em>-consider</tt>
+milestone to the <tt><em>MINORVERSION</em>.0</tt> milestone;
+"nice-to-haves" will be left with
+the <tt><em>MINORVERSION</em>-consider</tt> milestone; and issues
+deferred from the release will be re-milestoned either
+with <tt><em>ANOTHERMINORVERSION</em>-consider</tt>
+or <tt>unscheduled</tt>, depending on whether we have a clear guess as
+to when the issue will be addressed.</p>
+
+<p>Continuing the previous example, as development on Subversion
+1.9.0-to-be progresses, developers will be evaluating that feature we
+planned for the release.  If we believe that Subversion 1.9 should not
+be released without that feature, we'll change its milestone
+from <tt>1.9-consider</tt> to <tt>1.9.0</tt>; if we hope to release
+with that feature but don't want to commit to it, we'll leave the
+milestone as <tt>1.9-consider</tt>; and if we know good and well we
+aren't going to get around to implementing the feature in the 1.9.x
+release series, we'll re-milestone the issue to something else
+(<tt>1.10-consider</tt>, perhaps).</p>
+
+<p>The accuracy of the <tt><em>MINORVERSION</em>.0</tt> milestone is
+very important, as developers tend to use those issues to focus their
+efforts in the final days of a major release cycle.</p>
+
+</div> <!-- milestones-open -->
+
+<div class="h3" id="milestones-fixed">
+<h3>Milestones for fixed issues
+  <a class="sectionlink" href="<!--#echo var="GUIDE_ISSUES_PAGE" -->#milestones-fixed"
+    title="Link to this section">&para;</a>
+</h3>
+
+<p>For fixed issues (those whose status is <tt>RESOLVED</tt> and the
+resolution is <tt>FIXED</tt>), the issue milestone takes on a new
+utility: tracking the Subvesion release version which first carries
+the resolution of that issue.  Regardless of the targeted release
+version for a given issue, once it is resolved its milestone should
+reflect the exact version number of the release which will first carry
+that resolution.</p>
+
+</div> <!-- milestones-fixed -->
+
+<div class="h3" id="milestones-closed">
+<h3>Milestones for other closed issues
+  <a class="sectionlink" href="<!--#echo var="GUIDE_ISSUES_PAGE" -->#milestones-closed"
+    title="Link to this section">&para;</a>
+</h3>
+
+<p>For other closed issues (those which aren't "open" and weren't
+really "fixed"), the issue milestone tends to mean pretty much
+nothing.  There's little point in trying to maintain that tracker
+field when the issue itself is being effectively ignored because it's
+a duplicate, or because it's an invalid or inaccurate report.</p>
+
+</div> <!-- milestones-closed -->
+
+<div class="h3" id="milestones-transitioning">
+<h3>Transitioning between states
+  <a class="sectionlink" href="<!--#echo var="GUIDE_ISSUES_PAGE" -->#milestones-transitioning"
+    title="Link to this section">&para;</a>
+</h3>
+
+<p>Care must be taken when transitioning an issue between these
+states.  An open issue that's been resolved needs to have its
+milestone adjusted to reflect the Subversion release which will first
+reflect that change.  A resolved issue that gets backported to a
+previous release stream needs to have its milestone adjusted to point
+to that previous release's version number.  Finally, a resolved issue
+that gets <tt>REOPENED</tt> needs to have its milestone reevaluated in
+terms of whether the issue is a release blocker
+(<tt><em>MINORVERSION</em>.0</tt>) or not
+(<tt><em>MINORVERSION</em>-consider</tt>).  In such situations, it can
+be helpful to consult the issue's change history to see what milestone
+was used before the issue was resolved as fixed.</p>
+
+</div> <!-- milestones-transitioning -->
+
+</div> <!-- milestones -->
+
+
+<div class="h2" id="issue-triage">
+<h2>Issue triage
+  <a class="sectionlink" href="<!--#echo var="GUIDE_ISSUES_PAGE" -->#issue-triage"
+    title="Link to this section">&para;</a>
+</h2>
+
+<p>When an issue is filed, it goes into the special milestone "---",
+meaning <em>unmilestoned</em>.  This is a holding area that issues
+live in until someone gets a chance to look at them and decide what to
+do.</p>
+
+<p>The unmilestoned issues are listed first when you sort by
+milestone, and <em>issue triage</em> is the process of trawling
+through all the <a
+href="https://issues.apache.org/jira/issues/?jql=project%20%3D%20SVN%20AND%20resolution%20%3D%20Unresolved%20ORDER%20BY%20priority%20DESC"
+>open issues</a> (starting with the unmilestoned ones), determining
+which are important enough to be fixed now, which can wait until
+another release, which are duplicates of existing issues, which have
+been resolved already, etc.  For each issue that will remain open, it
+also means making sure that the various fields are set appropriately:
+type, subcomponent, platform, OS, version, keywords (if any), and so
+on.</p>
+
+<p>Here's an overview of the process (in this example, 1.5 is the next
+release, so urgent issues would go there):</p>
+
+<pre>
+    for i in issues_marked_as("---"):
+      if issue_is_a_dup_of_some_other_issue(i):
+        close_as_dup(i)
+      elif issue_is_invalid(i):
+        # A frequent reason for invalidity is that the reporter
+        # did not follow the <a href="http://subversion.apache.org/reporting-issues.html">"buddy system"</a> for filing.
+        close_as_invalid(i)
+      elif issue_already_fixed(i):
+        version = fixed_in_release(i)
+        move_to_milestone(i, version)
+        close_as_fixed(i)
+      elif issue_unreproducible(i):
+        close_as_worksforme(i)
+      elif issue_is_real_but_we_won't_fix_it(i):
+        close_as_wontfix(i)
+      elif issue_is_closeable_for_some_other_reason(i):
+        close_it_for_that_reason(i)
+
+      # Else issue should remain open, so DTRT with it...
+
+      # Set priority, environment, component, etc, as needed.
+      adjust_all_fields_that_need_adjustment(i)
+
+      # Figure out where to put it.
+      if issue_is_a_lovely_fantasy(i):
+        move_to_milestone(i, "blue-sky")
+      if issue_is_not_important_enough_to_block_any_particular_release(i):
+        move_to_milestone(i, "nonblocking")
+      elif issue_resolution_would_require_incompatible_changes(i):
+        move_to_milestone(i, "2.0-consider")
+      elif issue_hurts_people_somewhat(i):
+        move_to_milestone(i, "1.6-consider")  # or whatever
+      elif issue_hurts_people_a_lot(i):
+        move_to_milestone(i, "1.5-consider")
+      elif issue_hurts_and_hurts_and_should_block_the_release(i):
+        move_to_milestone(i, "1.5")
+</pre>
+
+</div> <!-- issue-triage -->
+
+<div class="h2" id="security">
+<h2>How to Handle Security Issues
+  <a class="sectionlink" href="<!--#echo var="GUIDE_ISSUES_PAGE" -->#security"
+    title="Link to this section">&para;</a>
+</h2>
+
+<div class="bigpoint">
+
+<p>This document is for information about how Subversion developers respond to
+security issues.  To report an issue, please see the <a href="/security/">
+Security reporting instructions</a>.</p>
+
+</div>
+
+<p>Subversion's first job is keeping your data safe.  To do that, the
+Subversion development community takes security very seriously.  One way we
+demonstrate this is by not pretending to be cryptography or security experts.
+Rather than writing a bunch of proprietary security mechanisms for Subversion,
+we prefer instead to teach Subversion to interoperate with security libraries
+and protocols provided by those with knowledge of that space.  For example,
+Subversion defers wire encryption to the likes of OpenSSL.  It defers
+authentication and basic authorization to those mechanisms provided by Cyrus
+SASL or by the Apache HTTP Server and its rich collection of modules.  To the
+degree that we can leverage the knowledge of security experts by using the
+third-party libraries and APIs they provide, we will continue to do so.</p>
+
+<p>This document describes the steps we take when receiving or finding an
+issue which may be classified as having security implications, and is meant to
+suppliment the
+<a href="http://www.apache.org/security/committers.html">Apache guidelines</a>
+to committers for the same.</p>
+
+<!-- Some thoughts about what to put here:
+  The types of security issues we commonly encounter.
+  When to request a CVE, and the process for doing so.
+  When to embargo release information, and the process for pre-notifying
+    interested parties.
+  Other stuff?
+-->
+
+
+</div> <!-- security -->
+
+</div> <!-- issues -->

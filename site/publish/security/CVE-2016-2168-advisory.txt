@@ -1,0 +1,161 @@
+  Remotely triggerable DoS vulnerability in mod_authz_svn during COPY/MOVE
+  authorization check.
+
+Summary:
+========
+
+  Subversion's httpd servers are vulnerable to a remotely triggerable crash
+  in the mod_authz_svn module.  The crash can occur during an authorization
+  check for a COPY or MOVE request with a specially crafted header value.
+
+  This allows remote attackers to cause a denial of service.
+
+Known vulnerable:
+=================
+
+  Subversion httpd servers 1.0.0 to 1.8.15 (inclusive)
+  Subversion httpd servers 1.9.0 through 1.9.3 (inclusive)
+
+  Subversion svnserve servers (any version) are not vulnerable
+
+Known fixed:
+============
+
+  Subversion 1.8.16
+  Subversion 1.9.4
+
+Details:
+========
+
+  Subversion includes a separate server module, mod_authz_svn, which does
+  path-based authorization on Subversion repositories.  Authorizing a COPY
+  or MOVE request requires additional checks for the destination of the
+  request.  This additional logic contains a flaw that will cause a null
+  pointer dereference and a segmentation fault with certain invalid request
+  headers.
+
+  Exploiting this vulnerability requires the attacker to be authenticated
+  on the targeted server.  Since the flaw is in the authorization module,
+  the attack does not require access to a particular repository.
+
+Severity:
+=========
+
+  CVSSv2 Base Score: 5.0
+  CVSSv2 Base Vector: AV:N/AC:L/Au:N/C:N/I:N/A:P
+
+  We consider this to be a medium risk vulnerability.  In order to take
+  advantage of this attack the attacker would require to authenticate
+  against the targeted server.  The attack does not require read access
+  to a particular repository.  Servers which allow for anonymous reads
+  will be vulnerable without authentication.
+
+  A remote attacker may be able to crash a Subversion server.  Many Apache
+  servers will respawn the listener processes, but a determined attacker
+  will be able to crash these processes as they appear, denying service to
+  legitimate users.  Servers using threaded MPMs will close the connection
+  on other clients being served by the same process that services the
+  request from the attacker.  In either case there is an increased
+  processing impact of restarting a process and the cost of per process
+  caches being lost.
+
+Recommendations:
+================
+
+  We recommend all users to upgrade to Subversion 1.9.4.  Users of
+  Subversion 1.8.x and 1.9.x who are unable to upgrade may apply the
+  included patch.
+
+  New Subversion packages can be found at:
+  http://subversion.apache.org/packages.html
+
+  No workaround is available.
+
+References:
+===========
+
+  CVE-2016-2168  (Subversion)
+
+Reported by:
+============
+
+  Ivan Zhakov, VisualSVN
+
+Patches:
+========
+
+  Patch for Subversion 1.9.3:
+[[[
+Index: subversion/mod_authz_svn/mod_authz_svn.c
+===================================================================
+--- subversion/mod_authz_svn/mod_authz_svn.c	(revision 1736295)
++++ subversion/mod_authz_svn/mod_authz_svn.c	(working copy)
+@@ -639,6 +639,8 @@ req_check_access(request_rec *r,
+ 
+   if (r->method_number == M_MOVE || r->method_number == M_COPY)
+     {
++      apr_status_t status;
++
+       dest_uri = apr_table_get(r->headers_in, "Destination");
+ 
+       /* Decline MOVE or COPY when there is no Destination uri, this will
+@@ -647,7 +649,19 @@ req_check_access(request_rec *r,
+       if (!dest_uri)
+         return DECLINED;
+ 
+-      apr_uri_parse(r->pool, dest_uri, &parsed_dest_uri);
++      status = apr_uri_parse(r->pool, dest_uri, &parsed_dest_uri);
++      if (status)
++        {
++          ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
++                        "Invalid URI in Destination header");
++          return HTTP_BAD_REQUEST;
++        }
++      if (!parsed_dest_uri.path)
++        {
++          ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
++                        "Invalid URI in Destination header");
++          return HTTP_BAD_REQUEST;
++        }
+ 
+       ap_unescape_url(parsed_dest_uri.path);
+       dest_uri = parsed_dest_uri.path;
+]]]
+
+  Patch for Subversion 1.8.15:
+[[[
+Index: subversion/mod_authz_svn/mod_authz_svn.c
+===================================================================
+--- subversion/mod_authz_svn/mod_authz_svn.c	(revision 1736295)
++++ subversion/mod_authz_svn/mod_authz_svn.c	(working copy)
+@@ -628,6 +628,8 @@ req_check_access(request_rec *r,
+ 
+   if (r->method_number == M_MOVE || r->method_number == M_COPY)
+     {
++      apr_status_t status;
++
+       dest_uri = apr_table_get(r->headers_in, "Destination");
+ 
+       /* Decline MOVE or COPY when there is no Destination uri, this will
+@@ -636,7 +638,19 @@ req_check_access(request_rec *r,
+       if (!dest_uri)
+         return DECLINED;
+ 
+-      apr_uri_parse(r->pool, dest_uri, &parsed_dest_uri);
++      status = apr_uri_parse(r->pool, dest_uri, &parsed_dest_uri);
++      if (status)
++        {
++          ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
++                        "Invalid URI in Destination header");
++          return HTTP_BAD_REQUEST;
++        }
++      if (!parsed_dest_uri.path)
++        {
++          ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
++                        "Invalid URI in Destination header");
++          return HTTP_BAD_REQUEST;
++        }
+ 
+       ap_unescape_url(parsed_dest_uri.path);
+       dest_uri = parsed_dest_uri.path;
+]]]

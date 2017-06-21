@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Apache Subversion Source Code</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<style type="text/css">
+  @import url("/style/site.css");
+</style>
+</head>
+
+<body>
+<!--#include virtual="/site-banner.html" -->
+<!--#include virtual="/site-nav.html" -->
+<div id="site-content">
+<!--#include virtual="/site-notice.html" -->
+
+<h1>Source Code</h1>
+
+<p>You can install Subversion by compiling
+   its <a href="#source-release" >source code release</a> directly, or
+   you can install one of the <a href="packages.html" >prepackaged
+   binaries</a> if there is one for your operating system.  Unless a
+   release has "<tt>alpha</tt>", "<tt>beta</tt>", or "<tt>rc</tt>" in
+   its name, it is tested and considered stable for production
+   use.</p>
+
+<p>When upgrading, just install "on top of" the older release.
+   Subversion 1.x is forward-compatible with any newer 1.y.  No
+   repository upgrade is required.  As long as client and server both
+   have the same major release number (1), olders clients will work
+   with newer servers and newer clients will work with older servers.
+   The only caveat is that if the client and server minor release
+   numbers don't match (e.g., 1.0 and 1.1), then some of the features
+   of the newer release may not be activated.</p>
+
+<div class="h2" id="source-release">
+<h2>Source Release
+  <a class="sectionlink" href="#source-release"
+    title="Link to this section">&para;</a>
+</h2>
+
+<p>To build Subversion from a source code release:</p>
+
+<ol>
+   <li><a href="/download.cgi">Download</a> the latest source code
+   distribution or <a href="#source-svn">checkout</a> the source code
+   from version control.</li>
+
+   <li>Build and install it according to the instructions in the
+   <a href="http://svn.apache.org/repos/asf/subversion/trunk/INSTALL">INSTALL</a>
+   file in the top level of the distribution.</li>
+</ol>
+
+<p>When your build is complete, you should find the 'svn' binary in
+   the <tt>subversion/svn/</tt> subdirectory (or installed
+   in <tt>/usr/local/bin/</tt>, if you ran 'make install').</p>
+
+</div> <!-- #source-release -->
+
+<div class="h2" id="source-svn">
+<h2>Checking Out Subversion
+  <a class="sectionlink" href="#source-svn"
+    title="Link to this section">&para;</a>
+</h2>
+
+<p>Subversion's source code is stored in the
+   <code><a href="http://svn.apache.org/repos/asf/subversion"
+   >subversion</a></code> tree of the
+   main <a href="http://svn.apache.org/repos/asf" >Subversion
+   repository of the Apache Software Foundation</a>.
+   You can checkout the latest version of the code
+   using the following command:</p>
+
+<blockquote>
+<pre>$ svn co http://svn.apache.org/repos/asf/subversion/trunk subversion
+</pre>
+</blockquote>
+
+</div> <!-- #source-svn -->
+
+<div class="h2" id="nightlies">
+<h2>Nightly Source Releases
+  <a class="sectionlink" href="#nightlies"
+    title="Link to this section">&para;</a>
+</h2>
+
+<p>The project also produces nightly source code snapshots based upon the
+latest development sources.  These are available as
+<a href="http://ci.apache.org/projects/subversion/nightlies/index.html">nightly
+source releases</a>, and are only recommended for people who would like to
+test cutting-edge new features.  <em>These are not for production use!</em></p>
+
+</div> <!-- #nightlies -->
+
+<div class="h2" id="web-access">
+<h2>Web Access
+  <a class="sectionlink" href="#web-access"
+    title="Link to this section">&para;</a>
+</h2>
+
+<p>If you would rather browse the source code than download
+   it, you can do so via <a href="http://svn.apache.org/viewvc/subversion/trunk/"
+   >Apache's ViewVC instance</a>.</p>
+
+</div> <!-- #web-access -->
+
+</div> <!-- #site-content -->
+</body>
+</html>

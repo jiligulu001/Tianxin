@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Apache Subversion and the Outreach Program for Women</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<style type="text/css">
+  @import url("/style/site.css");
+</style>
+</head>
+
+<body>
+<!--#include virtual="/site-banner.html" -->
+<!--#include virtual="/site-nav.html" -->
+<div id="site-content">
+<!--#include virtual="/site-notice.html" -->
+
+<h1>Apache Subversion and the Outreach Program for Women</h1>
+
+<p>Apache Subversion is taking part in the
+<a href="https://live.gnome.org/OutreachProgramForWomen">Outreach
+Program for Women 2013</a>, a program initiated by the
+<a href="http://www.gnome.org/foundation/">GNOME Foundation</a>
+with the goal of increasing involvement of women in the development of
+<a href="http://en.wikipedia.org/wiki/Free_and_open-source_software">
+Free and Open Source Software (FOSS)</a>.
+This page contains information about contributing to Apache Subversion
+as part of this program.</p>
+
+<p><a href="http://www.elego.de" rel="nofollow">Elego Software Solutions</a>,
+based in Berlin, Germany, has kindly offered to fund an internship position
+with Apache Subversion as part of the Outreach Program for Women 2013.</p>
+
+<div class="bigpoint">
+<p>Please see our <a href="contributing.html">contributing</a> page for
+general information about contributing to Apache Subversion.
+Our <a href="docs/community-guide">Community Guide</a> is an essential
+read for new members of the community.</p>
+</div>
+
+<div class="h2" id="ideas">
+<h2>Project ideas
+  <a class="sectionlink" href="#contact"
+    title="Link to this section">&para;</a>
+</h2>
+
+<ul>
+  <li><p>Please see our <a href="ideas.html">project ideas page</a>.</p></li>
+</ul>
+
+</div> <!-- #ideas -->
+
+<p>For more information about how to contribute, or to discuss your
+   contribution with us, please contact <a
+   href="mailto:dev@subversion.apache.org">dev@subversion.apache.org</a></p>
+<p><strong>Please note that the dev@ list is publicly archived, which means
+   anyone can read any information sent there, and information sent there
+   cannot subsequently be erased.</strong> If you have any private information to
+   send as part of your application (such as a CV), you may send it directly
+   to Subversion's OPW mentor, in addition to sending any other non-private
+   information to the dev@ list.</p>
+   <p>The mentor for OPW 2013 for Subversion is
+   Stefan Sperling &lt;stsp@apache.org&gt;, 'stsp' on Freenode IRC in the
+   <tt>#svn-dev</tt> channel.</p>
+
+</div> <!-- #site-content -->
+</body>
+</html>

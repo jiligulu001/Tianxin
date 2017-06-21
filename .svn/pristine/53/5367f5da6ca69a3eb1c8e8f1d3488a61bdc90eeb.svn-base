@@ -1,0 +1,335 @@
+  Subversion FSFS repositories can be corrupted by newline characters in
+  filenames
+
+Summary:
+========
+
+  If a filename which contains a newline character (ASCII 0x0a) is
+  committed to a repository using the FSFS format, the resulting
+  revision is corrupt.
+
+  This can lead to disruption for users of the repository.
+
+Known vulnerable:
+=================
+
+ Subversion servers through 1.7.9 (inclusive).
+ Subversion servers through 1.6.21 (inclusive).
+
+Known fixed:
+============
+
+ Subversion 1.7.10
+ Subversion 1.6.23
+ Subversion 1.8.0
+
+Details:
+========
+
+  The FSFS repository stores data for each revision in a revision file.
+
+  Filename data in the revision file is stored on a line-per-line basis.
+  If a filename itself contains a newline character (ASCII 0x0a), this
+  newline is incorrectly treated as a line separator, rather than as 
+  part of the filename.
+
+  Affected revisions cannot be read correctly and cause some Subversion
+  commands to fail. Known symptoms of the problem include:
+
+   1) 'svnadmin verify' is known to fail with errors beginning with:
+         "svnadmin: E160013: File not found:"
+
+   2) 'svnsync' fails to replicate the revision.
+
+  Apache Subversion clients have always rejected such filenames, so this
+  issue cannot be triggered with stock Subversion clients. It could,
+  however, be triggered by custom malicious Subversion clients or by
+  third-party client implementations.
+
+Severity:
+=========
+
+  CVSSv2 Base Score: 4.9
+  CVSSv2 Base Vector: AV:N/AC:M/Au:S/C:N/I:P/A:P 
+
+  We consider this to be a medium risk vulnerability.  Configurations which
+  allow anonymous write access to the repository will be vulnerable to this
+  without authentication.
+
+  A remote authenticated attacker with commit access may be able to corrupt
+  repositories on a Subversion server and cause disruption for other users.
+  
+Recommendations:
+================
+
+  We recommend all users to upgrade to Subversion 1.7.10 or 1.6.23.
+  Users who are unable to upgrade may apply the included patches.
+  
+  New Subversion packages can be found at:
+  http://subversion.apache.org/packages.html
+
+  A workaround is to install the control-chars.py hook script as the
+  pre-commit hook, which will prevent bad filenames from entering the
+  repository. The script is available at this URL:
+    https://svn.apache.org/repos/asf/subversion/trunk/tools/hook-scripts/control-chars.py
+
+References:
+===========
+
+  CVE-2013-1968  (Subversion)
+
+Reported by:
+============
+
+  Stefan Sperling, elego Software Solutions GmbH
+
+Patches:
+========
+
+Patch for Subversion 1.7:
+
+[[[
+Index: subversion/libsvn_fs_fs/tree.c
+===================================================================
+--- subversion/libsvn_fs_fs/tree.c	(revision 1485181)
++++ subversion/libsvn_fs_fs/tree.c	(revision 1485182)
+@@ -44,6 +44,7 @@
+ #include "svn_private_config.h"
+ #include "svn_pools.h"
+ #include "svn_error.h"
++#include "svn_ctype.h"
+ #include "svn_dirent_uri.h"
+ #include "svn_path.h"
+ #include "svn_mergeinfo.h"
+@@ -1806,7 +1807,79 @@ fs_dir_entries(apr_hash_t **table_p,
+   return svn_fs_fs__dag_dir_entries(table_p, node, pool, pool);
+ }
+ 
++/* Return a copy of PATH, allocated from POOL, for which control
++   characters have been escaped using the form \NNN (where NNN is the
++   octal representation of the byte's ordinal value).  */
++static const char *
++illegal_path_escape(const char *path, apr_pool_t *pool)
++{
++  svn_stringbuf_t *retstr;
++  apr_size_t i, copied = 0;
++  int c;
+ 
++  /* At least one control character:
++      strlen - 1 (control) + \ + N + N + N + null . */
++  retstr = svn_stringbuf_create_ensure(strlen(path) + 4, pool);
++  for (i = 0; path[i]; i++)
++    {
++      c = (unsigned char)path[i];
++      if (! svn_ctype_iscntrl(c))
++        continue;
++
++      /* If we got here, we're looking at a character that isn't
++         supported by the (or at least, our) URI encoding scheme.  We
++         need to escape this character.  */
++
++      /* First things first, copy all the good stuff that we haven't
++         yet copied into our output buffer. */
++      if (i - copied)
++        svn_stringbuf_appendbytes(retstr, path + copied,
++                                  i - copied);
++
++      /* Make sure buffer is big enough for '\' 'N' 'N' 'N' (and NUL) */
++      svn_stringbuf_ensure(retstr, retstr->len + 5);
++      /*### The backslash separator doesn't work too great with Windows,
++         but it's what we'll use for consistency with invalid utf8
++         formatting (until someone has a better idea) */
++      apr_snprintf(retstr->data + retstr->len, 5, "\\%03o", (unsigned char)c);
++      retstr->len += 4;
++
++      /* Finally, update our copy counter. */
++      copied = i + 1;
++    }
++
++  /* If we didn't encode anything, we don't need to duplicate the string. */
++  if (retstr->len == 0)
++    return path;
++
++  /* Anything left to copy? */
++  if (i - copied)
++    svn_stringbuf_appendbytes(retstr, path + copied, i - copied);
++
++  /* retstr is null-terminated either by apr_snprintf or the svn_stringbuf
++     functions. */
++
++  return retstr->data;
++}
++
++/* Raise an error if PATH contains a newline because FSFS cannot handle
++ * such paths. See issue #4340. */
++static svn_error_t *
++check_newline(const char *path, apr_pool_t *pool)
++{
++  const char *c;
++
++  for (c = path; *c; c++)
++    {
++      if (*c == '\n')
++        return svn_error_createf(SVN_ERR_FS_PATH_SYNTAX, NULL,
++           _("Invalid control character '0x%02x' in path '%s'"),
++           (unsigned char)*c, illegal_path_escape(path, pool));
++    }
++
++  return SVN_NO_ERROR;
++}
++
+ /* Create a new directory named PATH in ROOT.  The new directory has
+    no entries, and no properties.  ROOT must be the root of a
+    transaction, not a revision.  Do any necessary temporary allocation
+@@ -1820,6 +1893,8 @@ fs_make_dir(svn_fs_root_t *root,
+   dag_node_t *sub_dir;
+   const char *txn_id = root->txn;
+ 
++  SVN_ERR(check_newline(path, pool));
++
+   SVN_ERR(open_path(&parent_path, root, path, open_path_last_optional,
+                     txn_id, pool));
+ 
+@@ -2082,6 +2157,8 @@ fs_copy(svn_fs_root_t *from_root,
+         const char *to_path,
+         apr_pool_t *pool)
+ {
++  SVN_ERR(check_newline(to_path, pool));
++
+   return svn_error_trace(copy_helper(from_root, from_path, to_root, to_path,
+                                      TRUE, pool));
+ }
+@@ -2174,6 +2251,8 @@ fs_make_file(svn_fs_root_t *root,
+   dag_node_t *child;
+   const char *txn_id = root->txn;
+ 
++  SVN_ERR(check_newline(path, pool));
++
+   SVN_ERR(open_path(&parent_path, root, path, open_path_last_optional,
+                     txn_id, pool));
+ 
+]]]
+
+Patch for Subversion 1.6:
+
+[[[
+Index: subversion/libsvn_fs_fs/tree.c
+===================================================================
+--- subversion/libsvn_fs_fs/tree.c	(revision 1485298)
++++ subversion/libsvn_fs_fs/tree.c	(revision 1485299)
+@@ -43,6 +43,7 @@
+ #include "svn_mergeinfo.h"
+ #include "svn_fs.h"
+ #include "svn_props.h"
++#include "svn_ctype.h"
+ 
+ #include "fs.h"
+ #include "err.h"
+@@ -1810,7 +1811,79 @@ fs_dir_entries(apr_hash_t **table_p,
+   return svn_fs_fs__dag_dir_entries(table_p, node, pool, pool);
+ }
+ 
++/* Return a copy of PATH, allocated from POOL, for which control
++   characters have been escaped using the form \NNN (where NNN is the
++   octal representation of the byte's ordinal value).  */
++static const char *
++illegal_path_escape(const char *path, apr_pool_t *pool)
++{
++  svn_stringbuf_t *retstr;
++  apr_size_t i, copied = 0;
++  int c;
+ 
++  /* At least one control character:
++      strlen - 1 (control) + \ + N + N + N + null . */
++  retstr = svn_stringbuf_create_ensure(strlen(path) + 4, pool);
++  for (i = 0; path[i]; i++)
++    {
++      c = (unsigned char)path[i];
++      if (! svn_ctype_iscntrl(c))
++        continue;
++
++      /* If we got here, we're looking at a character that isn't
++         supported by the (or at least, our) URI encoding scheme.  We
++         need to escape this character.  */
++
++      /* First things first, copy all the good stuff that we haven't
++         yet copied into our output buffer. */
++      if (i - copied)
++        svn_stringbuf_appendbytes(retstr, path + copied,
++                                  i - copied);
++
++      /* Make sure buffer is big enough for '\' 'N' 'N' 'N' (and NUL) */
++      svn_stringbuf_ensure(retstr, retstr->len + 5);
++      /*### The backslash separator doesn't work too great with Windows,
++         but it's what we'll use for consistency with invalid utf8
++         formatting (until someone has a better idea) */
++      apr_snprintf(retstr->data + retstr->len, 5, "\\%03o", (unsigned char)c);
++      retstr->len += 4;
++
++      /* Finally, update our copy counter. */
++      copied = i + 1;
++    }
++
++  /* If we didn't encode anything, we don't need to duplicate the string. */
++  if (retstr->len == 0)
++    return path;
++
++  /* Anything left to copy? */
++  if (i - copied)
++    svn_stringbuf_appendbytes(retstr, path + copied, i - copied);
++
++  /* retstr is null-terminated either by apr_snprintf or the svn_stringbuf
++     functions. */
++
++  return retstr->data;
++}
++
++/* Raise an error if PATH contains a newline because FSFS cannot handle
++ * such paths. See issue #4340. */
++static svn_error_t *
++check_newline(const char *path, apr_pool_t *pool)
++{
++  const char *c;
++
++  for (c = path; *c; c++)
++    {
++      if (*c == '\n')
++        return svn_error_createf(SVN_ERR_FS_PATH_SYNTAX, NULL,
++           _("Invalid control character '0x%02x' in path '%s'"),
++           (unsigned char)*c, illegal_path_escape(path, pool));
++    }
++
++  return SVN_NO_ERROR;
++}
++
+ /* Create a new directory named PATH in ROOT.  The new directory has
+    no entries, and no properties.  ROOT must be the root of a
+    transaction, not a revision.  Do any necessary temporary allocation
+@@ -1824,6 +1897,8 @@ fs_make_dir(svn_fs_root_t *root,
+   dag_node_t *sub_dir;
+   const char *txn_id = root->txn;
+ 
++  SVN_ERR(check_newline(path, pool));
++
+   SVN_ERR(open_path(&parent_path, root, path, open_path_last_optional,
+                     txn_id, pool));
+ 
+@@ -2086,6 +2161,8 @@ fs_copy(svn_fs_root_t *from_root,
+         const char *to_path,
+         apr_pool_t *pool)
+ {
++  SVN_ERR(check_newline(to_path, pool));
++
+   return copy_helper(from_root, from_path, to_root, to_path, TRUE, pool);
+ }
+ 
+@@ -2176,6 +2253,8 @@ fs_make_file(svn_fs_root_t *root,
+   dag_node_t *child;
+   const char *txn_id = root->txn;
+ 
++  SVN_ERR(check_newline(path, pool));
++
+   SVN_ERR(open_path(&parent_path, root, path, open_path_last_optional,
+                     txn_id, pool));
+ 
+]]]

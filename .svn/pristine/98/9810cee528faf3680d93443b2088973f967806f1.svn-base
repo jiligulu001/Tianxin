@@ -1,0 +1,185 @@
+<div class="h1" id="web-site-changes">
+<h1>Web Site Changes
+  <a class="sectionlink" 
+     href="<!--#echo var="GUIDE_WEB_PAGE" -->#web-site-changes"
+     title="Link to this section">&para;</a>
+</h1></div> <!-- web-site-changes -->
+
+<!--#include virtual="web.toc.html" -->
+
+<div class="h2" id="web_intro">
+<h2>Introduction
+  <a class="sectionlink" 
+     href="<!--#echo var="GUIDE_WEB_CHANGES_PAGE" -->#web_intro" 
+     title="Link to this section">&para; </a>
+</h2>
+
+<p>The Subversion project welcomes improvements to its web site.
+  However, the process is not as simple as clicking "Save As" in a
+  browser, editing and mailing the change.  For one thing, many pages
+  are actually composed of three or more files so browsers do not save
+  a correctly rendered copy.
+</p>
+<p>
+  Because of this, if you're planning to submit substantial changes,
+  we recommend that you obtain a copy of the sources and set up a
+  testing mirror to check your changes.
+</p>
+<p>
+  Of course, for small changes, simply inspecting the patch visually
+  will often be sufficient.
+</p>
+   
+</div> <!-- web_intro -->
+
+<div class="h2" id="web_sources">
+<h2>Obtaining the web site sources
+  <a class="sectionlink" 
+     href="<!--#echo var="GUIDE_WEB_CHANGES_PAGE" -->#web_sources" 
+     title="Link to this section">&para; </a>
+</h2>
+
+<p>The source to the website is available from a Subversion repository.
+   To browse the sources, go to 
+       <a href="https://svn.apache.org/repos/asf/subversion/site/">
+	 https://svn.apache.org/repos/asf/subversion/site/</a>
+</p>
+<p>To download a copy to <code>~/projects/svn</code>, which is the
+  location used for the rest of this page, use the following commands:
+</p>
+<pre>  mkdir -p ~/projects/svn
+  cd ~/projects/svn
+  svn co https://svn.apache.org/repos/asf/subversion/site/ site</pre>
+
+<p>If you download to another location, you will need to adjust paths
+  in your web server configuration to point there.</p>
+
+</div> <!-- web_sources -->
+
+<div class="h2" id="web_mirror">
+<h2>Setting up a mirror for testing
+  <a class="sectionlink" 
+     href="<!--#echo var="GUIDE_WEB_CHANGES_PAGE" -->#web_mirror" 
+     title="Link to this section">&para;</a>
+</h2>
+
+<p>The Subversion web site uses <i>Server Side Includes (SSI)</i> to
+   assemble pages within the web server.  This means that to validate
+   any changes you might wish to make, you need to view the relevant
+   pages through a web browser connected to a server installed on your
+   system, either
+   <a href="http://httpd.apache.org/docs/2.2/install.html">Apache 2.2</a> 
+  or
+   <a href="http://httpd.apache.org/docs/2.4/install.html">Apache 2.4</a>. 
+
+</p>
+
+<p>The following steps should provide an <i>Apache virtualhost</i>
+    that correctly renders a local copy of the Subversion web site on
+    a Unix-type system.  This is likely to be located under
+    <code>/etc/apache2, /etc/httpd</code> or a similiar directory,
+    depending on your system.  These instructions have been tested on
+    Apache 2.2 and Apache 2.4.</p>
+
+<ol>
+   <li>Obtain the web site sources as described in the section above.
+   <br />For the purpose of the following discussion, we will assume
+   that these are in the directory <code>/home/user/projects/svn/site</code></li>
+
+   <li>Configure an Apache server to use the <code>site/publish</code>
+       directory within the working copy mentioned above as DocumentRoot 
+       for either the main server or a VirtualHost.</li>
+
+   <li>Check your Apache server includes <code>mod_include.so</code></li>
+
+   <li>Enable Server Side Includes for the relevant DocumentRoot. The
+       relevant Apache directive is:
+     <pre>Options +Includes
+</pre></li>
+
+   <li>Turn on SSI parsing for html files for the relevant DocumentRoot.
+       The relevant Apache directive is:
+     <pre>AddOutputFilter INCLUDES .html
+</pre></li>
+</ol>
+
+<p>Putting it all together, an example VirtualHost configuration is:</p>
+
+<pre>&lt;VirtualHost *:8080&gt;
+        ServerAdmin webmaster@localhost
+
+        DocumentRoot /home/user/projects/svn/site/publish
+        &lt;Directory /&gt;
+                Options +Includes
+                AddOutputFilter INCLUDES .html
+        &lt;/Directory&gt;
+        &lt;Directory /home/user/projects/svn/site/publish/&gt;
+                Options +Includes
+                AddOutputFilter INCLUDES .html
+        &lt;/Directory&gt;
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+
+        # Possible values include: debug, info, notice, warn, error, crit,
+        # alert, emerg.
+        LogLevel debug
+
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+&lt;/VirtualHost&gt;
+</pre>
+
+<p>After restarting or reloading the server, you should see a copy of
+   the <i>Subversion community guide Web Changes</i> page if you use
+   the following link:
+
+  <a href="http://127.0.0.1:8080/docs/community-guide/<!--#echo var="GUIDE_WEB_CHANGES_PAGE" -->#web_mirror">
+<pre>http://127.0.0.1:8080/docs/community-guide/<!--#echo var="GUIDE_WEB_CHANGES_PAGE" -->#web_mirror</pre></a>
+</p>
+
+</div> <!-- web_mirror -->
+
+<div class="h2" id="web_validation">
+<h2>Validating your changes
+  <a class="sectionlink" 
+     href="<!--#echo var="GUIDE_WEB_CHANGES_PAGE" -->#web_validation" 
+     title="Link to this section">&para;</a>
+</h2>
+
+<p>Please validate all patches which make substantial changes to the
+   web site.</p>
+
+<p>If you have set up a mirror of the website as advised on this page,
+use the command line to fetch a correctly rendered copy of the page
+you've changed with
+<pre>wget http://127.0.0.1:8080/docs/community-guide/YOUR_CHANGED_PAGE.html
+</pre>
+</p>
+<p>then upload the resulting file to a HTML validator, for
+example, <a href="http://validator.w3.org/">W3C validator service</a>.
+
+</div> <!-- web_validation -->
+
+<div class="h2" id="web_patch_creation">
+<h2>Creating a patch and a log message
+  <a class="sectionlink" 
+     href="<!--#echo var="GUIDE_WEB_CHANGES_PAGE" -->#web_patch_creation" 
+     title="Link to this section">&para;</a>
+</h2>
+
+<p>
+ When writing log messages for patches regarding the project's web pages, eg:
+</p>
+<pre>http://subversion.apache.org/docs/community-guide/some_page.html#section-name
+</pre>
+<p> list the names of files modified in the patch in the log message,
+ relative to the <code>site/</code> directory and list anchors of
+ sections added or modified like this:
+ <pre>
+ * docs/community-guide/some_page.html
+   (section-name): fixed issue xyz
+</pre>
+<p>For a full discussion of the Subversion patch requirements, please 
+  follow the project 
+  <a href="<!--#echo var="GUIDE_GENERAL_PAGE" -->#patches">general patch guidelines</a>
+  and
+  <a href="<!--#echo var="GUIDE_CONVENTIONS_PAGE" -->#log-messages">log message guidelines</a>.</p>

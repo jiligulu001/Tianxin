@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity
     //    @Bind(R.id.tv_home_av)
     //    EditText           mTvHomeAv;
     //    @Bind(R.id.tv_home_base)
-    EditText mTvHomeBase;
+    //EditText mTvHomeBase;
     @Bind(R.id.tv_home_current_time)
     TextView           mTvHomeCurrentTime;
     @Bind(R.id.home_refresh)
@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity
                         Gson gson = new Gson();
                         mPlcList = gson.fromJson(s, new TypeToken<List<INfo_Bean>>() {
                         }.getType());
-                        KLog.d("*************************"+mPlcList.get(0).getDeviceName());
+                       
                         for (int i = 0; i < mPlcList.size(); i++) {
                             mList.add(mPlcList.get(i).getDeviceName());
                         }
@@ -278,8 +278,8 @@ public class MainActivity extends AppCompatActivity
         //        mTvHomeO2.setText(bean.getO2() + "%");
         //        mTvHomeMix.setText(bean.getMix() + "rpm");
         //        mTvHomeAv.setText(bean.getJacket_SV() + "℃");
-        mTvHomeBase.setText(bean.getBase() + "rpm");
-        mTvHomeCurrentTime.setText("最后刷新时间" + bean.getCurTime());
+        //mTvHomeBase.setText(bean.getBase() + "rpm");
+        mTvHomeCurrentTime.setText("最后刷新时间" + bean.getCurrentDate());
     }
 
     @SuppressWarnings("StatementWithEmptyBody")

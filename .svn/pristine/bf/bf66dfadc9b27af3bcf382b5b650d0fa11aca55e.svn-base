@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html><head><title></title>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<link rel="stylesheet" type="text/css" href="search.css"/>
+<script type="text/javascript" src="search.js"></script>
+</head>
+<body class="SRPage">
+<div id="SRIndex">
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRResult" id="SR_major">
+ <div class="SREntry">
+  <a id="Item0" onkeydown="return searchResults.Nav(event,0)" onkeypress="return searchResults.Nav(event,0)" onkeyup="return searchResults.Nav(event,0)" class="SRSymbol" href="../structsvn__version__t.html#a4d250950412b5d05f94b892549322ab8" target="_parent">major</a>
+  <span class="SRScope">svn_version_t</span>
+ </div>
+</div>
+<div class="SRResult" id="SR_max_5frev">
+ <div class="SREntry">
+  <a id="Item1" onkeydown="return searchResults.Nav(event,1)" onkeypress="return searchResults.Nav(event,1)" onkeyup="return searchResults.Nav(event,1)" class="SRSymbol" href="../structsvn__wc__revision__status__t.html#a7128ba74d26761f87aab2d1510391271" target="_parent">max_rev</a>
+  <span class="SRScope">svn_wc_revision_status_t</span>
+ </div>
+</div>
+<div class="SRResult" id="SR_may_5fsave">
+ <div class="SREntry">
+  <a id="Item2" onkeydown="return searchResults.Nav(event,2)" onkeypress="return searchResults.Nav(event,2)" onkeyup="return searchResults.Nav(event,2)" class="SRSymbol" href="javascript:searchResults.Toggle('SR_may_5fsave')">may_save</a>
+  <div class="SRChildren">
+    <a id="Item2_c0" onkeydown="return searchResults.NavChild(event,2,0)" onkeypress="return searchResults.NavChild(event,2,0)" onkeyup="return searchResults.NavChild(event,2,0)" class="SRScope" href="../structsvn__auth__cred__simple__t.html#a57ab107bc469ceb88dab033862a72ab4" target="_parent">svn_auth_cred_simple_t::may_save()</a>
+    <a id="Item2_c1" onkeydown="return searchResults.NavChild(event,2,1)" onkeypress="return searchResults.NavChild(event,2,1)" onkeyup="return searchResults.NavChild(event,2,1)" class="SRScope" href="../structsvn__auth__cred__username__t.html#a630ebfc6cb7d09a4db8df5c917ca91ab" target="_parent">svn_auth_cred_username_t::may_save()</a>
+    <a id="Item2_c2" onkeydown="return searchResults.NavChild(event,2,2)" onkeypress="return searchResults.NavChild(event,2,2)" onkeyup="return searchResults.NavChild(event,2,2)" class="SRScope" href="../structsvn__auth__cred__ssl__client__cert__t.html#ad0172bcdd7c85658e1c3e8b44400f26b" target="_parent">svn_auth_cred_ssl_client_cert_t::may_save()</a>
+    <a id="Item2_c3" onkeydown="return searchResults.NavChild(event,2,3)" onkeypress="return searchResults.NavChild(event,2,3)" onkeyup="return searchResults.NavChild(event,2,3)" class="SRScope" href="../structsvn__auth__cred__ssl__client__cert__pw__t.html#a8dac9fe51a5825793d9984f71ee56dcb" target="_parent">svn_auth_cred_ssl_client_cert_pw_t::may_save()</a>
+    <a id="Item2_c4" onkeydown="return searchResults.NavChild(event,2,4)" onkeypress="return searchResults.NavChild(event,2,4)" onkeyup="return searchResults.NavChild(event,2,4)" class="SRScope" href="../structsvn__auth__cred__ssl__server__trust__t.html#a1f194bad8cec30013e9cdd6bc266fba5" target="_parent">svn_auth_cred_ssl_server_trust_t::may_save()</a>
+  </div>
+ </div>
+</div>
+<div class="SRResult" id="SR_merge_5frange">
+ <div class="SREntry">
+  <a id="Item3" onkeydown="return searchResults.Nav(event,3)" onkeypress="return searchResults.Nav(event,3)" onkeyup="return searchResults.Nav(event,3)" class="SRSymbol" href="../structsvn__wc__notify__t.html#ac21132410ecfff9772e0e2e5161645fa" target="_parent">merge_range</a>
+  <span class="SRScope">svn_wc_notify_t</span>
+ </div>
+</div>
+<div class="SRResult" id="SR_merged_5ffile">
+ <div class="SREntry">
+  <a id="Item4" onkeydown="return searchResults.Nav(event,4)" onkeypress="return searchResults.Nav(event,4)" onkeyup="return searchResults.Nav(event,4)" class="SRSymbol" href="javascript:searchResults.Toggle('SR_merged_5ffile')">merged_file</a>
+  <div class="SRChildren">
+    <a id="Item4_c0" onkeydown="return searchResults.NavChild(event,4,0)" onkeypress="return searchResults.NavChild(event,4,0)" onkeyup="return searchResults.NavChild(event,4,0)" class="SRScope" href="../structsvn__wc__conflict__description2__t.html#a00958195161f07322777439eac0ac74d" target="_parent">svn_wc_conflict_description2_t::merged_file()</a>
+    <a id="Item4_c1" onkeydown="return searchResults.NavChild(event,4,1)" onkeypress="return searchResults.NavChild(event,4,1)" onkeyup="return searchResults.NavChild(event,4,1)" class="SRScope" href="../structsvn__wc__conflict__description__t.html#a1f3b68cd67f525a495815a147464cc70" target="_parent">svn_wc_conflict_description_t::merged_file()</a>
+    <a id="Item4_c2" onkeydown="return searchResults.NavChild(event,4,2)" onkeypress="return searchResults.NavChild(event,4,2)" onkeyup="return searchResults.NavChild(event,4,2)" class="SRScope" href="../structsvn__wc__conflict__result__t.html#a836d2e528e75e29bc5f952b78094fbcf" target="_parent">svn_wc_conflict_result_t::merged_file()</a>
+  </div>
+ </div>
+</div>
+<div class="SRResult" id="SR_message">
+ <div class="SREntry">
+  <a id="Item5" onkeydown="return searchResults.Nav(event,5)" onkeypress="return searchResults.Nav(event,5)" onkeyup="return searchResults.Nav(event,5)" class="SRSymbol" href="../structsvn__error__t.html#a2644a98be02ca1aa123cc66d87a2ce5a" target="_parent">message</a>
+  <span class="SRScope">svn_error_t</span>
+ </div>
+</div>
+<div class="SRResult" id="SR_mime_5ftype">
+ <div class="SREntry">
+  <a id="Item6" onkeydown="return searchResults.Nav(event,6)" onkeypress="return searchResults.Nav(event,6)" onkeyup="return searchResults.Nav(event,6)" class="SRSymbol" href="javascript:searchResults.Toggle('SR_mime_5ftype')">mime_type</a>
+  <div class="SRChildren">
+    <a id="Item6_c0" onkeydown="return searchResults.NavChild(event,6,0)" onkeypress="return searchResults.NavChild(event,6,0)" onkeyup="return searchResults.NavChild(event,6,0)" class="SRScope" href="../structsvn__wc__notify__t.html#a69a2156ef45b8cda7b4c39f4d8d0762a" target="_parent">svn_wc_notify_t::mime_type()</a>
+    <a id="Item6_c1" onkeydown="return searchResults.NavChild(event,6,1)" onkeypress="return searchResults.NavChild(event,6,1)" onkeyup="return searchResults.NavChild(event,6,1)" class="SRScope" href="../structsvn__wc__conflict__description2__t.html#ae05a1d426bd3393003e1e88e197d69df" target="_parent">svn_wc_conflict_description2_t::mime_type()</a>
+    <a id="Item6_c2" onkeydown="return searchResults.NavChild(event,6,2)" onkeypress="return searchResults.NavChild(event,6,2)" onkeyup="return searchResults.NavChild(event,6,2)" class="SRScope" href="../structsvn__wc__conflict__description__t.html#af735c4935ee5b9fa302ddf259ef493b8" target="_parent">svn_wc_conflict_description_t::mime_type()</a>
+  </div>
+ </div>
+</div>
+<div class="SRResult" id="SR_mimetypes_5fmap">
+ <div class="SREntry">
+  <a id="Item7" onkeydown="return searchResults.Nav(event,7)" onkeypress="return searchResults.Nav(event,7)" onkeyup="return searchResults.Nav(event,7)" class="SRSymbol" href="../structsvn__client__ctx__t.html#acea1a9261fec72bc8190a95cf183910e" target="_parent">mimetypes_map</a>
+  <span class="SRScope">svn_client_ctx_t</span>
+ </div>
+</div>
+<div class="SRResult" id="SR_min_5frev">
+ <div class="SREntry">
+  <a id="Item8" onkeydown="return searchResults.Nav(event,8)" onkeypress="return searchResults.Nav(event,8)" onkeyup="return searchResults.Nav(event,8)" class="SRSymbol" href="../structsvn__wc__revision__status__t.html#a91d4cfeee44fba7df2e795cede80f551" target="_parent">min_rev</a>
+  <span class="SRScope">svn_wc_revision_status_t</span>
+ </div>
+</div>
+<div class="SRResult" id="SR_minor">
+ <div class="SREntry">
+  <a id="Item9" onkeydown="return searchResults.Nav(event,9)" onkeypress="return searchResults.Nav(event,9)" onkeyup="return searchResults.Nav(event,9)" class="SRSymbol" href="../structsvn__version__t.html#a1347e27f4d8a12aca9d353051fe76016" target="_parent">minor</a>
+  <span class="SRScope">svn_version_t</span>
+ </div>
+</div>
+<div class="SRResult" id="SR_mod_5fauthz_5fsvn_2eh">
+ <div class="SREntry">
+  <a id="Item10" onkeydown="return searchResults.Nav(event,10)" onkeypress="return searchResults.Nav(event,10)" onkeyup="return searchResults.Nav(event,10)" class="SRSymbol" href="../mod__authz__svn_8h.html" target="_parent">mod_authz_svn.h</a>
+ </div>
+</div>
+<div class="SRResult" id="SR_mod_5fdav_5fsvn_2eh">
+ <div class="SREntry">
+  <a id="Item11" onkeydown="return searchResults.Nav(event,11)" onkeypress="return searchResults.Nav(event,11)" onkeyup="return searchResults.Nav(event,11)" class="SRSymbol" href="../mod__dav__svn_8h.html" target="_parent">mod_dav_svn.h</a>
+ </div>
+</div>
+<div class="SRResult" id="SR_modified">
+ <div class="SREntry">
+  <a id="Item12" onkeydown="return searchResults.Nav(event,12)" onkeypress="return searchResults.Nav(event,12)" onkeyup="return searchResults.Nav(event,12)" class="SRSymbol" href="../structsvn__wc__revision__status__t.html#af1f2b458281ebec2b41a510f619abcf2" target="_parent">modified</a>
+  <span class="SRScope">svn_wc_revision_status_t</span>
+ </div>
+</div>
+<div class="SRResult" id="SR_mtime">
+ <div class="SREntry">
+  <a id="Item13" onkeydown="return searchResults.Nav(event,13)" onkeypress="return searchResults.Nav(event,13)" onkeyup="return searchResults.Nav(event,13)" class="SRSymbol" href="../structsvn__io__dirent2__t.html#a310bfc9a9c1cbe353c67bbc399840743" target="_parent">mtime</a>
+  <span class="SRScope">svn_io_dirent2_t</span>
+ </div>
+</div>
+<div class="SRResult" id="SR_my_5fabspath">
+ <div class="SREntry">
+  <a id="Item14" onkeydown="return searchResults.Nav(event,14)" onkeypress="return searchResults.Nav(event,14)" onkeyup="return searchResults.Nav(event,14)" class="SRSymbol" href="../structsvn__wc__conflict__description2__t.html#a49a529d3c2fb672b6732b0358195c584" target="_parent">my_abspath</a>
+  <span class="SRScope">svn_wc_conflict_description2_t</span>
+ </div>
+</div>
+<div class="SRResult" id="SR_my_5ffile">
+ <div class="SREntry">
+  <a id="Item15" onkeydown="return searchResults.Nav(event,15)" onkeypress="return searchResults.Nav(event,15)" onkeyup="return searchResults.Nav(event,15)" class="SRSymbol" href="../structsvn__wc__conflict__description__t.html#a8456635804cdf975cbcf4ae5a214ec4c" target="_parent">my_file</a>
+  <span class="SRScope">svn_wc_conflict_description_t</span>
+ </div>
+</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+<script type="text/javascript"><!--
+document.getElementById("Loading").style.display="none";
+document.getElementById("NoMatches").style.display="none";
+var searchResults = new SearchResults("searchResults");
+searchResults.Search();
+--></script>
+</div>
+</body>
+</html>

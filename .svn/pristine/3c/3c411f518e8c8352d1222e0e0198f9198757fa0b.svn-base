@@ -1,0 +1,190 @@
+  mod_dav_svn is vunerable to a remotely triggerable segfault DoS vulnerability
+  when SVNListParentPath is on.
+
+Summary:
+========
+
+  Subversion's mod_dav_svn Apache HTTPD server module will crash when it
+  receives an OPTIONS request against the server root and Subversion is
+  configured to handle the server root and SVNListParentPath is on.
+
+  This can lead to a DoS.  There are no known instances of this
+  problem being exploited in the wild, but the details of how to exploit
+  it have been disclosed on the Subversion development mailing list.
+
+Known vulnerable:
+=================
+
+  Subversion HTTPD servers 1.3.0 through 1.7.14 (inclusive)
+  Subversion HTTPD servers 1.8.0 through 1.8.5 (inclusive)
+
+Known fixed:
+============
+
+  Subversion 1.7.15 (not publicly released)
+  Subversion 1.7.16
+  Subversion 1.8.6-1.8.7 (not publicly released)
+  Subversion 1.8.8
+  svnserve (any version) is not vulnerable
+
+Details:
+========
+
+  When Subversion is configured on the root path of the server and the
+  SVNListParentPath directive is set to on then the following commands
+  will trigger a segfault:
+    svn list http://svn.example.com/
+    svn lock http://svn.example.com/
+
+  This occurs because when mod_dav_svn attempts to calculate the parent
+  path of the request is ends up setting a NULL pointer (since there can be
+  no parent of the server root URI), which is later assumed to be valid memory.
+
+  When Subversion is configured on any Location other than "/" (e.g. "/svn")
+  then the problem does not occur since the parent of the path can be
+  calculated and stored in memory.
+
+Severity:
+=========
+
+  CVSSv2 Base Score: 4.3 
+  CVSSv2 Base Vector: AV:N/AC:M/Au:N/C:N/I:N/A:P
+
+  We consider this to be a medium risk vulnerability.  Repositories which
+  allow for anonymous reads will be vulnerable without authentication.
+  However, we believe the required configuration is relatively rare.  Most
+  systems are not hosting Subversion on the root path of the server and
+  only a small number of those have the SVNListParentPath configuration on.
+
+  A remote attacker may be able to crash a Subversion server.  Many Apache
+  servers will respawn the listener processes, but a determined attacker
+  will be able to crash these processes as they appear, denying service to
+  legitimate users.  Servers using threaded MPMs will close the connection
+  on other clients being served by the same process that services the
+  OPTIONS request from the attacker.  In either case there is an increased
+  processing impact of restarting a process and the cost of per process
+  caches being lost.
+
+Recommendations:
+================
+
+  We recommend all users to upgrade to Subversion 1.8.8.  Users of
+  Subversion 1.7.x or 1.8.x who are unable to upgrade may apply the
+  included patch.
+
+  New Subversion packages can be found at:
+  http://subversion.apache.org/packages.html
+
+  Administrators that wish to protect against this without patching
+  immediately can apply the following configuration to their httpd.conf
+  file:
+  [[[
+    <LocationMatch ^/$>
+      <LimitExcept GET>
+        Order Deny,Allow
+        Deny from all
+      </LimitExcept>
+    </LocationMatch>
+  ]]]
+
+  CAUTION: The above configuration should only be used when Subversion is
+  enabled on the root location in a parent path configuration.  For example the
+  following is the minimal configuration that matches this case:
+  [[
+    <Location />
+      DAV svn
+      SVNParentPath /var/svn
+    </Location>
+  ]]
+
+  In this case it will not block any useful requests and can be used without
+  concern that it will break anything.  If Subversion is running on any other
+  path or is not being used in a parent path configuration this configuration
+  should not be applied as these configurations are not vulnerable and it can
+  break functionality of Subversion or other applications being served from the
+  same httpd.
+
+References:
+===========
+
+  CVE-2014-0032  (Subversion)
+
+  Report on dev mailing list: https://mail-archives.apache.org/mod_mbox/subversion-dev/201401.mbox/%3CCANvU9scLHr2yOLABW8q6_wNzhEf7pWM%3DNiavGcobqvUuyhKyAA%40mail.gmail.com%3E
+
+Reported by:
+============
+
+  Lieven Govaerts <lgo{_AT_}apache.org>
+
+Patches:
+========
+
+  Patch against 1.7.14:
+
+[[[
+Index: subversion/mod_dav_svn/repos.c
+===================================================================
+--- subversion/mod_dav_svn/repos.c      (revision 1558691)
++++ subversion/mod_dav_svn/repos.c      (revision 1558692)
+@@ -1959,6 +1959,25 @@
+      of private resource, iff the SVNListParentPath directive is 'on'. */
+   if (dav_svn__is_parentpath_list(r))
+     {
++      /* Only allow GET and HEAD on the parentpath resource
++       * httpd uses the same method_number for HEAD as GET */
++      if (r->method_number != M_GET)
++        {
++          int status;
++
++          /* Marshall the error back to the client by generating by
++           * way of the dav_svn__error_response_tag trick. */
++          err = dav_svn__new_error(r->pool, HTTP_METHOD_NOT_ALLOWED,
++                                   SVN_ERR_APMOD_MALFORMED_URI,
++                                   "The URI does not contain the name "
++                                   "of a repository.");
++          /* can't use r->allowed since the default handler isn't called */
++          apr_table_setn(r->headers_out, "Allow", "GET,HEAD");
++          status = dav_svn__error_response_tag(r, err);
++
++          return dav_push_error(r->pool, status, err->error_id, NULL, err);
++        }
++
+       err = get_parentpath_resource(r, resource);
+       if (err)
+         return err;
+]]]
+
+  Patch against 1.8.5:
+
+[[[
+Index: subversion/mod_dav_svn/repos.c
+===================================================================
+--- subversion/mod_dav_svn/repos.c      (revision 1558291)
++++ subversion/mod_dav_svn/repos.c      (revision 1558292)
+@@ -1971,6 +1971,25 @@
+      of private resource, iff the SVNListParentPath directive is 'on'. */
+   if (dav_svn__is_parentpath_list(r))
+     {
++      /* Only allow GET and HEAD on the parentpath resource
++       * httpd uses the same method_number for HEAD as GET */
++      if (r->method_number != M_GET)
++        {
++          int status;
++
++          /* Marshall the error back to the client by generating by
++           * way of the dav_svn__error_response_tag trick. */
++          err = dav_svn__new_error(r->pool, HTTP_METHOD_NOT_ALLOWED,
++                                   SVN_ERR_APMOD_MALFORMED_URI,
++                                   "The URI does not contain the name "
++                                   "of a repository.");
++          /* can't use r->allowed since the default handler isn't called */
++          apr_table_setn(r->headers_out, "Allow", "GET,HEAD");
++          status = dav_svn__error_response_tag(r, err);
++
++          return dav_push_error(r->pool, status, err->error_id, NULL, err);
++        }
++
+       err = get_parentpath_resource(r, resource);
+       if (err)
+         return err;
+]]]

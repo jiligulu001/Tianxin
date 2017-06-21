@@ -1,0 +1,226 @@
+  Subversion HTTP servers up to 1.7.8 (inclusive) are vulnerable
+  to a remotely triggerable segfault DoS vulnerability.
+
+Summary:
+========
+
+  Subversion's mod_dav_svn Apache HTTPD server module will crash when
+  a LOCK request is made against activity URLs.   
+
+  This can lead to a DoS.  There are no known instances of this
+  problem being observed in the wild.
+
+Known vulnerable:
+=================
+
+  Subversion HTTPD servers <= 1.6.20
+  Subversion HTTPD servers 1.7.0 through 1.7.8 (inclusive)
+
+Known fixed:
+============
+
+  Subversion 1.6.21
+  Subversion 1.7.9
+  svnserve (any version) is not vulnerable
+
+Details:
+========
+
+  The vulnerability can be triggered by doing a LOCK request against
+  an activity URL, e.g.
+  curl -u user:pass -X LOCK --data-binary @lock_body 'http://127.0.0.1:8080/repo/!svn/act/foo'
+
+  Where a file exists named lock_body and has the following contents:
+  <?xml version="1.0" encoding="utf-8" ?>
+   <D:lockinfo xmlns:D='DAV:'>
+     <D:lockscope><D:exclusive/></D:lockscope>
+     <D:locktype><D:write/></D:locktype>
+     <D:owner>
+          <D:href>http://example.com/</D:href>
+     </D:owner>
+   </D:lockinfo>
+
+  An activity URL is used by the server to map transactions in the repository
+  to an incoming commit by a client.  They are created by using the MKACTIVITY
+  http method on the activity URL the client wishes to create.  Activity URLs
+  following the pattern of having /!svn/act/$uuid where $uuid is some unique id
+  the client chooses to use.
+
+  The denial of service described here issues a LOCK request on an
+  activity URL.  There is no meaning to this request in the DAV based HTTP
+  protocols that Subversion uses.  There is a flaw in mod_dav_svn that
+  improperly tries to process this request instead of rejecting it and
+  results in an attempt to access invalid memory (NULL).  The invalid
+  memory access causes the httpd child process to segfault.
+
+  The auto-versioning feature of Subversion impacts the behavior of LOCK.
+  If SVNAutoversioning is set to 'on' in the httpd configuration and the
+  User-Agent of the client does not contain 'SVN/' then the activity URL
+  does not need to be valid for this crash to occur, i.e., the URL the LOCK is
+  run against need not to have ever had MKACTIVITY run against it.
+
+Severity:
+=========
+
+  CVSSv2 Base Score: 2.1
+  CVSSv2 Base Vector: AV:N/AC:H/Au:S/C:N/I:N/A:P 
+
+  We consider this to be a low risk vulnerability.  In order to take
+  advantage of this attack the attacker would need to be authenticated,
+  since the LOCK method requires authentication in order to work.
+
+  A remote attacker may be able to crash a Subversion server.  Many Apache
+  servers will respawn the listener processes, but a determined attacker
+  will be able to crash these processes as they appear, denying service to
+  legitimate users.  Servers using threaded MPMs will close the connection
+  on other clients being served by the same process that services the
+  LOCK request from the attacker.
+
+Recommendations:
+================
+
+  We recommend all users to upgrade to Subversion 1.7.9.  Users of
+  Subversion 1.6.x or 1.7.x who are unable to upgrade may apply the
+  included patch.
+  
+  New Subversion packages can be found at:
+  http://subversion.apache.org/packages.html
+  
+  Administrators that wish to protect against this without patching
+  immediately can apply the following configuration to their httpd.conf
+  file (this uses mod_rewrite so you'll need that module available):
+  [[[
+  RewriteEngine on
+  RewriteCond %{REQUEST_METHOD} !=MKACTIVITY
+  RewriteCond %{REQUEST_METHOD} !=DELETE
+  RewriteCond %{REQUEST_URI} /!svn/act/[^/]*/*$
+  RewriteRule .* - [L,F]
+  ]]]
+
+  The above configuration will not block any useful requests and can be
+  used without concern that it will break anything.
+
+References:
+===========
+
+  CVE-2013-1846  (Subversion)
+
+Reported by:
+============
+
+  Ben Reser, WANdisco  
+
+Patches:
+========
+
+  These patches also fix the flaw in CVE-2013-1847.
+
+  Patch against 1.7.8:
+[[[
+Index: subversion/mod_dav_svn/lock.c
+===================================================================
+--- subversion/mod_dav_svn/lock.c	(revision 1458455)
++++ subversion/mod_dav_svn/lock.c	(working copy)
+@@ -640,7 +640,20 @@ append_locks(dav_lockdb *lockdb,
+   svn_lock_t *slock;
+   svn_error_t *serr;
+   dav_error *derr;
++  dav_svn_repos *repos = resource->info->repos;
++      
++  /* We don't allow anonymous locks */
++  if (! repos->username)
++    return dav_svn__new_error(resource->pool, HTTP_UNAUTHORIZED,
++                              DAV_ERR_LOCK_SAVE_LOCK,
++                              "Anonymous lock creation is not allowed.");
+ 
++  /* Not a path in the repository so can't lock it. */
++  if (! resource->info->repos_path)
++    return dav_svn__new_error(resource->pool, HTTP_BAD_REQUEST,
++                              DAV_ERR_LOCK_SAVE_LOCK,
++                              "Attempted to lock path not in repository.");
++
+   /* If the resource's fs path is unreadable, we don't allow a lock to
+      be created on it. */
+   if (! dav_svn__allow_read_resource(resource, SVN_INVALID_REVNUM,
+@@ -663,7 +676,6 @@ append_locks(dav_lockdb *lockdb,
+       svn_fs_txn_t *txn;
+       svn_fs_root_t *txn_root;
+       const char *conflict_msg;
+-      dav_svn_repos *repos = resource->info->repos;
+       apr_hash_t *revprop_table = apr_hash_make(resource->pool);
+       apr_hash_set(revprop_table, SVN_PROP_REVISION_AUTHOR,
+                    APR_HASH_KEY_STRING, svn_string_create(repos->username,
+@@ -741,7 +753,7 @@ append_locks(dav_lockdb *lockdb,
+ 
+   /* Convert the dav_lock into an svn_lock_t. */
+   derr = dav_lock_to_svn_lock(&slock, lock, resource->info->repos_path,
+-                              info, resource->info->repos->is_svn_client,
++                              info, repos->is_svn_client,
+                               resource->pool);
+   if (derr)
+     return derr;
+@@ -748,7 +760,7 @@ append_locks(dav_lockdb *lockdb,
+ 
+   /* Now use the svn_lock_t to actually perform the lock. */
+   serr = svn_repos_fs_lock(&slock,
+-                           resource->info->repos->repos,
++                           repos->repos,
+                            slock->path,
+                            slock->token,
+                            slock->comment,
+]]]
+
+  Patch against 1.6.20:
+[[[
+Index: subversion/mod_dav_svn/lock.c
+===================================================================
+--- subversion/mod_dav_svn/lock.c	(revision 1459696)
++++ subversion/mod_dav_svn/lock.c	(working copy)
+@@ -634,7 +634,20 @@ append_locks(dav_lockdb *lockdb,
+   svn_lock_t *slock;
+   svn_error_t *serr;
+   dav_error *derr;
++  dav_svn_repos *repos = resource->info->repos;
++      
++  /* We don't allow anonymous locks */
++  if (! repos->username)
++    return dav_new_error(resource->pool, HTTP_UNAUTHORIZED,
++                         DAV_ERR_LOCK_SAVE_LOCK,
++                         "Anonymous lock creation is not allowed.");
+ 
++  /* Not a path in the repository so can't lock it. */
++  if (! resource->info->repos_path)
++    return dav_new_error(resource->pool, HTTP_BAD_REQUEST,
++                         DAV_ERR_LOCK_SAVE_LOCK,
++                         "Attempted to lock path not in repository.");
++
+   /* If the resource's fs path is unreadable, we don't allow a lock to
+      be created on it. */
+   if (! dav_svn__allow_read_resource(resource, SVN_INVALID_REVNUM,
+@@ -657,7 +670,6 @@ append_locks(dav_lockdb *lockdb,
+       svn_fs_txn_t *txn;
+       svn_fs_root_t *txn_root;
+       const char *conflict_msg;
+-      dav_svn_repos *repos = resource->info->repos;
+       apr_hash_t *revprop_table = apr_hash_make(resource->pool);
+       apr_hash_set(revprop_table, SVN_PROP_REVISION_AUTHOR,
+                    APR_HASH_KEY_STRING, svn_string_create(repos->username,
+@@ -734,7 +746,7 @@ append_locks(dav_lockdb *lockdb,
+ 
+   /* Convert the dav_lock into an svn_lock_t. */
+   derr = dav_lock_to_svn_lock(&slock, lock, resource->info->repos_path,
+-                              info, resource->info->repos->is_svn_client,
++                              info, repos->is_svn_client,
+                               resource->pool);
+   if (derr)
+     return derr;
+@@ -741,7 +753,7 @@ append_locks(dav_lockdb *lockdb,
+ 
+   /* Now use the svn_lock_t to actually perform the lock. */
+   serr = svn_repos_fs_lock(&slock,
+-                           resource->info->repos->repos,
++                           repos->repos,
+                            slock->path,
+                            slock->token,
+                            slock->comment,
+]]]

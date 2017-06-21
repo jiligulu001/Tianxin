@@ -1,0 +1,6 @@
+org.apache.subversion.javahl
+org.apache.subversion.javahl.callback
+org.apache.subversion.javahl.remote
+org.apache.subversion.javahl.types
+org.apache.subversion.javahl.util
+org.tigris.subversion.javahl

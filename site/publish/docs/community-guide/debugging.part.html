@@ -1,0 +1,416 @@
+<div class="h1" id="debugging">
+<h1>Debugging Subversion
+  <a class="sectionlink" href="<!--#echo var="GUIDE_DEBUGGING_PAGE" -->#debugging"
+    title="Link to this section">&para;</a>
+</h1>
+
+<!--#include virtual="debugging.toc.html" -->
+
+<div class="h2" id="svn_dbg">
+<h2>Debugging with SVN_DBG
+  <a class="sectionlink" href="<!--#echo var="GUIDE_DEBUGGING_PAGE" -->#debugging-svn_debug"
+    title="Link to this section">&para;</a>
+</h2>
+
+<p>The SVN_DBG debugging tool is a C Preprocessor macro that sends
+debugging output to stdout (by default) or stderr whilst not interfering
+with the SVN test suite.</p>
+ 
+<p>It provides an alternative to a debugger such as gdb, or
+alternatively, extra information to assist in the use of a debugger.  It
+might be especially useful in situations where a debugger cannot be
+used.</p>
+
+<p>The svn_debug module contains two debug aid macros that print the
+file:line of the call and printf-like arguments to
+the <code>#SVN_DBG_OUTPUT </code> stdio stream (#stdout by
+default):</p>
+
+<pre>
+SVN_DBG( ( const char *fmt, ...) ) /* double braces are neccessary */
+</pre>
+and
+<pre>
+SVN_DBG_PROPS( ( apr_hash_t *props, const char *header_fmt, ...) )
+</pre>
+
+<p>Controlling SVN_DBG output:</p>
+<ul>
+<li>SVN_DBG is enabled whenever svn is configured
+with <code>--enable-maintainer-mode</code>.
+</li>
+<li>The SVN test suite turns off SVN_DBG output automatically, to
+suppress the output manually, set the <code>SVN_DBG_QUIET</code>
+variable to 1 in your shell environment.
+</li>
+<li>When you are done, please be sure to remove any instances of
+the <code>SVN_DBG </code> and <code>SVN_DBG_PROPS </code> macros from
+any code you are committing and from any patch that you send to the
+list.  (AKA: Do not forget a scalpel in the patient!)
+</li>
+</ul>
+
+<p>The SVN_DBG macro definitions and code are located in:</p>
+<ul>
+<li><a href="https://svn.apache.org/repos/asf/subversion/trunk/subversion/include/private/svn_debug.h">
+subversion/include/private/svn_debug.h</a> </li>
+<li><a href="https://svn.apache.org/repos/asf/subversion/trunk/subversion/libsvn_subr/debug.c">
+subversion/libsvn_subr/debug.c
+</a></li>
+</ul>
+
+<p>Sample patch showing usage of the SVN_DBG macro:</p>
+
+<pre>
+Index: subversion/libsvn_fs_fs/fs_fs.c
+===================================================================
+--- subversion/libsvn_fs_fs/fs_fs.c     (revision 1476635)
++++ subversion/libsvn_fs_fs/fs_fs.c     (working copy)
+@@ -2303,6 +2303,9 @@ get_node_revision_body(node_revision_t **noderev_p
+ 
+   /* First, try a cache lookup. If that succeeds, we are done here. */
+   SVN_ERR(get_cached_node_revision_body(noderev_p, fs, id, &#38;is_cached, pool));
++  SVN_DBG(("Getting %s from: %s\n", 
++           svn_fs_fs__id_unparse(id),
++           is_cached ? "cache" : "disk"));
+   if (is_cached)
+     return SVN_NO_ERROR;
+</pre>
+
+<p>Sample patch showing usage of the SVN_DBG_PROPS macro:</p>
+
+<pre>
+Index: subversion/svn/proplist-cmd.c
+===================================================================
+--- subversion/svn/proplist-cmd.c	(revision 1475745)
++++ subversion/svn/proplist-cmd.c	(working copy)
+@@ -221,6 +221,7 @@ svn_cl__proplist(apr_getopt_t *os,
+                                       URL, &#38;(opt_state->start_revision),
+                                       &#38;rev, ctx, scratch_pool));
++      /*  this can be called with svn proplist  --revprop -r &lt;rev&gt; */
++      SVN_DBG_PROPS((proplist,"The variable apr_hash_t *proplist contains: "));
+       if (opt_state->xml)
+         {
+           svn_stringbuf_t *sb = NULL;
+</pre>
+</div> <!-- svn_debug -->
+
+<div class="h2" id="server-debugging">
+<h2>Debugging the server
+  <a class="sectionlink" href="<!--#echo var="GUIDE_DEBUGGING_PAGE" -->#server-debugging"
+    title="Link to this section">&para;</a>
+</h2>
+
+<div class="h3" id="debugging-ra-dav">
+<h3>Debugging the DAV server
+  <a class="sectionlink" href="<!--#echo var="GUIDE_DEBUGGING_PAGE" -->#debugging-ra-dav"
+    title="Link to this section">&para;</a>
+</h3>
+
+<p>'mod_dav_svn.so' contains the main Subversion server logic; it runs
+as a module within mod_dav, which runs as a module within httpd.
+If httpd is probably using dynamic shared modules, you might need to
+<tt>set breakpoint pending on</tt> (in ~/.gdbinit) before setting breakpoints
+in mod_dav_svn would be possible.  Alternatively, you may start httpd,
+interrupt it, set your breakpoint, and continue:</p>
+
+<pre>
+   % gdb httpd
+   (gdb) run -X
+   ^C
+   (gdb) break some_func_in_mod_dav_svn
+   (gdb) continue
+</pre>
+
+<p>The -X switch is equivalent to -DONE_PROCESS and -DNO_DETACH, which
+ensure that httpd runs as a single thread and remains attached to the
+tty, respectively.  As soon as it starts, it sits and waits for
+requests; that's when you hit control-C and set your breakpoint.</p>
+
+<p>You'll probably want to watch Apache's run-time logs</p>
+
+<pre>
+   /usr/local/apache2/logs/error_log
+   /usr/local/apache2/logs/access_log
+</pre>
+
+<p>to help determine what might be going wrong and where to set
+breakpoints.</p>
+
+<p>Alternatively, running <tt>./subversion/tests/cmdline/davautocheck.sh
+--gdb</tt> in a working copy will start httpd using the mod_dav_svn in that
+working copy.  You can then run individual Python tests against that:
+<tt>./basic_tests.py --url=http://localhost:3691/</tt>.</p>
+
+</div> <!-- debugging-ra-dav -->
+
+<div class="h3" id="debugging-ra-svn">
+<h3>Debugging the ra_svn client and server, on Unix
+  <a class="sectionlink" href="<!--#echo var="GUIDE_DEBUGGING_PAGE" -->#debugging-ra-svn"
+    title="Link to this section">&para;</a>
+</h3>
+
+<p>Bugs in ra_svn usually manifest themselves with one of the
+following cryptic error messages:</p>
+
+<pre>
+  svn: Malformed network data
+  svn: Connection closed unexpectedly
+</pre>
+
+<p>(The first message can also mean the data stream was corrupted in
+tunnel mode by user dotfiles or hook scripts; see 
+<a href="https://issues.apache.org/jira/browse/SVN-1145"
+>issue&nbsp;#1145</a>.)  The first message generally means you to have
+to debug the client; the second message generally means you have to
+debug the server.</p>
+
+<p>It is easiest to debug ra_svn using a build with --disable-shared
+--enable-maintainer-mode.  With the latter option, the error message
+will tell you exactly what line to set a breakpoint at; otherwise,
+look up the line number at the end of marshal.c:vparse_tuple() where
+it returns the "Malformed network data" error.</p>
+
+<p>To debug the client, simply pull it up in gdb, set a breakpoint,
+and run the offending command:</p>
+
+<pre>
+  % gdb svn
+  (gdb) break marshal.c:NNN
+  (gdb) run ARGS
+  Breakpoint 1, vparse_tuple (list=___, pool=___, fmt=___, 
+    ap=___) at subversion/libsvn_ra_svn/marshal.c:NNN
+  NNN                                 "Malformed network data");
+</pre>
+
+<p>There are several bits of useful information:</p>
+
+<ul>
+<li><p>A backtrace will tell you exactly what protocol exchange is
+    failing.</p>
+</li>
+
+<li><p>"print *conn" will show you the connection buffer.  read_buf,
+    read_ptr, and read_end represent the read buffer, which can
+    show
+    you the data the marshaller is looking at.  (Since read_buf isn't
+    generally 0-terminated at read_end, be careful of falsely assuming
+    that there's garbage data in the buffer.)</p>
+</li>
+
+<li><p>The format string determines what the marshaller was expecting to
+    see.</p>
+</li>
+</ul>
+
+<p>To debug the server in daemon mode, pull it up in gdb, set a
+breakpoint (usually a "Connection closed unexpectedly" error on the
+client indicates a "Malformed network data" error on the server,
+although it can also indicate a core dump), and run it with the "-X"
+option to serve a single connection:</p>
+
+<pre>
+  % gdb svnserve
+  (gdb) break marshal.c:NNN
+  (gdb) run -X
+</pre>
+
+<p>Then run the offending client command.  From there, it's just like
+debugging the client.</p>
+
+<p>Debugging the server in tunnel mode is more of a pain.  You'll need
+to stick something like "{ int x = 1; while (x); }" near the top of
+svnserve's main() and put the resulting svnserve in the user path on
+the server.  Then start an operation, gdb attach the process on the
+server, "set x = 0", and step through the code as desired.</p>
+
+</div> <!-- debugging-ra-svn -->
+
+</div> <!-- server-debugging -->
+
+
+<div class="h2" id="net-trace">
+<h2>Tracing network traffic
+  <a class="sectionlink" href="<!--#echo var="GUIDE_DEBUGGING_PAGE" -->#net-trace"
+    title="Link to this section">&para;</a>
+</h2>
+
+<p>Tracing the network traffic between the client and the server can be helpful
+in debugging.  There are several ways to go about doing a network trace (and this
+list is not exhaustive).</p>
+
+<p>You may well want to disable compression when doing a network
+trace&nbsp;&mdash; see the <tt>http-compression</tt> parameter in the
+<tt>servers</tt> configuration file.</p>
+
+<div class="h3" id="net-trace-wireshark">
+<h3>Network tracing with Wireshark
+  <a class="sectionlink" href="<!--#echo var="GUIDE_DEBUGGING_PAGE" -->#net-trace-wireshark"
+    title="Link to this section">&para;</a>
+</h3>
+
+<p>Use <a href="http://www.wireshark.org/">Wireshark</a> (formerly
+known as "Ethereal") to eavesdrop on the conversation.</p>
+
+<p>First, make sure that between captures within the same wireshark
+session, you hit <em>Clear</em>, otherwise filters from one capture
+(say, an HTTP capture) might interfere with others (say, an ra_svn
+capture). </p>
+
+<p>Assuming you're cleared, then:</p>
+
+<ol>
+<li><p>Pull down the <i>Capture</i> menu, and choose
+    <i>Capture&nbsp;Filters</i>.</p></li>
+<li><p>If debugging the http:// (WebDAV) protocol, then in the window
+    that pops up, choose "<code>HTTP&nbsp;TCP&nbsp;port&nbsp;(80)</code>"
+    (which should result in the filter string
+    "<code><i>tcp&nbsp;port&nbsp;http</i></code>").</p>
+    <p>If debugging the svn:// (ra_svn) protocol, then choose <i>New</i>,
+    give the new filter a name (say, "ra_svn"), and type
+    "<code>tcp&nbsp;port&nbsp;3690</code>" into the filter string box.</p>
+    <p>When done, click OK.</p></li> 
+<li><p>Again go to the <i>Capture</i> menu, this time choose
+    <i>Interfaces</i>, and click <i>Options</i> next to the
+    appropriate interface (probably you want interface "lo", for
+    "loopback", assuming the server will run on the same machine as
+    the client).</p></li>
+<li><p>Turn off promiscuous mode by unchecking the appropriate
+    checkbox.</p></li>
+<li><p>Click the <i>Start</i> button in the lower right to start the
+    capture.</p></li>
+<li><p>Run your Subversion client.</p></li>
+<li><p>Click the Stop icon (a red X over an ethernet interface card) when
+    the operation is finished (or <i>Capture-&gt;Stop</i> should
+    work).  Now you have a capture.  It looks like a huge list of
+    lines.</p></li>
+<li><p>Click on the <i>Protocol</i> column to sort.</p></li>
+<li><p>Then, click on the first relevant line to select it; usually this
+    is just the first line.</p></li>
+<li><p>Right click, and choose <i>Follow TCP Stream</i>.  You'll be
+    presented with the request/response pairs of the Subversion
+    client's HTTP conversion.</p></li>
+</ol>
+
+<p>The above instructions are specific to the graphical version of
+Wireshark (version 0.99.6), and don't apply to the command-line
+version known as "tshark" (which corresponds to "tethereal", from back
+when Wireshark was called Ethereal).</p>
+
+</div> <!-- net-trace-wireshark -->
+
+<div class="h3" id="net-trace-neon">
+<h3>Network tracing with neon-debug-mask 
+  <a class="sectionlink" href="<!--#echo var="GUIDE_DEBUGGING_PAGE" -->#net-trace-neon"
+    title="Link to this section">&para;</a>
+</h3>
+
+<p>Alternatively, you may set the <tt>neon-debug-mask</tt> parameter in your
+<tt>servers</tt> configuration file to cause neon's debugging output
+to appear when you run the <tt>svn</tt> client.  The numeric value of
+<tt>neon-debug-mask</tt> is a combination of the <tt>NE_DBG_...</tt> values
+in the header file <tt>ne_utils.h</tt>.  For current versions of neon, setting
+<tt>neon-debug-mask</tt> to 130 (i.e. <tt>NE_DBG_HTTP+NE_DBG_HTTPBODY)</tt>
+will cause the HTTP data to be shown. Note that <tt>neon-debug-mask</tt> will
+only work if neon was compiled with debugging support.</p>
+
+</div> <!-- net-trace-neon -->
+
+<div class="h3" id="net-trace-socat">
+<h3>Network tracing with socat 
+  <a class="sectionlink" href="<!--#echo var="GUIDE_DEBUGGING_PAGE" -->#net-trace-socat"
+    title="Link to this section">&para;</a>
+</h3>
+
+<p>Another alternative is to set up a logging proxy between the
+Subversion client and server.  A simple way to do this is to use the
+<a href="http://www.dest-unreach.org/socat/">socat</a> program.  For
+example, to log communication with an svnserve instance, run the
+following command:</p>
+
+<p><tt>socat -v  TCP-LISTEN:9630,reuseaddr,fork
+    TCP4:localhost:svn</tt></p>
+
+<p>Then run your svn commands using an URL base of
+<tt>svn://127.0.0.1:9630/</tt>; <tt>socat</tt> will forward the
+traffic from port 9630 to the normal svnserve port (3690), and will
+print all traffic in both directions to standard error, prefixing it
+with &lt; and &gt; signs to show the direction of the traffic.</p>
+
+</div> <!-- net-trace-socat -->
+
+<div class="h3" id="net-trace-http-proxy">
+<h3>Network tracing with http-proxy 
+  <a class="sectionlink" href="<!--#echo var="GUIDE_DEBUGGING_PAGE" -->#net-trace-http-proxy"
+    title="Link to this section">&para;</a>
+</h3>
+
+<p>If you're debugging a http client/server setup you can use a web
+debugging proxy like <a href="http://www.charlesproxy.com/">Charles</a> or
+<a href="http://www.fiddler2.com/">Fiddler</a>.</p>
+
+<p>Once you've setup such a proxy you'll need to configure Subversion to use the
+proxy.  This can be done with the <tt>http-proxy-host</tt> and <tt>http-proxy-port</tt>
+parameters in the <tt>servers</tt> configuration file.  You can also specify the proxy
+on the command line with these options <tt>--config-option 'servers:global:http-proxy-host=127.0.0.1' --config-option 'servers:global:http-proxy-port=8888'</tt>.</p>
+
+</div> <!-- net-trace-socat -->
+
+</div> <!-- net-trace -->
+
+
+<div class="h2" id="tracing-memory-leaks">
+<h2>Tracking down memory leaks
+  <a class="sectionlink" href="<!--#echo var="GUIDE_DEBUGGING_PAGE" -->#tracing-memory-leaks"
+    title="Link to this section">&para;</a>
+</h2>
+
+<p>Our use of APR pools makes it unusual for us to have memory leaks
+in the strictest sense; all the memory we allocate will be cleaned up
+eventually.  But sometimes an operation takes more memory than it
+should; for instance, a checkout of a large source tree should not use
+much more memory than a checkout of a small source tree.  When that
+happens, it generally means we're allocating memory from a pool whose
+lifetime is too long.</p>
+
+<p>If you have a favorite memory leak tracking tool, you can configure
+with --enable-pool-debug (which will make every pool allocation use
+its own malloc()), arrange to exit in the middle of the operation, and
+go to it.  If not, here's another way:</p>
+
+<ul>
+
+<li><p>Configure with --enable-pool-debug=verbose-alloc.  Make sure to
+       rebuild all of APR and Subversion so that every allocation gets
+       file-and-line information.</p>
+</li>
+
+<li><p>Run the operation, piping stderr to a file.  Hopefully you have
+      lots of disk space.</p>
+</li>
+
+<li><p>In the file, you'll see lots of lines which look like:</p>
+
+   <pre>
+    POOL DEBUG: [5383/1024] PCALLOC (      2763/      2763/      5419) \
+    0x08102D48 "subversion/svn/main.c:612"                             \
+    &lt;subversion/libsvn_subr/auth.c:122&gt; (118/118/0)
+   </pre>
+
+    <p>What you care about most is the tenth field (the one in
+       quotes), which gives you the file and line number where the
+       pool for this allocation was created.  Go to that file and line
+       and determine the lifetime of the pool.  In the example above,
+       main.c:612 indicates that this allocation was made in the
+       top-level pool of the svn client.  If this were an allocation
+       which was repeated many times during the course of an
+       operation, that would indicate a source of a memory leak.  The
+       eleventh field (the one in brackets) gives the file and line
+       number of the allocation itself.</p>
+</li>
+
+</ul>
+
+</div> <!-- tracing-memory-leaks -->
+
+</div> <!-- debugging -->

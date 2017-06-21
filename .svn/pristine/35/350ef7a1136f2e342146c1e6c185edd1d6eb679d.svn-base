@@ -1,0 +1,55 @@
+<!--#if expr='"$DOCUMENT_NAME" = "releasing.html" || "$DOCUMENT_NAME" = "community-guide.html"' -->
+<ul>
+<li><a href="#release-process">Subversion release process</a></li>
+  <ul>
+    <li><a href="#release-numbering">Release numbering</a></li>
+    <li><a href="#release-compat">Inter-release compatibility</a></li>
+    <li><a href="#custom-releases">Custom releases</a></li>
+    <li><a href="#deprecation">Deprecation</a></li>
+    <li><a href="#release-stabilization">Stabilizing and maintaining releases</a></li>
+  </ul>
+<li><a href="#release-creating">Creating a Subversion release</a></li>
+  <ul>
+    <li><a href="#notify-translators">Notify translators</a></li>
+    <li><a href="#before-release">Preparing to roll a release</a></li>
+    <li><a href="#rolling-release">Rolling a release</a></li>
+    <li><a href="#tarball-signing">Signing source distribution packages (a.k.a tarballs)</a></li>
+    <li><a href="#releasing-release">The actual releasing</a></li>
+  </ul>
+<li><a href="#release-branches">Creating and maintaining release branches</a></li>
+<li><a href="#porting-changes">Porting changes to release branches</a></li>
+<li><a href="#the-changes-file">Managing the CHANGES file</a></li>
+  <ul>
+    <li><a href="#writing-initial-changes">Writing the initial content for a branch</a></li>
+    <li><a href="#adding-changes">Adding content for patch release</a></li>
+  </ul>
+<li><a href="#releasing-not">How <em>not</em> to make a Subversion release</a></li>
+</ul>
+<!--#else -->
+<ul>
+<li><a href="releasing.html#release-process">Subversion release process</a></li>
+  <ul>
+    <li><a href="releasing.html#release-numbering">Release numbering</a></li>
+    <li><a href="releasing.html#release-compat">Inter-release compatibility</a></li>
+    <li><a href="releasing.html#custom-releases">Custom releases</a></li>
+    <li><a href="releasing.html#deprecation">Deprecation</a></li>
+    <li><a href="releasing.html#release-stabilization">Stabilizing and maintaining releases</a></li>
+  </ul>
+<li><a href="releasing.html#release-creating">Creating a Subversion release</a></li>
+  <ul>
+    <li><a href="releasing.html#notify-translators">Notify translators</a></li>
+    <li><a href="releasing.html#before-release">Preparing to roll a release</a></li>
+    <li><a href="releasing.html#rolling-release">Rolling a release</a></li>
+    <li><a href="releasing.html#tarball-signing">Signing source distribution packages (a.k.a tarballs)</a></li>
+    <li><a href="releasing.html#releasing-release">The actual releasing</a></li>
+  </ul>
+<li><a href="releasing.html#release-branches">Creating and maintaining release branches</a></li>
+<li><a href="releasing.html#porting-changes">Porting changes to release branches</a></li>
+<li><a href="releasing.html#the-changes-file">Managing the CHANGES file</a></li>
+  <ul>
+    <li><a href="releasing.html#writing-initial-changes">Writing the initial content for a branch</a></li>
+    <li><a href="releasing.html#adding-changes">Adding content for patch release</a></li>
+  </ul>
+<li><a href="releasing.html#releasing-not">How <em>not</em> to make a Subversion release</a></li>
+</ul>
+<!--#endif -->

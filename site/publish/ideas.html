@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Apache Subversion Project Ideas</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<style type="text/css">
+  @import url("/style/site.css");
+</style>
+</head>
+
+<body>
+<!--#include virtual="/site-banner.html" -->
+<!--#include virtual="/site-nav.html" -->
+<div id="site-content">
+<!--#include virtual="/site-notice.html" -->
+
+<h1>Apache Subversion Project Ideas</h1>
+
+<p>This page collects project ideas for volunteers looking for tasks
+which are of a significant size. If you wish to make a significant
+contribution to Subversion but aren't yet sure what you would like
+to work on, this page is for you.</p>
+
+<p>These project ideas are considered suitable for programs such as
+<a href="https://developers.google.com/open-source/soc/"
+>Google Summer of Code</a>
+and the <a href="https://live.gnome.org/OutreachProgramForWomen"
+>Outreach Program for Women</a>.</p>
+
+<div class="h2" id="ideas">
+<h2>Project ideas
+  <a class="sectionlink" href="#ideas"
+    title="Link to this section">&para;</a>
+</h2>
+
+<ul>
+
+<li><p style="font-weight: bold;">Improve bindings to other programming languages.</p>
+    <p>One of Subversion's strengths is that it offers a rich set of
+    &quot;binding surfaces&quot;: APIs that are available not only in C
+    (Subversion's native language) but in other programming languages as
+    well (currently Perl, Python, Ruby, and Java).</p>
+    <p>Some of these language bindings are maintained via <a
+     href="http://www.swig.org/">SWIG</a>, a tool that partially automates
+    the process of generating bindings, while others are maintained by
+    hand.  Many of the bindings do not have complete coverage yet, or have
+    interface problems where they do have coverage (for instance, they might
+    not expose all API elements of the latest Subversion release).
+    So even though the bindings are used in many production systems,
+    and used to build popular Subversion clients such as <a
+    href="http://subclipse.tigris.org/">Subclipse</a>, there's still
+    plenty of work to do.</p>
+    <p>Another huge problem for users of the bindings is a
+    <a href="http://svn.haxx.se/dev/archive-2011-02/0544.shtml"
+    >lack of proper documentation</a> specific to the bindings.</p>
+
+    <p>Required technical skills:
+    <ul>
+      <li>Advanced programming experience in the C programming language
+          and at least two of Perl, Python, Ruby, Java, and C++.</li>
+      <li>Expertise in
+          <a href="http://en.wikipedia.org/wiki/Programming_language"
+          >programming language theory</a> is strongly recommended.
+          You should know what a data type system is and how compilers
+          and interpreters work.</li>
+      <li>A solid understanding of <a href="http://swig.org/">SWIG</a>
+          and/or <a href="http://en.wikipedia.org/wiki/Java_native_interface"
+          >JNI</a>.</li>
+    </ul>
+    </p>
+</li>
+
+<li><p style="font-weight: bold;">Show progress output.</p>
+    <p>Improve the progress output displayed during update and commit.
+    See <a href="https://issues.apache.org/jira/browse/SVN-901"
+    >issue&nbsp;#901</a> for details.</p>
+    <p>Required technical skills:
+    <ul>
+      <li>Advanced programming experience in the C programming language.</li>
+      <li>Some experience with the Python programming language.</li>
+    </ul>
+    </p>
+</li>
+
+<li><p style="font-weight: bold;">Improve 'svn help'.</p>
+  <p>Currently, the texts shown by the <tt>svn help</tt> command are being
+     maintained directly in the main source code file of the <tt>svn</tt>
+     binary, which can be viewed online <a
+     href="http://svn.apache.org/repos/asf/subversion/trunk/subversion/svn/svn.c"
+    >here</a>.
+    It has been <a href="http://mail-archives.apache.org/mod_mbox/subversion-dev/201209.mbox/%3C1347648306.66873.YahooMailNeo%40web87705.mail.ir2.yahoo.com%3E"
+    >proposed</a> to move these help texts into a separate file format instead.</p>
+    <p>This could ease maintenance of help text translations, allow shipping
+    of UNIX-style manual pages for each <tt>svn</tt> subcommand, and might also
+    make it possible to consolidate the help texts and the
+    <a href="http://svnbook.red-bean.com/en/1.7/svn.ref.html"
+    >reference section</a> of the
+    <a href="http://svnbook.red-bean.com">Subversion Book</a>.</p>
+    <p>It has also been <a href="http://mail-archives.apache.org/mod_mbox/subversion-dev/201209.mbox/%3C20120914200410.GC8439@ted.stsp.name%3E"
+    >suggested</a> to add a tutorial mode to <tt>svn help</tt> to make
+    it easier for new users to get started with Subversion without consulting
+    the documentation upfront.</p>
+    <p>Required technical skills:
+    <ul>
+      <li>Some experience with the C and Python programming languages.</li>
+      <li>Knowledge of open source documentation systems such as
+          <a href="http://docbook.org/">docbook</a> and
+          <a href="http://mdocml.bsd.lv/">mdoc</a>.</li>
+      <li>The ability to clearly explain technical concepts in written
+          English.</li>
+    </ul>
+</li>
+
+<li><p style="font-weight: bold;">More customizable behavior for 'svn diff'.</p>
+    <p>Add support for fully customizable external diff invocations, and
+    support for external diff commands for non-text types. See <a
+    href="https://issues.apache.org/jira/browse/SVN-2044"
+    >Issue&nbsp;#2044</a> and <a
+    href="https://issues.apache.org/jira/browse/SVN-2447"
+    >issue&nbsp;#2447</a> for details.</p>
+    <p>Required technical skills:
+    <ul>
+      <li>Advanced programming experience in the C programming language.</li>
+      <li>Some experience with the Python programming language.</li>
+    </ul>
+    </p>
+</li>
+
+<li><p style="font-weight: bold;">XML output for 'svn mergeinfo'</p>
+    <p>Teach <tt>svn mergeinfo</tt> to create XML output.
+    See <a href="https://issues.apache.org/jira/browse/SVN-4245"
+    >issue&nbsp;#4245</a> for details.</p>
+    <p>Required technical skills:
+    <ul>
+      <li>Advanced programming experience in the C programming language.</li>
+      <li>Some experience with the Python programming language.</li>
+    </ul>
+    </p>
+</li>
+
+<li><p style="font-weight: bold;">Implement 'svnadmin unpack'</p>
+    <p>Once a FSFS repository has been packed, it's shard size can
+    no longer be changed.  Also, it cannot benefit from packing
+    improvements in later releases.</p>
+    <p>Add an <tt>unpack</tt> sub-command to svnadmin that reverts a
+    packed FSFS repository back to non-packed state.  The repository
+    will be off-line during the unpack process (as opposed to packing
+    live repositories).  Later improvements may include <tt>repack</tt>
+    and <tt>reshard</tt>.</p>
+    <p>Required technical skills:
+    <ul>
+      <li>Advanced programming experience in the C programming language.</li>
+    </ul>
+    </p>
+</li>
+
+<li><p style="font-weight: bold;">Enable interoperability testing.</p>
+    <p>The tests frameworks (<tt>make check</tt>) have limited support for
+    testing with different client and server versions (1.8-dev clients and
+    1.7 server, for example; or vice-versa).  Make it easier to run such
+    interoperability/compatibility tests.  Ideally, also lay the groundwork
+    to setting up a <a href="/buildbot/all">buildslave</a>
+    to run these tests regularly (we'll provide the hardware).</p>
+    <p>A related goal is compatibility with older on-disk formats, but at the
+    time of writing the author believes the <tt>--server-minor-version</tt>
+    option and <tt>upgrade_tests.py</tt> cover what is needed.</p>
+    <p>Required technical skills:
+    <ul>
+      <li>Advanced programming experience in the Python programming language.</li>
+      <li>Some experience with system administration of UNIX-like operating
+          systems.</li>
+    </ul>
+    </p>
+</li>
+
+<li><p style="font-weight: bold;">None of the above? Find a project idea in
+    the issue tracker!</p>
+    <p>Our <a href="reporting-issues.html">issue tracker</a> contains plenty
+    of open tasks and unfixed bugs. The list of <a
+    href="https://issues.apache.org/jira/issues/?jql=project%20%3D%20%22SVN%22%20and%20labels%20%3D%20%22bite-sized%22%20and%20status%20in%20%28Open%2C%20Reopened%29"
+    >issues that might be relatively easy to fix</a> is a good starting
+    point.</p>
+</li>
+
+</ul>
+
+</div> <!-- #ideas -->
+
+<p>For more information about how to contribute, or to discuss your
+   contribution with us, please contact <a
+   href="mailto:dev@subversion.apache.org">dev@subversion.apache.org</a></p>
+<p><strong>Please note that the dev@ list is publicly archived, which means
+   anyone can read any information sent there, and information sent there
+   cannot subsequently be erased.</strong></p>
+
+</div> <!-- #site-content -->
+</body>
+</html>

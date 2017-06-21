@@ -1,0 +1,120 @@
+  Subversion svnserve servers up to 1.7.9 (inclusive) are vulnerable
+  to a remotely triggerable DoS vulnerability.  
+
+Summary:
+========
+
+  Subversion's svnserve server process may exit when an incoming TCP connection
+  is closed early in the connection process. 
+
+  This can lead to disruption for users of the server.
+
+Known vulnerable:
+=================
+
+ Subversion servers through 1.7.9 (inclusive).
+ Subversion servers through 1.6.21 (inclusive).
+
+Known fixed:
+============
+
+ Subversion 1.7.10
+ Subversion 1.6.23
+ Subversion 1.8.0
+ mod_dav_svn (any version) is not vulnerable.
+
+Details:
+========
+
+  During a connection attempt svnserve improperly treats aborted connections
+  as critical errors, prints an error message and exits.  The error message
+  will look like this:
+  svnserve: E000053: Can't accept client connection: Software caused connection abort 
+
+  The problem is that svnserve is not properly checking for aborted connection
+  error returns from the accept() call.
+
+Severity:
+=========
+
+  CVSSv2 Base Score: 7.8
+  CVSSv2 Base Vector: AV:N/AC:L/Au:N/C:N/I:N/A:C 
+
+  We consider this to be a medium risk vulnerability.  An exploit exists and
+  has been tested to work against this vulnerability.  We do not believe the
+  exploit is being actively used in the wild at this time.
+
+  A remote attacker can cause svnserve to exit and thus deny service to users
+  of the server.  The attack does not require that the attacker authenticate.
+  
+  Due to differences in implementations of their TCP stacks some operating
+  systems may be more or less prone to this behavior.  FreeBSD and OpenBSD are
+  known to be particularly vulnerable.  We believe that this is still possible
+  with all operating systems though.
+
+  svnserve when used in inetd, tunnel (svn+ssh), and Win32 service modes is
+  not vulnerable as they do not use the accept() call in question.
+
+Recommendations:
+================
+
+  We recommend all users to upgrade to Subversion 1.7.10 or 1.6.23.
+  Users who are unable to upgrade may apply the included patches.
+  
+  New Subversion packages can be found at:
+  http://subversion.apache.org/packages.html
+
+  Using svnserve in inetd, tunnel or Win32 service modes can be used to
+  mitigate this problem.  There are no known methods to mitigate this attack
+  in daemon mode.
+
+References:
+===========
+
+  CVE-2013-2112  (Subversion)
+
+Reported by:
+============
+
+  Boris Lytochkin, Yandex 
+
+Patches:
+========
+
+Patch for Subversion 1.7
+[[[
+Index: subversion/svnserve/main.c
+===================================================================
+--- subversion/svnserve/main.c	(revision 1485046)
++++ subversion/svnserve/main.c	(revision 1485047)
+@@ -963,7 +963,9 @@
+                                          connection_pool) == APR_CHILD_DONE)
+             ;
+         }
+-      if (APR_STATUS_IS_EINTR(status))
++      if (APR_STATUS_IS_EINTR(status)
++          || APR_STATUS_IS_ECONNABORTED(status)
++          || APR_STATUS_IS_ECONNRESET(status))
+         {
+           svn_pool_destroy(connection_pool);
+           continue;
+]]]
+
+Patch for Subversion 1.6
+[[[
+Index: subversion/svnserve/main.c
+===================================================================
+--- subversion/svnserve/main.c	(revision 1485044)
++++ subversion/svnserve/main.c	(revision 1485045)
+@@ -773,7 +773,9 @@
+                                          connection_pool) == APR_CHILD_DONE)
+             ;
+         }
+-      if (APR_STATUS_IS_EINTR(status))
++      if (APR_STATUS_IS_EINTR(status)
++          || APR_STATUS_IS_ECONNABORTED(status)
++          || APR_STATUS_IS_ECONNRESET(status))
+         {
+           svn_pool_destroy(connection_pool);
+           continue;
+]]]

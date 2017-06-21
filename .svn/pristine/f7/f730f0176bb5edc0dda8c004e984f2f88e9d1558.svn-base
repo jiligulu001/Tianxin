@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Apache Subversion Release Notes</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<style type="text/css">
+  @import url("/style/site.css");
+</style>
+</head>
+
+<body>
+<!--#include virtual="/site-banner.html" -->
+<!--#include virtual="/site-nav.html" -->
+<div id="site-content">
+<!--#include virtual="/site-notice.html" -->
+<!-- **************** BEGIN CONTENT ***************** -->
+
+<h1>Apache Subversion Releases</h1>
+
+<p>The Apache Subversion project publishes releases with a relatively high
+degree of regularity.  At any given time, we're working towards our
+next major release while continuing to fix bugs in previous releases.
+Subversion's release compatibility promises make adoption of our
+bugfix releases easy &mdash; you'll find very few, if any, surprises
+in those kinds of releases in terms of features and functionality.  As
+such, the release notes issued for a given major release
+(an <em>X.Y.</em>0 release) remain applicable for patch releases to
+that release line (an <em>X.Y.Z</em> release).  You can find links
+to these release notes below.</p>
+
+<p>Over time and as new major releases come out, we drop official
+support for older release lines.  You'll also find below the project's
+official support status for the various release lines available.</p>
+
+<div class="h2" id="release-notes">
+<h2>Release Notes
+  <a class="sectionlink" href="#release-notes"
+    title="Link to this section">&para;</a>
+</h2>
+
+<p>Here are the release notes for the major Subversion releases:</p> 
+
+<ul>
+<li><a href="1.9.html">Subversion 1.9</a> – FSFS format 7, FSX (<i>first released – August 5, 2015</i>)</li>
+<li><a href="1.8.html">Subversion 1.8</a> – Automatic merge, client-side rename tracking, inherited properties (<i>first released – June 18, 2013</i>)</li>
+<li><a href="1.7.html">Subversion 1.7</a> – WCNG, v2 protocol, svnrdump (<i>first released – October 11, 2011</i>)</li>
+<li><a href="1.6.html">Subversion 1.6</a>
+   (<a href="1.6.zh.html">&#31616;&#20307;&#20013;&#25991;</a>) – tree conflicts, FSFS packing, file externals (<i>first released – March 20, 2009</i>)</li>
+<li><a href="1.5.html">Subversion 1.5</a> – merge tracking, sparse checkouts (<i>first released – June 19, 2008</i>)</li>
+<li><a href="1.4.html">Subversion 1.4</a> – flat-file working copy library, svnsync (<i>first released – September 10, 2006</i>)</li>
+<li><a href="1.3.html">Subversion 1.3</a> – general performance improvements (<i>first released – December 30, 2005</i>)</li>
+<li><a href="1.2.html">Subversion 1.2</a> – peg revs, DAV autoversioning support (<i>first released – May 21, 2005</i>)</li>
+<li><a href="1.1.html">Subversion 1.1</a> – FSFS backend, symlinks (<i>first released – September 29, 2004</i>)</li>
+<li>Subversion 1.0 (<i>first released – February 23, 2004</i>)</li>
+</ul>
+
+<p>For a more complete (albeit less descriptive) list of changes made
+   in individual releases, see
+   the <a href="http://svn.apache.org/repos/asf/subversion/trunk/CHANGES"
+   >CHANGES</a> file.</p>
+
+<p>For a detailed history of every release, please see
+   <a href="release-history.html">release history</a>.</p>
+
+</div> <!-- #release-notes -->
+
+<div class="h2" id="supported-versions">
+<h2>Supported Versions
+  <a class="sectionlink" href="#supported-versions"
+    title="Link to this section">&para;</a>
+</h2>
+
+<table cellpadding="0" cellspacing="0">
+<thead>
+<tr>
+<th>Version</th>
+<th>Support</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.9.x</td>
+<td>Fully supported</td>
+<td>Fixes for all bugs</td>
+</tr>
+<tr>
+<td>1.8.x</td>
+<td>Partially supported</td>
+<td>Only fixes for security issues and bugs which could cause data loss</td>
+</tr>
+<tr>
+<td>1.7.x and earlier</td>
+<td>No longer supported</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+</div> <!-- #supported-versions -->
+
+<!-- ***************** END CONTENT ****************** -->
+</div> <!-- #site-content -->
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html><head><title></title>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<link rel="stylesheet" type="text/css" href="search.css"/>
+<script type="text/javascript" src="search.js"></script>
+</head>
+<body class="SRPage">
+<div id="SRIndex">
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRResult" id="SR_handle_5ferror">
+ <div class="SREntry">
+  <a id="Item0" onkeydown="return searchResults.Nav(event,0)" onkeypress="return searchResults.Nav(event,0)" onkeyup="return searchResults.Nav(event,0)" class="SRSymbol" href="../structsvn__wc__entry__callbacks2__t.html#aabe9808db52fa896761ef210055cfbae" target="_parent">handle_error</a>
+  <span class="SRScope">svn_wc_entry_callbacks2_t</span>
+ </div>
+</div>
+<div class="SRResult" id="SR_handler">
+ <div class="SREntry">
+  <a id="Item1" onkeydown="return searchResults.Nav(event,1)" onkeypress="return searchResults.Nav(event,1)" onkeyup="return searchResults.Nav(event,1)" class="SRSymbol" href="../structsvn__ra__svn__cmd__entry__t.html#a67c05989c27c5370c655e6178ae22d57" target="_parent">handler</a>
+  <span class="SRScope">svn_ra_svn_cmd_entry_t</span>
+ </div>
+</div>
+<div class="SRResult" id="SR_has_5fchildren">
+ <div class="SREntry">
+  <a id="Item2" onkeydown="return searchResults.Nav(event,2)" onkeypress="return searchResults.Nav(event,2)" onkeyup="return searchResults.Nav(event,2)" class="SRSymbol" href="../structsvn__log__entry__t.html#a8c0a7858b5e6c77591fa14dcff113946" target="_parent">has_children</a>
+  <span class="SRScope">svn_log_entry_t</span>
+ </div>
+</div>
+<div class="SRResult" id="SR_has_5fprop_5fmods">
+ <div class="SREntry">
+  <a id="Item3" onkeydown="return searchResults.Nav(event,3)" onkeypress="return searchResults.Nav(event,3)" onkeyup="return searchResults.Nav(event,3)" class="SRSymbol" href="../structsvn__wc__entry__t.html#ac806a8e5b75fc6af61f0aea134e83146" target="_parent">has_prop_mods</a>
+  <span class="SRScope">svn_wc_entry_t</span>
+ </div>
+</div>
+<div class="SRResult" id="SR_has_5fprops">
+ <div class="SREntry">
+  <a id="Item4" onkeydown="return searchResults.Nav(event,4)" onkeypress="return searchResults.Nav(event,4)" onkeyup="return searchResults.Nav(event,4)" class="SRSymbol" href="javascript:searchResults.Toggle('SR_has_5fprops')">has_props</a>
+  <div class="SRChildren">
+    <a id="Item4_c0" onkeydown="return searchResults.NavChild(event,4,0)" onkeypress="return searchResults.NavChild(event,4,0)" onkeyup="return searchResults.NavChild(event,4,0)" class="SRScope" href="../structsvn__dirent__t.html#aaaffb32793273416764eb92642d2521e" target="_parent">svn_dirent_t::has_props()</a>
+    <a id="Item4_c1" onkeydown="return searchResults.NavChild(event,4,1)" onkeypress="return searchResults.NavChild(event,4,1)" onkeyup="return searchResults.NavChild(event,4,1)" class="SRScope" href="../structsvn__wc__entry__t.html#a3f28094ac4583c8ad05df2b07acbb92b" target="_parent">svn_wc_entry_t::has_props()</a>
+  </div>
+ </div>
+</div>
+<div class="SRResult" id="SR_has_5fwc_5finfo">
+ <div class="SREntry">
+  <a id="Item5" onkeydown="return searchResults.Nav(event,5)" onkeypress="return searchResults.Nav(event,5)" onkeyup="return searchResults.Nav(event,5)" class="SRSymbol" href="../structsvn__info__t.html#aae55dc251c9eb78f3cd1a276f0de30e9" target="_parent">has_wc_info</a>
+  <span class="SRScope">svn_info_t</span>
+ </div>
+</div>
+<div class="SRResult" id="SR_help">
+ <div class="SREntry">
+  <a id="Item6" onkeydown="return searchResults.Nav(event,6)" onkeypress="return searchResults.Nav(event,6)" onkeyup="return searchResults.Nav(event,6)" class="SRSymbol" href="javascript:searchResults.Toggle('SR_help')">help</a>
+  <div class="SRChildren">
+    <a id="Item6_c0" onkeydown="return searchResults.NavChild(event,6,0)" onkeypress="return searchResults.NavChild(event,6,0)" onkeyup="return searchResults.NavChild(event,6,0)" class="SRScope" href="../structsvn__opt__subcommand__desc2__t.html#a266800a041c3a4ffb852ca1a1b59bc78" target="_parent">svn_opt_subcommand_desc2_t::help()</a>
+    <a id="Item6_c1" onkeydown="return searchResults.NavChild(event,6,1)" onkeypress="return searchResults.NavChild(event,6,1)" onkeyup="return searchResults.NavChild(event,6,1)" class="SRScope" href="../structsvn__opt__subcommand__desc__t.html#ae245fde9d60c9809d2b03cc4ef5d65c2" target="_parent">svn_opt_subcommand_desc_t::help()</a>
+  </div>
+ </div>
+</div>
+<div class="SRResult" id="SR_hostname">
+ <div class="SREntry">
+  <a id="Item7" onkeydown="return searchResults.Nav(event,7)" onkeypress="return searchResults.Nav(event,7)" onkeyup="return searchResults.Nav(event,7)" class="SRSymbol" href="../structsvn__auth__ssl__server__cert__info__t.html#af5c199081ea98c10ffb64db579986961" target="_parent">hostname</a>
+  <span class="SRScope">svn_auth_ssl_server_cert_info_t</span>
+ </div>
+</div>
+<div class="SRResult" id="SR_hunk_5ffuzz">
+ <div class="SREntry">
+  <a id="Item8" onkeydown="return searchResults.Nav(event,8)" onkeypress="return searchResults.Nav(event,8)" onkeyup="return searchResults.Nav(event,8)" class="SRSymbol" href="../structsvn__wc__notify__t.html#a5eb87ecfbbb79849cef7918eb7f34388" target="_parent">hunk_fuzz</a>
+  <span class="SRScope">svn_wc_notify_t</span>
+ </div>
+</div>
+<div class="SRResult" id="SR_hunk_5fmatched_5fline">
+ <div class="SREntry">
+  <a id="Item9" onkeydown="return searchResults.Nav(event,9)" onkeypress="return searchResults.Nav(event,9)" onkeyup="return searchResults.Nav(event,9)" class="SRSymbol" href="../structsvn__wc__notify__t.html#a90222a852b8883f6eb97e202e8dbd6fe" target="_parent">hunk_matched_line</a>
+  <span class="SRScope">svn_wc_notify_t</span>
+ </div>
+</div>
+<div class="SRResult" id="SR_hunk_5foriginal_5fstart">
+ <div class="SREntry">
+  <a id="Item10" onkeydown="return searchResults.Nav(event,10)" onkeypress="return searchResults.Nav(event,10)" onkeyup="return searchResults.Nav(event,10)" class="SRSymbol" href="../structsvn__wc__notify__t.html#a845e0b3d57dbaf7d8295bac39e6b32d6" target="_parent">hunk_original_start</a>
+  <span class="SRScope">svn_wc_notify_t</span>
+ </div>
+</div>
+<div class="SRResult" id="SR_hunks">
+ <div class="SREntry">
+  <a id="Item11" onkeydown="return searchResults.Nav(event,11)" onkeypress="return searchResults.Nav(event,11)" onkeyup="return searchResults.Nav(event,11)" class="SRSymbol" href="javascript:searchResults.Toggle('SR_hunks')">hunks</a>
+  <div class="SRChildren">
+    <a id="Item11_c0" onkeydown="return searchResults.NavChild(event,11,0)" onkeypress="return searchResults.NavChild(event,11,0)" onkeyup="return searchResults.NavChild(event,11,0)" class="SRScope" href="../structsvn__prop__patch__t.html#aec28fb70437479b01d7480d44bc239a5" target="_parent">svn_prop_patch_t::hunks()</a>
+    <a id="Item11_c1" onkeydown="return searchResults.NavChild(event,11,1)" onkeypress="return searchResults.NavChild(event,11,1)" onkeyup="return searchResults.NavChild(event,11,1)" class="SRScope" href="../structsvn__patch__t.html#ada5e71665e0f033b86b6592a4f932ef2" target="_parent">svn_patch_t::hunks()</a>
+  </div>
+ </div>
+</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+<script type="text/javascript"><!--
+document.getElementById("Loading").style.display="none";
+document.getElementById("NoMatches").style.display="none";
+var searchResults = new SearchResults("searchResults");
+searchResults.Search();
+--></script>
+</div>
+</body>
+</html>

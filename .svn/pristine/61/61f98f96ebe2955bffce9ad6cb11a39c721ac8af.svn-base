@@ -1,0 +1,36 @@
+$LastChangedDate$
+$Revision$
+
+This is about issue #4129:
+https://issues.apache.org/jira/browse/SVN-4129
+"predecessor links on the root node-revision skip revisions"
+
+Symptoms:
+'svn log' on a directory skips revisions in which that directory or its
+children changed.
+(not confirmed) 'svn blame' may skip revisions: all lines last changed in a
+revision would be reported as belonging to the previous revision that touched
+the file being annotated.
+
+Occurs only in:
+FSFS repositories that contain at least one svn:mergeinfo property.
+
+Does not occur in:
+Repositories that never have more than one commit-in-progress.  Examples:
+Repositories written to only by 'svnadmin load' or only by 'svnsync sync'.
+(This in particular applies to the slave mirrors in a "DAV Proxy" set-up.)
+
+Fixed in:
+1.6.18, 1.7.5.  The fix is server-side.
+
+Commit-time checks preventing new instances of the issue added in:
+1.6.18, 1.7.1
+
+'svnadmin verify' support for detecting this bug added in:
+1.8.0
+
+Mitigation:
+1) Upgrade to 1.6.18 or 1.7.1, to prevent new instances of the bug from
+entering the history.  (1.7.5+ recommended.)
+2) Either perform a dump/load cycle, or create an svnsync mirror and swap it
+with the repository.  (The load or svnsync can be done with any version of svn.)

@@ -1,0 +1,10 @@
+           The Subversion Web Site
+           =======================
+
+(Note: this file is not visible on the Subversion site)
+
+This tree contains the Subversion web site.  The DocumentRoot is pointed
+at the publish/ directory.
+
+A discussion on how to set up a local mirror of the Subversion site is
+available at http://subversion.apache.org/docs/community-guide/web.html

@@ -1,0 +1,282 @@
+/*
+** High-level HTML Defaults
+*/
+
+body {
+  background-color: white;
+  margin: 0;
+  font-family: Tahoma, Arial, sans-serif;
+  font-size: 10pt;
+  line-height: 1.2em;
+}
+img {
+  border: 0;
+}
+table {
+  border: 0;
+  border-collapse: collapse;
+}
+td, th {
+  border: 1px gray solid;
+  font-size: 10pt;
+  padding: 0.5em;
+}
+tr {
+  vertical-align: top;
+}
+table.noborder td, table.noborder th {
+  border: none;
+}
+th {
+  background-color: rgb(200,210,250);
+}
+table td.divider {
+  background-color: rgb(220,225,250);
+  font-weight: bold;
+  text-align: center;
+}
+a {
+  color: rgb(50,50,210);
+}
+a:visited {
+  color: rgb(140,0,160);
+}
+a:hover {
+  color: rgb(120,120,210);
+}
+ul {
+  margin: 0;
+}
+pre {
+  border-color: #888;
+  border-style: dotted solid solid dotted;
+  border-width: 1px 2px 2px 1px;
+  padding: 0.25em;
+  margin: 0 2em;
+  font-size: 90%;
+}
+
+/*
+** Page Elements
+*/
+
+#site-banner {
+  height: 100px;
+  padding: 8px;
+  background: white url("/images/banner-gradient.jpg") repeat-x;
+}
+#site-banner a {
+  text-decoration: none;
+}
+#site-svnbook-block {
+  text-align: center;
+}
+#site-svnbook-block img {
+  border-style: solid;
+  border-color: #555;
+  border-width: 1px 2px 2px 1px;
+}
+/* Only do absolute positioning for screen media types. */
+@media screen {
+  #site-nav {
+    position: absolute;
+    top: 101px;
+    left: 0px;
+    width: 15em;
+    border-top: solid 10px #aece5b;
+    background-color: #d6e3b2;
+  }
+  #site-nav-menu {
+    padding: 0 0.5em;
+  }
+  #site-nav-menu a {
+    color: blue;
+  }
+  #site-search {
+    padding: 0.5em;
+  }
+  #copyright {
+    font-size: 80%;
+  }
+  #copyright, #site-svnbook-block {
+    padding: 0 0.5em;
+    margin-top: 2em;
+    border-top: 4px solid white;
+  }
+  #site-search, #site-thanks-block {
+    padding: 0 0.5em;
+    margin: 1em 0;
+  }
+  #site-content {
+    border-top: solid 10px rgb(147,176,218);
+    position: absolute;
+    top: 101px;
+    left: 15.1em;
+    right: 0px;
+    padding: 1em 2em;
+  }
+}
+/* In print media, we only really want the #site-content stuff. */
+@media print {
+  #site-banner, #site-notice, #site-nav {
+    display: none;
+  }
+  a {
+    text-decoration: none;
+  }
+}
+#site-nav ul {
+  list-style: none;
+  padding-left: 0em;
+}
+#site-nav li {
+  line-height: 1.4em;
+}
+#site-nav ul ul {
+  padding-left: 2em;
+}
+
+/*
+** Headings
+*/
+
+h1, h2, h3, h4 {
+  font-weight: normal;
+  font-style: normal;
+  margin-top: 1.5em;
+  line-height: 1em;
+}
+h1 {
+  font-size: 200%;
+  text-align: center;
+  margin: 1.5em 0;
+}
+h2 {
+  font-size: 160%;
+  background: url('/images/corner-white.png') no-repeat #aece5b;
+  padding: 0.25em;
+}
+h3 {
+  font-size: 125%;
+  background: url('/images/corner-white.png') no-repeat rgb(147,176,218);
+  padding: 0.25em;
+}
+h4 {
+  font-size: 115%;
+  text-decoration: underline;
+}
+.h3 {
+  margin-left: 2em;
+}
+
+/*
+** Other Customizations
+*/
+
+#site-content :target {
+  background-color: #e8e8e8;
+}
+.centered {
+  margin-left: auto;
+  margin-right: auto;
+}
+.notice {
+  background-color: yellow;
+  margin: 0.5em 5em;
+  padding: 0 0.5em;
+  border-style: solid;
+  border-color: black;
+  border-width: 1px 2px 2px 1px;
+}
+.todo {
+  background: url('/images/todo.png') no-repeat;
+  padding: 3px 30px;
+  color: red;
+}
+.footer {
+  border-style: solid;
+  border-color: black;
+  border-width: 1px 0 0 0;
+  font-size: small;
+  margin-top: 4em;
+}
+.bigpoint {
+  background: rgb(255,240,170);
+  border: 1px solid black;
+  text-align: center;
+  margin: 0 4.2em;
+  font-size: 120%;
+  line-height: 1.2em;
+}
+@media screen {
+  .linkaway {
+    padding-right: 12px;
+    background-image: url('/images/linkaway.gif');
+    background-position: top right;
+    background-repeat: no-repeat;
+  }
+}
+ul.nobullet {
+  list-style: none;
+  padding-left: 0em;
+}
+ul.topmenu {
+  padding: 0px;
+  line-height: 2em;
+}
+ul.topmenu li {
+  padding: 0 2px;
+  margin: 0;
+  display: inline;
+  border: 1px solid black;
+  border-bottom: none;
+}
+ul.topmenu li a {
+  text-decoration: none;
+}
+table.task-table td {
+  vertical-align: middle;
+}
+table.task-table td.divider {
+  background-color: rgb(245,235,160);
+}
+table.task-table .task-level-1 .task-name {
+  padding-left: 36px;
+}
+table.task-table .task-level-2 .task-name {
+  padding-left: 60px;
+}
+table.task-table .completed .task-name {
+  background: url('/images/green-light.png') no-repeat 2px 50%;
+}
+table.task-table .in-progress .task-name {
+  background: url('/images/yellow-light.png') no-repeat 2px 50%;
+}
+table.task-table .explored .task-name {
+  background: url('/images/orange-light.png') no-repeat 2px 50%;
+}
+table.task-table .not-started .task-name {
+  background: url('/images/red-light.png') no-repeat 2px 50%;
+}
+table.task-table .deferred .task-name {
+  background: url('/images/green-ellipsis-light.png') no-repeat 2px 50%;
+}
+.ss {
+  font-size: 50%;
+  vertical-align: super;
+}
+.checksum {
+  font-family: monospace;
+}
+
+/*
+ * Hide class="sectionlink", except when an enclosing heading
+ * has the :hover property.
+ */
+.sectionlink {
+  display: none;
+}
+:hover > .sectionlink {
+  display: inline;
+}
+

@@ -1,0 +1,21 @@
+var searchData=
+[
+  ['abort_5fedit',['abort_edit',['../structsvn__delta__editor__t.html#a3fab58046111861ad43364aa04326fc6',1,'svn_delta_editor_t']]],
+  ['abort_5freport',['abort_report',['../structsvn__ra__reporter3__t.html#a934976598105877d3394cd75855943f3',1,'svn_ra_reporter3_t::abort_report()'],['../structsvn__ra__reporter2__t.html#a97c3dd5b964fe27563ca9d16bea00cc5',1,'svn_ra_reporter2_t::abort_report()'],['../structsvn__ra__reporter__t.html#a1bef841bab9f001ceea5060617859c5f',1,'svn_ra_reporter_t::abort_report()']]],
+  ['absent',['absent',['../structsvn__wc__entry__t.html#aba25f9abc0cc4f1957886751768848f9',1,'svn_wc_entry_t']]],
+  ['absent_5fdirectory',['absent_directory',['../structsvn__delta__editor__t.html#a4e32c6977e6576c3e6e47e08a8036356',1,'svn_delta_editor_t']]],
+  ['absent_5ffile',['absent_file',['../structsvn__delta__editor__t.html#a34170a213cdeae5dea75335016799b9e',1,'svn_delta_editor_t']]],
+  ['accepted_5ffailures',['accepted_failures',['../structsvn__auth__cred__ssl__server__trust__t.html#ae1ccadf10cb428b0bd70347f00076100',1,'svn_auth_cred_ssl_server_trust_t']]],
+  ['access',['access',['../structsvn__wc__conflict__description__t.html#a155edb7ffed515fc71dd72c9c7a6d2de',1,'svn_wc_conflict_description_t']]],
+  ['action',['action',['../structsvn__repos__notify__t.html#a79b6e09fa2249d98f7a603fbad2ab679',1,'svn_repos_notify_t::action()'],['../structsvn__repos__node__t.html#a7412301c1d2a82fad889cf9eefe11d2a',1,'svn_repos_node_t::action()'],['../structsvn__log__changed__path2__t.html#a249d7dd9801805bdda303aa278651acd',1,'svn_log_changed_path2_t::action()'],['../structsvn__log__changed__path__t.html#a91d3a5485918f82f89f99fe5f82ca7f3',1,'svn_log_changed_path_t::action()'],['../structsvn__wc__notify__t.html#a5eeeb245fd816ee3fa332ab8d2907b40',1,'svn_wc_notify_t::action()'],['../structsvn__wc__conflict__description2__t.html#a6d6aba989c54874f168d64975c8c4df9',1,'svn_wc_conflict_description2_t::action()'],['../structsvn__wc__conflict__description__t.html#a2eb0a7f4ad632a2d3c27432549e2cc31',1,'svn_wc_conflict_description_t::action()']]],
+  ['action_5fcode',['action_code',['../structsvn__txdelta__op__t.html#ac68cff5ee352e1343d41ee46560b8d88',1,'svn_txdelta_op_t']]],
+  ['actual_5fkind',['actual_kind',['../structsvn__wc__status3__t.html#a80baef9c21866fd4088c15fbca088424',1,'svn_wc_status3_t']]],
+  ['add_5fdirectory',['add_directory',['../structsvn__delta__editor__t.html#a02b3b28501ae8bcab5de36e468aa359b',1,'svn_delta_editor_t']]],
+  ['add_5ffile',['add_file',['../structsvn__delta__editor__t.html#a5ae525cca4fa62884c9ffba34a2f1785',1,'svn_delta_editor_t']]],
+  ['aliases',['aliases',['../structsvn__opt__subcommand__desc2__t.html#aabad667d8da559d8443a3ad0e5d1bff4',1,'svn_opt_subcommand_desc2_t::aliases()'],['../structsvn__opt__subcommand__desc__t.html#a2faa6747e2cc102cf4624ddaf5713ee9',1,'svn_opt_subcommand_desc_t::aliases()']]],
+  ['apply_5ftextdelta',['apply_textdelta',['../structsvn__delta__editor__t.html#a226fe466b1c6fbe66c0145fae86e3baa',1,'svn_delta_editor_t::apply_textdelta()'],['../structsvn__repos__parse__fns3__t.html#adf9c440cd7a740d01646ab2f9cf66817',1,'svn_repos_parse_fns3_t::apply_textdelta()'],['../structsvn__repos__parse__fns2__t.html#a8fce3d6c2b8a379002e7812647826cdf',1,'svn_repos_parse_fns2_t::apply_textdelta()']]],
+  ['apr_5ferr',['apr_err',['../structsvn__error__t.html#a595d7e41f682979d66e32062c46155d9',1,'svn_error_t']]],
+  ['ascii_5fcert',['ascii_cert',['../structsvn__auth__ssl__server__cert__info__t.html#a1485385c5a42bf8b367af21533f80dca',1,'svn_auth_ssl_server_cert_info_t']]],
+  ['auth_5fbaton',['auth_baton',['../structsvn__client__ctx__t.html#adc764312fbed05b0bb6d5f91746f49a6',1,'svn_client_ctx_t::auth_baton()'],['../structsvn__ra__callbacks2__t.html#a8aac4dbf47785db0ee45b063e7d24c0d',1,'svn_ra_callbacks2_t::auth_baton()']]],
+  ['author',['author',['../structsvn__client__commit__info__t.html#a7646dd52f20884b541491549424c7e70',1,'svn_client_commit_info_t::author()'],['../structsvn__commit__info__t.html#a8f71dbec058cf0bd64864441bf3df1df',1,'svn_commit_info_t::author()']]]
+];

@@ -1,0 +1,1382 @@
+<div class="h1" id="releasing">
+<h1>Making Subversion Releases
+  <a class="sectionlink" href="<!--#echo var="GUIDE_RELEASING_PAGE" -->#releasing"
+    title="Link to this section">&para;</a>
+</h1>
+
+<!--#include virtual="releasing.toc.html" -->
+
+<p>This document can generally be broken into three parts, in increasing
+order of specificity:</p>
+<ul>
+<li>High-level release planning and policies, such as version numbering and
+    compatibility.  This answers questions like "When does a tarball get
+    created?" and "What should be the content of a tarball?"</li>
+<li>What steps to take when it is time to create a release.  This section
+    addresses the question of "How do I manage a release?"</li>
+<li>How to constructing a set of release tarballs.  This section discusses
+    the steps required to go from source code in the repository to a set of
+    distributable <tt>.tar.gz</tt> or <tt>.zip</tt> files with the
+    desired content.</li>
+</ul>
+
+<p>Subversion release managers use a set of steps codified in a Python script
+named <a href="http://svn.apache.org/repos/asf/subversion/trunk/tools/dist/release.py"><tt>release.py</tt></a>.
+This script can be used to perform most of the automated steps
+in the release process.  Run it with the <tt>-h</tt> option to get more
+information.</p>
+
+<p>In addition to the following project-specific guidelines, aspiring release
+managers may also want to read up on the general
+<a href="http://www.apache.org/dev/release.html">Apache release policies</a>.
+They can seem a bit patchwork at times, but give a good idea of general
+best practice and how Subversion fits in the larger ASF ecosystem.</p>
+
+<div class="h2" id="release-process">
+<h2>Subversion release process
+  <a class="sectionlink" href="<!--#echo var="GUIDE_RELEASING_PAGE" -->#release-process"
+    title="Link to this section">&para;</a>
+</h2>
+
+
+<div class="h3" id="release-numbering">
+<h3>Release numbering
+  <a class="sectionlink" href="<!--#echo var="GUIDE_RELEASING_PAGE" -->#release-numbering"
+    title="Link to this section">&para;</a>
+</h3>
+
+<p>Subversion uses "MAJOR.MINOR.PATCH" release numbers. We do not use the
+"even==stable, odd==unstable" convention; any unqualified triplet indicates
+a stable release:</p>
+
+<pre>
+   1.0.1  --&gt;  first stable patch release of 1.0
+   1.1.0  --&gt;  next stable minor release of 1.x after 1.0.x
+   1.1.1  --&gt;  first stable patch release of 1.1.x
+   1.1.2  --&gt;  second stable patch release of 1.1.x
+   1.2.0  --&gt;  next stable minor release after that
+</pre>
+
+<p>The order of releases is semi-nonlinear&nbsp;&mdash; a 1.0.3
+<em>might</em> come out after a 1.1.0.  But it's only "semi"-nonlinear
+because eventually we declare a patch line defunct and tell people to
+upgrade to the next minor release, so over the long run the numbering
+is basically linear.</p>
+
+<p>The numbers may have multiple digits.  For example, 1.7.19 is the nineteenth
+patch release in the 1.7.x line; it was released three years after 1.7.2, and
+three months before 1.7.20.</p>
+
+<p>Subversion releases may be qualified by text following the
+version number, which all represent various steps in the pre-release process.
+In order from least- to most-stable:</p>
+
+<table border="1" cellspacing="2" cellpadding="2">
+<tr>
+  <th>Qualifier</th>
+  <th>Meaning</th>
+  <th>Example</th>
+  <th>Output of <tt>svn --version</tt></th>
+</tr>
+<tr>
+  <td>Alpha</td>
+  <td>We know or expect there to be problems, but solicit testing from
+      interested individuals.</td>
+  <td><tt>subversion-1.7.0-alpha2</tt></td>
+  <td>version 1.7.0 (Alpha 2)</td>
+</tr>
+<tr>
+  <td>Beta</td>
+  <td>We don't expect there to be problems, but be wary just in case.</td>
+  <td><tt>subversion-1.7.0-beta1</tt></td>
+  <td>version 1.7.0 (Beta 2)</td>
+</tr>
+<tr>
+  <td>RC (Release Candidate)</td>
+  <td>This release is a candidate to become the final proposed version.  If
+      no serious bugs are found, the <tt>-rc</tt> tag will be dropped, and
+      the contents of this release will be declared stable.</td>
+  <td><tt>subversion-1.7.0-rc4</tt></td>
+  <td>version 1.7.0 (Release Candidate 4)</td>
+</tr>
+</table>
+
+<p>When you '<tt>make install</tt>' subversion-1.7.0-rc1,
+it still installs as
+though it were "1.7.0", of course.  The qualifiers are metadata on the
+release; we want each subsequent prerelease release to overwrite the
+previous one, and the final release to overwrite the last
+prerelease.</p>
+
+<p>For working copy builds, there is no tarball name to worry about,
+but '<tt>svn --version</tt>' still produces special output:</p>
+
+<pre>
+   version 1.7.1-dev (under development)
+</pre>
+
+<p>The version number is the next version that project is working
+towards.  The important thing is to say "<tt>under development</tt>".
+This indicates
+that the build came from a working copy, which is useful in bug
+reports.</p>
+
+<p>We also produce a set of release-like tarballs from the trunk development
+line
+<a href="http://ci.apache.org/projects/subversion/nightlies/index.html">every
+night</a>, but these have no testing and are only recommended for users
+looking to run the bleeding edge, or test a particular bug fix, without 
+building directly from the repository.</p>
+
+<div class="h4" id="alphas-betas">
+<h4>Alpha and beta releases
+  <a class="sectionlink" href="<!--#echo var="GUIDE_RELEASING_PAGE" -->#alphas-betas"
+    title="Link to this section">&para;</a>
+</h4>
+
+<p>When we want new features to get wide testing before we enter the
+formal <a href="#release-stabilization">stabilization period</a>,
+we'll sometimes release alpha and beta tarballs.  There is no requirement to
+do any beta releases even if there were "alpha1", "alpha2", etc
+releases; we could just jump straight to "rc1".  However, there are
+circumstances where a beta can be useful: for example, if we're unsure
+of a UI decision and want to get wider user feedback before
+solidifying it into a formal release candidate.</p>
+
+<p>Alphas and betas are only for people who want to help test, and who
+understand that there may be incompatible changes before
+the final release.  The signature requirements are at the release
+manager's discretion.  Typically, the RM will require only 1 or 2
+signatures for each platform, and to tell signers that they can still
+sign even if their testing reveals minor failures, as long as they
+think the code is solid enough to make testing by others worthwhile.
+The RM should request that signers include a description of any errors
+along with their signatures, so the problems can be published when the
+alpha or beta release is announced.</p>
+
+<p>When the alpha or beta is publicly announced, distribution packagers
+should be firmly warned off packaging it.  See <a
+href="http://subversion.tigris.org/servlets/ReadMsg?list=announce&amp;msgNo=264"
+>this mail from Hyrum K. Wright</a> for a good model.</p>
+
+</div> <!-- alphas-betas -->
+
+<div class="h4" id="prerelease-caveats">
+<h4>Breaking compatibility
+  <a class="sectionlink" href="<!--#echo var="GUIDE_RELEASING_PAGE" -->#prerelease-caveats"
+    title="Link to this section">&para;</a>
+</h4>
+
+<p>Our compatibility rules (as detailed <a href="#release-compat">below</a>)
+only start to apply once a <em>final</em> x.y.0 version has been blessed and
+released.  Any API's, wire protocols, and on-disk formats that appeared on
+trunk or in an alpha/beta/rc pre-release are not subject to <em>any</em>
+compatibility promises; we may change them arbitrarily until the final
+release, if we find a good reason to do so.  (Often, a last-minute design wart
+is discovered shortly before the compatibility barrier is crossed, and we
+hurry to fix it before it's set in stone.)</p>
+
+<p>This is particularly a problem for persistent data (working copies and
+repositories), since we might not provide an upgrade path&mdash;code paths or
+designated scripts for the legacy format&mdash;with the final release.  (Of
+course, we might provide such scripts for the benefit of developers and users
+who test our pre-releases; but we do not obligate ourselves to do so.)
+Consequently, pre-releases should <strong>never</strong> be trusted with any
+data meant for long-term safe-keeping.</p>
+
+<p>At the same time, we wish to remind the reader that the best time to point
+out API design bugs is before they are released and set in stone&mdash;in
+other words, during the initial design and pre-release stages.</p>
+
+</div> <!-- prerelease-caveats -->
+
+<div class="h4" id="name-reuse">
+<h4>Reuse of release names
+  <a class="sectionlink" href="<!--#echo var="GUIDE_RELEASING_PAGE" -->#name-reuse"
+    title="Link to this section">&para;</a>
+</h4>
+
+<p>If a release or candidate release needs to be quickly re-issued due
+to some non-code problem (say, a packaging glitch), it's okay to reuse
+the same name, as long as the tarball hasn't been
+<a href="<!--#echo var="GUIDE_RELEASING_PAGE" -->#tarball-signing">blessed by signing</a> yet.  However, if it has
+been uploaded to the standard distribution area with signatures, or if
+the re-issue was due to a change in code a user might run, then the
+old name must be tossed and the next name used.</p>
+
+<p>If the old name is tossed before the would-be release tarball was published
+and announced to users, the tossed name is considered a non-public release, and
+documentation (such as CHANGES and the tag's log message) should be updated to
+reflect that.  (See 1.8.7 for an example.)  Tags and tarballs of tossed releases
+remain in the repository history, but they are not supported for general use
+(on the contrary, they are known to have release-blocker bugs).</p>
+
+</div> <!-- name-reuse -->
+
+</div> <!-- release-numbering -->
+
+<div class="h3" id="release-compat">
+<h3>Inter-release compatibility
+  <a class="sectionlink" href="<!--#echo var="GUIDE_RELEASING_PAGE" -->#release-compat"
+    title="Link to this section">&para;</a>
+</h3>
+
+<p>Subversion follows strict compatibility, with the same
+guidelines as APR (see <a href="http://apr.apache.org/versioning.html"
+>http://apr.apache.org/versioning.html</a>), plus a few extensions,
+described later.  These guidelines are in place to ensure various forms of
+client/server interoperability, and make sure users have a clear upgrade
+path between MAJOR.MINOR Subversion releases.</p>
+
+<p>Compatibility can span a number of axes: everything from APIs and ABIs to
+command line output formats.  We try to balance to need to modify the existing
+architecture to support new features, while still supporting current users
+to the greatest extent possible.  The general idea is:</p>
+
+<ol>
+
+<li><p>Upgrading/downgrading between different patch releases in the
+       same MAJOR.MINOR line never breaks code.  It may cause bugfixes
+       to disappear/reappear, but API signatures and semantics remain
+       the same.  (Of course, the semantics may change in the trivial
+       ways appropriate for bugfixes, just not in ways that would
+       force adjustments in calling code.)</p>
+</li>
+
+<li><p>Upgrading to a new minor release in the same major line may
+       cause new APIs to appear, but not remove any APIs.  Any code
+       written to the old minor number will work with any later minor
+       number in that line.  However, downgrading afterwards may not
+       work, if new code has been written that takes advantage of the
+       new APIs.</p>
+
+    <p>(Occasionally, bugs are found which require the behavior of old APIs
+       to be modified slightly.  This typically only manifests itself in
+       various corner cases and other uncommon area.  These changes are
+       documented as <a href="http://svn.apache.org/repos/asf/subversion/trunk/notes/api-errata/">API errata</a> for each MAJOR.MINOR release.)</p>
+</li>
+
+<li><p>When the major number changes, all bets are off.  This is the
+       only opportunity for a full reset of the APIs, and while we try
+       not to gratuitously remove interfaces, we will use it to clean
+       house a bit.</p>
+</li>
+
+</ol>
+
+<p>Subversion extends the APR guidelines to cover client/server
+compatibility questions:</p>
+
+<ol>
+
+<li><p>A patch or minor number release of a server (or client) never
+       breaks compatibility with a client (or server) in the same
+       major line.  However, new features offered by the release might
+       be unsupported without a corresponding upgrade to the other
+       side of the connection.  For updating ra_svn code specifically,
+       please observe these principles:</p>
+
+    <ol>
+
+    <li><p>Fields can be added to any tuple; old clients will simply
+           ignore them.  (Right now, the marshalling implementation
+           does not let you put number or boolean values in the
+           optional part of a tuple, but changing that will not affect
+           the protocol.)</p>
+   
+        <p>We can use this mechanism when information is added to an
+           API call.</p>
+    </li>
+   
+    <li><p>At connection establishment time, clients and servers exchange
+           a list of capability keywords.</p>
+   
+         <p>We can use this mechanism for more complicated changes,
+           like introducing pipelining or removing information from
+           API calls.</p>
+    </li>
+   
+    <li><p>New commands can be added; trying to use an unsupported
+           command will result in an error which can be checked and dealt
+           with.</p>
+    </li>
+   
+    <li><p>The protocol version number can be bumped to allow graceful
+           refusal of old clients or servers, or to allow a client or
+           server to detect when it has to do things the old way.</p>
+ 
+        <p>This mechanism is a last resort, to be used when capability
+           keywords would be too hard to manage.</p>
+    </li>
+
+    </ol>
+</li>
+
+<li><p>Working copy and repository formats are backward- and
+       forward-compatible for all patch releases in the same minor
+       series.  They are forward-compatible for all minor releases in
+       the same major series; however, a minor release is allowed to
+       make a working copy or repository that doesn't work with
+       previous minor releases, where "make" could mean "upgrade" as
+       well as "create".</p>
+</li>
+
+</ol>
+
+</div> <!-- release-compat -->
+
+<div class="h3" id="security-releases">
+<h3>Security releases
+  <a class="sectionlink" href="<!--#echo var="GUIDE_RELEASING_PAGE" -->#security-releases"
+    title="Link to this section">&para;</a>
+</h3>
+
+<p>Occasionally, security issues are reported or discovered in the Subversion
+which warrant special treatment when releasing.  The general release process
+is the same, and details of how the developers treat these issues is covered
+<a href="issues.html#security">elsewhere</a>.</p>
+
+</div> <!-- security-releases -->
+
+<div class="h3" id="custom-releases">
+<h3>Custom releases
+  <a class="sectionlink" href="<!--#echo var="GUIDE_RELEASING_PAGE" -->#custom-releases"
+    title="Link to this section">&para;</a>
+</h3>
+
+<p>Subversion does not distribute binary packages, but instead relies upon
+<a href="/packages.html">third-party packagers</a> to do so.  Luckily, many
+individuals and companies have stepped in to volunteer their efforts in this
+regard, and we are grateful for their efforts.</p>
+
+<p>If you are a third-party packager, you may encounter instances when a bug
+fix or other change is important for your users, and you want to get it to
+them more quickly than the standard Subversion release cycle.  Or you may
+maintain a set of patches locally which benefit your target audience.
+If possible, it is preferred to use the
+<a href="/docs/community-guide/general.html#patches">patch process</a> and
+have your changes accepted and applied to trunk to be released on the normal
+Subversion release schedule.</p>
+
+<p>However, if you feel that you need to make changes that would not be widely
+accepted by the Subversion developer community, or need to provide early
+access to unreleased features, you should follow the guidelines below.  They
+are intended to help prevent confusion in the user community, and make both
+your distribution and the official Subversion releases as successful as
+possible.</p>
+
+<p>First, make sure you follow the <a
+href="http://www.apache.org/foundation/marks/">ASF
+trademark policy</a>.  You will need to differentiate your release
+from the standard Subversion releases to reduce any potential
+confusion caused by your custom release.</p>
+
+<p>Second, consider creating a branch in the public Subversion
+repository to track your changes and to potentially allow your custom
+changes to be merged into mainline Subversion.  (If you do not have it
+already, <a href="<!--#echo var="GUIDE_GENERAL_PAGE" -->#lightweight-branches"
+>ask for commit access</a>.)</p>
+
+<p>Third, if your custom release is likely to generate bug reports
+that would not be relevant to mainline Subversion, please stay in
+touch with the users of the custom release so you can intercept and
+filter those reports.  But of course, the best option would be not to
+be in that situation in the first place&nbsp;&mdash; the more
+your custom release diverges from mainline Subversion, the more
+confusion it invites.  If you must make custom releases, please try to
+keep them as temporary and as non-divergent as possible.</p>
+
+</div> <!-- custom-releases -->
+
+<div class="h3" id="deprecation">
+<h3>Deprecation
+  <a class="sectionlink" href="<!--#echo var="GUIDE_RELEASING_PAGE" -->#deprecation"
+    title="Link to this section">&para;</a>
+</h3>
+
+<p>When a new, improved version of an API is introduced, the old one
+remains for compatibility, at least until the next major release (2.0.0).
+However, we mark the old one as deprecated and point to the new one,
+so people know to write to the new API if at all possible.  When
+deprecating, mention the release after which the deprecation was
+introduced, and point to the new API.  If possible, replace the old
+API documentation with a diff to the new one.  For example:</p>
+
+<pre>
+   /**
+    * Similar to svn_repos_dump_fs3(), but with a @a feedback_stream instead of
+    * handling feedback via the @a notify_func handler
+    *
+    * @since New in 1.1.
+    * @deprecated Provided for backward compatibility with the 1.6 API.
+    */
+   SVN_DEPRECATED
+   svn_error_t *
+   svn_repos_dump_fs2(svn_repos_t *repos,
+                      svn_stream_t *dumpstream,
+                      svn_stream_t *feedback_stream,
+                      svn_revnum_t start_rev,
+                      svn_revnum_t end_rev,
+                      svn_boolean_t incremental,
+                      svn_boolean_t use_deltas,
+                      svn_cancel_func_t cancel_func,
+                      void *cancel_baton,
+                      apr_pool_t *pool);
+</pre>
+
+<p>When the major release number changes, the "best" new API in a
+series generally replaces all the previous ones (assuming it subsumes
+their functionality), and it will take the name of the original API.
+Thus, marking '<code>svn_repos_dump_fs</code>' as deprecated in
+1.1.x doesn't mean
+that 2.0.0 doesn't have '<code>svn_repos_dump_fs</code>', it just means the
+function's signature will be different: it will have the signature
+held by <code>svn_repos_dump_fs2</code>
+(or <code>svn_repos_dump_fs3</code>, or whatever) in
+1.1.x.  The numbered-suffix names disappear, and there is a single
+(shiny, new) <code>svn_repos_dump_fs</code> again.</p>
+
+<p>One exception to this replacement strategy is when the old function
+has a totally unsatisfying name anyway.  Deprecation is a chance to
+fix that: we give the new API a totally new name, mark the old API as
+deprecated, point to the new API; then at the major version change, we
+remove the old API, but don't rename the new one to the old name,
+because its new name is fine.</p>
+   
+</div> <!-- deprecation -->
+
+<div class="h3" id="release-stabilization">
+<h3>Stabilizing and maintaining releases
+  <a class="sectionlink" href="<!--#echo var="GUIDE_RELEASING_PAGE" -->#release-stabilization"
+    title="Link to this section">&para;</a>
+</h3>
+
+<p>Minor and major number releases go through a stabilization period
+before release, and remain in maintenance (bugfix) mode after release.
+To start the release process, we <a href="#release-branches"
+>create an "<tt>A.B.x</tt>" branch</a> based on the
+latest trunk.
+
+<p>The stabilization period for a new A.B.0 release normally lasts
+four weeks, and allows us to make conservative bugfixes and discover
+showstopper issues.  The stabilization period begins with a release
+candidate tarball with the version A.B.0-rc1.  Further release
+candidate tarballs may be made as blocking bugs are fixed; for
+example, if a set of language bindings is found to be broken, it is
+prudent to make a new release candidate when they are fixed so that
+those language bindings may be tested.</p>
+
+<p>At the beginning of the final week of the stabilization period, a
+new release candidate tarball should be made if there are any
+showstopper changes
+pending since the last one.  The final week of the stabilization
+period is reserved for critical bugfixes; fixes for minor bugs should
+be deferred to the A.B.1 release.  A critical bug is a non-edge-case
+crash, a data corruption problem, a major security hole, or something
+equally serious.</p>
+
+<p>Under some circumstances, the stabilization period will be
+extended:</p>
+
+<div style="width: 200px; float: right; text-align: center;
+            background: white; border: 1px solid black; margin: 5px;">
+<p><a href="svn-soak-management.png"><img src="svn-soak-management.png"
+style="width: 200px"></a></p>
+<p style="font-style: italic;">svn-soak-management.png</p>
+</div>
+
+<ul>
+<li><p>If a potentially destabilizing change must be made in order to
+       fix a bug, the entire four-week stabilization period is
+       restarted.  A potentially destabilizing change is one which
+       could affect many parts of Subversion in unpredictable ways, or
+       which involves adding a substantial amount of new code.  Any
+       incompatible API change (only allowable in the first place if
+       the new release is an A.0.0 release) should be considered a
+       potentially destabilizing change.</p>
+</li>
+
+<li><p>If a critical bugfix is made during the final week of the
+       stabilization period, the final week is restarted.  The final
+       A.B.0 release is always identical to the release candidate made
+       one week before (with the exceptions discussed below).</p>
+</li>
+
+</ul>
+
+<p>If there are disagreements over whether a change is potentially
+destabilizing or over whether a bug is critical, they may be settled
+with a committer vote.</p>
+
+<p>After the A.B.0 release is out, patch releases (A.B.1, A.B.2, etc.)
+follow when bugfixes warrant them.  Patch releases do not require a
+four week soak, because only conservative changes go into the
+line.</p>
+
+<p>Certain kinds of commits can go into A.B.0 without restarting the
+soak period, or into a later release without affecting the testing
+schedule or release date:</p>
+
+<ul>
+<li><p>Without voting:</p>
+    <ul>
+    <li><p>Changes to the <tt>STATUS</tt> file.</p></li>
+    <li><p>Documentation fixes.</p></li>
+    <li><p>Changes that are a normal part of release bookkeeping, for
+           example, the steps listed in <tt>notes/releases.txt</tt>.</p></li>
+    <li><p>Changes to <tt>dist.sh</tt> by, or approved by, the
+      release manager.</p></li>
+    <li><p>Changes to message translations in <tt>.po</tt> files or
+      additions of
+           new <tt>.po</tt> files.</p></li>
+    </ul>
+</li>
+
+<li><p>With voting:</p>
+    <ul>
+    <li><p>Anything affecting only <tt>tools/</tt>, <tt>packages/</tt>,
+      or <tt>bindings/</tt>.</p></li>
+    <li><p>Changes to printed output, such as error and usage messages, as
+           long as format string "<code>%</code>" codes and their args are not
+           touched.</p></li>
+    </ul>
+</li>
+
+</ul>
+
+<p>NOTE: The requirements on message translation changes are looser
+than for text messages in C code.  Changing format specifiers in <tt>.po</tt>
+files is allowed because their validity can be checked mechanically
+(with the -c flag on msgfmt of GNU gettext).  This is done at build
+time if GNU gettext is in use.</p>
+
+<p>Core code changes, of course, require voting, and restart the soak
+or test period, since otherwise the change could be undertested.</p>
+
+<p>The voting system works like this:</p>
+
+<p>A change to the A.B.x line must be first proposed in the
+<tt>A.B.x/STATUS</tt> file.  Each proposal consists of a short identifying
+block (e.g., the revision number of a trunk or related-line commit, or
+perhaps an issue number), a brief description of the change, an
+at-most-one-line justification of why it should be in A.B.x, perhaps
+some notes/concerns, and finally the votes.  The notes and concerns
+are meant to be brief summaries to help a reader get oriented; please
+don't use the <tt>STATUS</tt> file for actual discussion, use dev@ instead.</p>
+
+<p>Here's an example, probably as complex as an entry would ever
+get:</p>
+
+<pre>
+   * r98765 (issue #56789)
+     Make commit editor take a closure object for future mindreading.
+     Justification:
+       API stability, as prep for future enhancement.
+     Branch: 1.8.x-r98765
+     Notes:
+       There was consensus on the desirability of this feature in
+       the near future; see thread at http://... (Message-Id: blahblah).
+       Merge with --accept=mc.
+     Concerns:
+       Vetoed by jerenkrantz due to privacy concerns with the
+       implementation; see thread at http://... (Message-Id: blahblah)
+     Votes:
+       +1: ghudson, bliss
+       +0: cmpilato
+       -0: gstein
+       -1: jerenkrantz
+</pre>
+
+<p>A change needs three +1 votes from full committers (or partial
+committers for the involved areas), and no vetoes, to go into
+A.B.x. If partial committers would like to vote for a different area,
+which does not fall within their privilege, it must be made clear in
+the <tt>STATUS</tt> file that their vote is 'non-binding' as follows:</p>
+
+<pre>
+ * r31833
+   svndumpfilter: Don't match prefixes to partial path components.
+   Fixes #desc4 of issue #1853.
+   Votes:
+     +1: danielsh, hwright
+     +1 (non-binding): stylesen
+</pre>
+
+<p>If you cast a veto (i.e. -1), please state the reason in the
+concerns field, and include a url / message-id for the list discussion
+if any.  You can go back and add the link later if the thread isn't
+available at the time you commit the veto.</p>
+
+<p>If you add revisions to a group, note that the previous voters have
+not voted for those revisions, as follows:</p>
+
+<pre>
+   * r30643, r30653, r30785
+     Update bash completion script.
+     Votes:
+       +1: arfrever (r30785 only), stylesen
+</pre>
+
+<p>If in case votes have been communicated via IRC or other means,
+note that in the log message. <a href="<!--#echo var="GUIDE_ROLES_PAGE" -->#obvious-fix">Obvious fixes</a>
+do not require '(rX only)' to be mentioned.</p>
+
+<p>Voting +1 on a change doesn't just mean you approve of it in
+principle.  It means you have thoroughly reviewed the change, and find
+it correct and as nondisruptive as possible.  When it is committed to
+the release branch, the log message will include the names of all who
+voted for it, as well as the original author and the person making the
+commit.  All of these people are considered equally answerable for
+bugs.</p>
+
+<p>If you've reviewed a patch, and like it but have some reservations,
+you can write "+1 (concept)" and then ask questions on the list about
+your concerns.  You can write "+0" if you like the general idea but
+haven't reviewed the patch carefully.  Neither of these votes counts
+toward the total, but they can be useful for tracking down people who
+are following the change and might be willing to spend more time on
+it.</p>
+
+<p>When votes are listed in the <tt>STATUS</tt> file, they are placed into a
+section for a given release. Some developers may want to vote the
+change into a <b>later</b> release, if (for example) they believe it
+requires further review or testing. Simply add a comment along with
+your vote:</p>
+
+<pre>
+  * r12345
+    Fiddle with the hoobey-gidget to clean the garblesnarf.
+    Justification:
+      All hell breaks loose if the jobbywonk gets out.
+    Votes:
+      +1: brane
+      +1: gstein (for 1.7.2)
+</pre>
+
+<p>Since votes are tied to specific releases (specified by the section
+they fall under), be very careful when moving change candidates among
+the sections. Existing votes were for the <b>original</b> version, not
+where the candidate has been moved it. Annotate existing votes as
+being cast only for the original version.</p>
+
+<p>There is a somewhat looser voting system for areas that are not
+core code, and that may have fewer experts available to review changes
+(for example, tools/, packages/, bindings/, test scripts, etc.).  A
+change in these areas can go in with a +1 from a full committer or a
+partial committer for that area, at least one +0 or "concept +1" from
+any other committer, and no vetoes.  (If a change affects the build
+system, however, it is considered a core change, and needs three
++1's.)  Use your judgment and don't review changes unless you have
+some competence to do so, of course.  The goal is to get at least two
+pairs of eyes on the change, without demanding that every reviewer
+have the same amount of expertise as the area maintainer.  This way
+one can review for general sanity, accurate comments, obvious
+mistakes, etc, without being forced to assert "Yes, I understand these
+changes in every detail and have tested them."</p>
+
+<p>Before proposing a change in <tt>STATUS</tt>, you should try merging it onto
+the branch to ensure that it doesn't produce merge conflicts.  If
+conflicts occur, please create a new temporary branch from the release
+branch with your changes merged and the conflicts resolved.  The
+branch should be named <tt>A.B.x-rYYYY</tt>, where YYYY is the first revision
+of your change in the <tt>STATUS</tt> file.  Add a note in the
+<tt>STATUS</tt> file
+about the existence of the temporary branch.  If the change involves
+further work, you can merge those revisions to the branch.  When the
+entry for this change is removed from <tt>STATUS</tt>, this temporary branch
+should also be removed to avoid cluttering the /branches
+directory.</p>
+
+<p>NOTE: Changes to <tt>STATUS</tt> regarding the temporary branch, including
+voting, are always kept on the main release branch.</p>
+
+</div> <!-- release-stabilization -->
+
+</div> <!-- release-process -->
+
+<div class="h2" id="release-creating">
+<h2>Creating a Subversion release
+  <a class="sectionlink" href="<!--#echo var="GUIDE_RELEASING_PAGE" -->#release-creating"
+    title="Link to this section">&para;</a>
+</h2>
+
+<div class="h3" id="notify-translators">
+<h3>Notify translators
+  <a class="sectionlink" href="<!--#echo var="GUIDE_RELEASING_PAGE" -->#notify-translators"
+    title="Link to this section">&para;</a>
+</h3>
+
+<p>Before the actual release, send an e-mail to the translators to
+request updates of the <tt>.po</tt> files. Take their e-mail addresses
+from the <tt>COMMITTERS</tt> file in trunk.</p>
+
+<p>This should be done after all localised strings have stabilised in
+their final form for the release, but sufficiently in advance of the
+actual release to allow the translators to do their work. As a rule of
+thumb, send the notification at the least one week, preferably more,
+prior to the intended release. If many strings have changed, as would
+be the case for the first release from a new branch, then let more
+time pass.</p>
+
+</div> <!-- notify-translators -->
+
+<div class="h3" id="before-release">
+<h3>Preparing to roll a release
+  <a class="sectionlink" href="<!--#echo var="GUIDE_RELEASING_PAGE" -->#before-release"
+    title="Link to this section">&para;</a>
+</h3>
+
+<p>So, a release branch has stabilized, and you are gearing up to roll
+the release. The details of the rolling process are automated by the
+<a href="https://svn.apache.org/repos/asf/subversion/trunk/tools/dist/release.py">release.py</a>
+helper script. To run this script, you'll need a Subversion trunk working
+copy (or a shallow trunk working copy containing the <tt>tools/dist</tt> and
+<tt>build/generator</tt> directories). Run <tt>release.py -h</tt> to get a
+list of available subcommands.</p>
+
+<p>Before you can actually roll the archives, you need to
+set up a white-room rolling environment.  This environment must
+contain pristine versions of some build tools.</p>
+
+<p>It is important that you do not use distribution shipped versions
+of this software as they are often patched in ways that are not
+portable.  The version numbers given above should normally be
+reconsidered and increased to the latest stable upstream release in
+the time leading up to an A.B.0 release.  Changing the version within
+an A.B.x series should only be done with careful considereration.</p>
+
+<p><b>Autoconf, Libtool and SWIG</b>: Pick a directory to contain your
+special build tools for Subversion RM duties - for example
+<tt>/opt/svnrm</tt>.  Configure, build and install the three pieces of
+software with the <tt>release.py build-env</tt> command.
+
+<pre>
+mkdir -p /opt/svnrm &amp;&amp; cd /opt/svnrm &amp;&amp; $HOME/wc/svn/tools/dist/release.py build-env X.Y.Z
+</pre>
+
+</div> <!-- before-release -->
+
+<div class="h3" id="rolling-release">
+<h3>Rolling a release
+  <a class="sectionlink" href="<!--#echo var="GUIDE_RELEASING_PAGE" -->#rolling-release"
+    title="Link to this section">&para;</a>
+</h3>
+
+<p><b>Before rolling</b>:
+<ol>
+<li>Make sure that the latest version of the <tt>CHANGES</tt> file from trunk is
+merged into the release branch, and that the date at the top of
+<tt>CHANGES</tt> matches the planned release date of the tarball.
+
+<li>Make sure that get-deps.sh works on the release branch.
+</ol>
+</p>
+
+<p><b>Create the tarballs</b>:
+Run:</p>
+<pre>
+PATH="/opt/svnrm/prefix/bin:$PATH" ./release.py --base-dir /opt/svnrm roll --branch branches/X.Y.x X.Y.Z 1234
+</pre>
+When release.py is done you'll have tarballs within the
+<tt>/opt/svnrm/deploy</tt> directory.</p> 
+
+<p>Test one or both of the tarballs:</p>
+ 
+<pre>
+    a) tar zxvf subversion-X.Y.Z.tar.gz;  cd subversion-X.Y.Z
+    b) ./configure
+ 
+       See INSTALL, section III.B for detailed instructions on
+       configuring/building Subversion.
+ 
+       If you installed Apache in some place other than the default, as
+       mentioned above, you will need to use the same
+       --prefix=/usr/local/apache2 option as used to configure Apache.
+ 
+       You may also want to use --enable-mod-activation, which will
+       automatically enable the required Subversion modules in the
+       Apache config file.
+ 
+    c) make
+    d) make check
+    e) make install (this activates mod_dav)
+    f) make davcheck
+ 
+       For this, start up Apache after having configured according to
+       the directions in subversion/tests/cmdline/README.
+ 
+       Make sure, that if you maintain a development installation of
+       apache, that you check the config file and update it for the
+       new release area where you're testing the tar-ball.
+ 
+       (Unless you rename the tree which gets extracted from the
+       tarball to match what's in httpd.conf, you will need to edit
+       httpd.conf)
+ 
+    g) make svncheck
+ 
+       First, start up svnserve with these args:
+ 
+          $ subversion/svnserve/svnserve -d -r \
+            `pwd`/subversion/tests/cmdline
+ 
+       -d tells svnserve to run as a daemon
+       -r tells svnserve to use the following directory as the
+          logical file system root directory.
+ 
+       After svnserve is running as a daemon 'make svncheck' should run
+ 
+    h) Then test that you can check out the Subversion repository
+       with this environment:
+ 
+          subversion/svn/svn co https://svn.apache.org/repos/asf/subversion/trunk
+ 
+    i) Verify that the perl, python, and ruby swig bindings at least compile.
+       If you can't do this, then have another developer verify.
+ 
+       (see bindings/swig/INSTALL for details)
+ 
+       Ensure that ./configure detected a suitable version of swig,
+       perl, python, and ruby.  Then:
+ 
+          make swig-py
+          make check-swig-py
+          sudo make install-swig-py
+ 
+          make swig-pl
+          make check-swig-pl
+          sudo make install-swig-pl
+ 
+          make swig-rb
+          make check-swig-rb
+          sudo make install-swig-rb
+
+    j) Verify that the javahl bindings at least compile.
+       If you can't do this, then have another developer verify.
+ 
+       (see subversion/bindings/javahl/README for details)
+ 
+       Ensure that ./configure detected a suitable jdk, and then
+       possibly re-run with '--enable-javahl', '--with-jdk=' and
+       '--with-junit=':
+ 
+          make javahl
+          sudo make install-javahl
+          make check-javahl
+
+    k) Verify that the ctypes python bindings at least compile.
+       If you can't do this then have another developer verify.
+
+       (see subversion/bindings/ctypes-python/README for details)
+
+       Ensure that ./configure detected a suitable ctypesgen, and
+       then possibly re-run with '--with-ctypesgen':
+
+          make ctypes-python
+          sudo make install-ctypes-python
+          make check-ctypes-python 
+
+    l) Verify that get-deps.sh works and does not emit any errors.
+
+          ./get-deps.sh
+</pre>
+
+<p><b>Use GnuPG to sign release:</b></p>
+Use release.py to sign the release:
+<pre>
+    release.py sign-candidates --target /opt/svnrm/deploy X.Y.Z
+</pre>
+This will run the equivalent of the following commands for you:
+<pre>
+    gpg -ba subversion-X.Y.Z.tar.bz2
+    gpg -ba subversion-X.Y.Z.tar.gz
+    gpg -ba subversion-X.Y.Z.zip
+</pre>
+and append gpg signatures to the corresponding .asc files.
+
+<p><b>Subversion Operations</b></p>
+<p>Create the tag with the <tt>svn_version.h</tt> that reflects the final
+release.  You do this using:
+<pre>
+    release.py --base-dir /opt/svnrm create-tag X.Y.Z 1234
+</pre>
+
+<p>Note: Please always make a tag, even for release candidates.</p>
+
+<p><tt>create-tag</tt> will bump the version number in the <tt>STATUS</tt> and
+<tt>svn_version.h</tt> files for the original
+branch.  If you just did 1.0.2 then both files should have the proper value for
+1.0.3 and so on.</p>
+
+<p>Commit the tarballs, signatures and checksums to
+<a href="https://dist.apache.org/repos/dist/dev/subversion"
+>https://dist.apache.org/repos/dist/dev/subversion</a>
+There is a release.py subcommand that automates this step:
+<pre>
+release.py --base-dir /opt/svnrm post-candidates 1.7.0
+</pre></p>
+
+<p>Announce that the candidates are available for testing by sending an email
+to the dev@ list and by adjusting the topic on #svn-dev.</p>
+
+<p><a href="https://issues.apache.org/jira/plugins/servlet/project-config/SVN/versions">
+Update the issue tracker to have appropriate versions/milestones</a>.  If
+releasing a new minor release a version for 1.MINOR.x should be added.  All
+releases should add a milestone for the next release (i.e. 1.MINOR.x+1).  If
+you do not have permissions to do so please ask on IRC or send an email to
+the dev@ list.</p>
+
+</div> <!-- rolling-release -->
+
+<div class="h3" id="tarball-signing">
+<h3>Signing source distribution packages (a.k.a tarballs)
+  <a class="sectionlink" href="<!--#echo var="GUIDE_RELEASING_PAGE" -->#tarball-signing"
+    title="Link to this section">&para;</a>
+</h3>
+
+<p>Because Subversion releases are distributed through the 
+<a href="http://www.apache.org/dev/mirrors.html">ASF mirror network</a>, it
+is important that end-users be able to verify the authenticity of the source
+code packages they download.  Checksums are sufficient to detect corruption
+in the download process, but to prevent a malicious individual or mirror
+operator from distributing replacement packages, each source code package
+must be
+<a href="http://www.apache.org/dev/release-signing.html">cryptographically
+signed</a> by members of the Subversion PMC.  These
+signatures are done using each committer's private PGP key, and are then
+published with the release so that end users can verify the integrity of the
+downloaded packages.</p>
+
+<p>When creating the initial set of tarballs, the release manager will also
+create the first set of signatures.  While the tarballs themselves may be
+built on <tt>people.apache.org</tt>, it is important that the signatures are
+<em>not</em> generated there.  Signing tarballs requires a private key, and
+storing private keys on ASF hardware is <em>strongly discouraged</em>.  After
+signing the tarballs (using the process below) the release manager should
+upload the signatures to the preliminary distribution location, and place them
+in the same directory as the tarballs.</p>
+
+<p>Before a release is officially made public, it must receive three +1 votes
+from members of the Subversion PMC.  In addition, as a matter of project
+policy, we require testing and signatures from at least three PMC members on
+<em>each</em> of the major platforms we support: Windows and *nix.
+For -alpha and -beta releases, we still require at least one +1 vote on each
+major platform we support, but waive the requirement for three signers on each platform.  (The requirement for at least three signers in total remains.)
+Members of the PMC,
+as well as enthusiastic community members are encourages to download the
+tarballs from the preliminary distribution location, run the tests, and then
+provide their signatures.  The public keys for these signatures should be
+included in the ASF LDAP instance through
+<a href="https://id.apache.org/">id.apache.org</a>.  (A list of the
+<a href="https://people.apache.org/keys/group/subversion-pmc.asc">current
+public keys</a> for members of the Subversion PMC is autogenerated from LDAP
+each day.)</p>
+
+<p>Signing a tarball means that you assert certain things about it.  When
+announcing your signature, indicate in the mail what steps you've taken to
+verify that the tarball is correct, such as verifying the contents against
+the proper tag in the repository.  Running <tt>make check</tt> over all RA
+layers and FS backends is also a good idea, as well as building and testing
+the bindings.</p>
+
+<p>To obtain the release candidate, check out a working copy of
+<a href="https://dist.apache.org/repos/dist/dev/subversion"
+>https://dist.apache.org/repos/dist/dev/subversion</a>.
+Verify the release manager's PGP signatures on the tarballs.  release.py
+automates this step:
+<pre>
+    release.py get-keys
+    release.py check-sigs 1.7.8 --target /path/to/dist/working/copy
+</pre>
+</p>
+
+<p>After having verified, extracted, and tested the tarball,
+you should sign by creating
+an armored detached signature using <a href="http://www.gnupg.org">gpg</a>.
+To append your signature to a .asc file, use a command like:</p>
+<pre>
+    gpg -ba -o - subversion-1.7.0-rc4.tar.bz2 &gt;&gt; subversion-1.7.0-rc4.tar.bz2.asc
+</pre>
+The release.py script can automate this step:
+<pre>
+ release.py sign-candidates --target /path/to/dist/dev/subversion/working/copy 1.7.0
+</pre>
+
+<p>After adding your signatures, commit the locally modified .asc files
+to the dist.apache.org repository.</p>
+
+<p>If you've downloaded and tested a <tt>.tar.bz2</tt> file, it is possible to
+sign a <tt>.tar.gz</tt> file with the same contents without having
+to download and test it separately.  The trick is to extract the
+<tt>.bz2</tt> file, and pack it using <tt>gzip</tt> like this:</p>
+
+<pre>
+    bzip2 -cd subversion-1.3.0-rc4.tar.bz2 \
+    | gzip -9n &gt; subversion-1.3.0-rc4.tar.gz
+</pre>
+
+<p>The resulting file should be identical to the file generated by the
+release manager, and thus can be signed as described above.
+To verify that the files are identical, you may use either the SHA1 checksums
+or the release manager's signature, both of which should be provided with the
+tarballs.</p>
+
+<p>But, if the checksum is not identical it doesn't have to be the case that
+the file signature is wrong, or the file has been tampered with. It could very
+well be the case that you don't have an identical gzip version as the release
+manager.</p>
+
+</div> <!-- tarball-signing -->
+
+<div class="h3" id="releasing-release">
+<h3>The actual releasing
+  <a class="sectionlink" href="<!--#echo var="GUIDE_RELEASING_PAGE" -->#releasing-release"
+    title="Link to this section">&para;</a>
+</h3>
+
+<p>After the tarballs are created, and all the signatures are created and
+validated, the release is ready for publication.  This section outlines the
+steps needed to publish a Subversion release.</p>
+
+<p>Subversion artifacts are distributed through the 
+<a href="http://www.apache.org/dev/mirrors.html">ASF mirror network</a>.  The
+source code <a href="/download.cgi">download page</a> automatically assists users
+in selecting mirrors closer to them.  We usually host only the latest stable
+release for the supported release lines on the mirror network, while all
+previous Subversion releases are available in the
+<a href="http://archive.apache.org/dist/subversion/">archives</a>.</p>
+
+<p>Uploading releases to the mirrors is rather straight forward: the RM simply
+moves the tarballs, signatures and checksums from
+<a href="https://dist.apache.org/repos/dist/dev/subversion"
+>^/dev/subversion</a>
+to <a href="https://dist.apache.org/repos/dist/release/subversion"
+>^/release/subversion</a>.
+There is a release.py subcommand that automates this step:
+<pre>
+release.py move-to-dist 1.7.0
+</pre>
+It takes the mirrors up to 24 hours to get pick up the new release.
+The archive will also automatically pick up the release.  While
+running move-to-dist will move the signature files committers are
+still able to commit new signatures to <tt>^/release/subversion</tt>
+however it will take up to 24 hours for those signatures to mirror.
+Any such signatures cannot be included in the release announcement
+unless 24 hours have passed since they were committed.</p>
+
+<p>At this point, the release may be publicly available, but its still a good
+idea to hold off on announcing it until after the mirrors have picked it up.
+After the 24 hour period has passed, giving the mirrors enough time to sync,
+the release manager will send the announcement and publish the changes to the
+Subversion website, as described below.  It's also a good time to reexamine
+the <tt>dist/</tt> directory from above, and clean out any old releases; only
+the most recent release for the supported release lines should be in that
+directory.  The mirrors will eventually remove the older releases, but they
+will continue to remain available in the archives.  (You can clean old
+releases using <tt>release.py clean-dist</tt>.)
+</p>
+
+<div class="h4" id="releasing-announce">
+<h4>Announcing the release
+  <a class="sectionlink" href="<!--#echo var="GUIDE_RELEASING_PAGE" -->#releasing-announce"
+    title="Link to this section">&para;</a>
+</h4>
+
+<p>Write a release announcement, referring to previous ones for
+guidance.  Remember to include the URL and SHA1 checksums in the
+announcement!  The <tt>release.py write-announcement</tt> subcommand
+creates a template announcement which can be customized for specific
+circumstances.  If the community support levels are changing with this
+release be sure to update the recommended_release variable in release.py
+before using it to generate the announcement.</p>
+
+<p>The subject line of the announcement email should be of the form
+    <tt>[ANNOUNCE] Apache Subversion 1.9.0-rc1 released</tt>.
+If the release fixes security issues, add a <tt>[SECURITY]</tt> subject tag
+as well, and CC security@apache.org on the announcement email
+(see next paragraph).</p>
+
+<p>Send the announcement to dev@, users@, and announce@ lists (including 
+announce@apache.org for 1.7.x and newer releases), from your @apache.org email
+address.  (Mail to announce@ will bounce if sent from any other address.)
+Ensure that your mailer doesn't wrap the URLs over multiple lines.</p>
+
+<p>NOTE: We announce the release before updating the website since the website
+update links to the release announcement sent to the announce@ mailing list.</p>
+
+<p>Update the topics in various Subversion-related IRC channels, such as
+<tt>#svn</tt> and <tt>#svn-dev</tt> on freenode.</p>
+
+</div> <!-- release-announce -->
+
+<div class="h4" id="releasing-update-website">
+<h4>Update the website
+  <a class="sectionlink" href="<!--#echo var="GUIDE_RELEASING_PAGE" -->#releasing-update-website"
+    title="Link to this section">&para;</a>
+</h4>
+
+<ol>
+  <li>Edit the <tt>^/subversion/site/publish/download.html</tt> page
+  to note the latest release.</li>
+  <li>Edit the <tt>^/subversion/site/publish/doap.rdf</tt> file to note the
+  latest release.</li>
+  <li>Add new News item to <tt>^/subversion/site/publish/news.html</tt>
+  announcing the release.  Add the same item to the News list on
+  <tt>^/subversion/site/publish/index.html</tt>, also removing the
+  oldest News item from that page.  Use <tt>release.py write-news</tt> to
+  generate a template news item, which should then be customized.</li>
+  <li>List the new release on the
+  <tt>^/subversion/site/publish/docs/release-notes/release-history.html</tt>
+  page.</li>
+  <li>Ensure that the community release support levels on
+  <tt>^/subversion/site/publish/docs/release-notes/index.html</tt>
+  are still up-to-date, tweaking as necessary.</li>
+  <li><em>(minor releases only)</em> Remove the "draft" warning from
+  <tt>^/subversion/site/publish/docs/release-notes/X.Y.html</tt>
+  </li>
+  <li>Commit the modifications.</li>
+  <li>Create or update the versioned documentation snapshots in
+    <tt>^/site/publish/docs/api/X.Y</tt> and
+    <tt>^/site/publish/docs/javahl/X.Y</tt>, and
+    ensure that the "latest" symlinks which are siblings of those
+    directories always point to the directories of the latest release
+    series.  Commit those changes, too.</li>
+
+</ol>
+
+</div> <!-- release-update-website -->
+
+<p>It is then time for the release manager to go and enjoy his
+$favorite_beverage.</p>
+
+</div> <!-- releasing-release -->
+
+</div> <!-- release-creating -->
+
+
+<div class="h2" id="release-branches">
+<h2>Creating and maintaining release branches
+  <a class="sectionlink" href="<!--#echo var="GUIDE_RELEASING_PAGE" -->#release-branches"
+    title="Link to this section">&para;</a>
+</h2>
+
+<p>A new release branch is created for each new major and minor
+release.  So, for example, a new release branch is created when
+preparing to release version 2.0.0, or version 1.3.0.  However, when
+preparing to release 1.3.1 (a patch-version increment), the release
+branch created at the time of 1.3.0 is used.</p>
+
+<p>If you are preparing for a patch release, then there is no release
+branch to create. You just pick up where you left off in the current
+minor version series release branch.</p>
+
+<p>The time at which a new release branch needs to be created is fuzzy
+at best.  Generally, we have a soft schedule of releasing a new minor
+version every 6 months.  So, approximately 4 months after the previous
+minor release is a good time to start proposing a branch. But remember
+that this is flexible, depending on what features are being
+developed.</p>
+
+<p>Once people agree that a new release branch should be made, the
+Release Manager creates it with the following procedure (substitute
+A.B with the version you're preparing, eg. 1.3, or 2.0):</p>
+
+<ul>
+<li><p>Review the <a href="/roadmap">Roadmap</a>.  Should any of the outstanding
+       items be addressed before branching?</p></li>
+<li><p>Review the incumbent stable branch's STATUS file for outstanding
+       -0 and -1 votes.  Was code that is going to be included in the new
+       branch objected to?  (Even if yes, that should not block branching, but
+       discussion should be started in order to resolve the issue before
+       rolling release branches.)</p></li>
+<li><p>Do any tree-wide, mechanical changes.  (Non-mechanical changes should
+       have happened earlier to allow for review.)  This eases merging later.
+       Examples include
+       <a href="http://svn.apache.org/r1467191">stripping trailing whitespace</a>
+       and
+       <a href="http://svn.apache.org/r1467261">plugging error leaks</a>
+       and
+       <a href="http://svn.apache.org/r1466965">fixing invariants in C headers</a>
+       (<a href="http://svn.apache.org/r1546937">another case</a>)
+       and
+       <a href="http://svn.apache.org/r1460176">code search and replace</a>.
+       (This is also a good time to do other periodical housekeeping tasks
+       such as
+       <a href="http://www.red-bean.com/svnproject/contribulyzer/detail/http%253A%252F%252Fscan.coverity.com%252F.html">static</a>
+       <a href="http://svn.apache.org/r1469608">analysis</a>.)</p></li>
+<li><p>Create the new release branch with a server-side copy:</p>
+    <pre>
+      svn cp ^/subversion/trunk \
+             ^/subversion/branches/A.B.x \
+             -m "Create the A.B.x release branch."
+    </pre></li>
+
+<li><p>Edit <tt>subversion/include/svn_version.h</tt> on trunk and
+    increment the version numbers there.  Do not commit these changes
+    yet.</p>
+    <p>The version number on trunk always reflects the major/minor
+    version that will immediately follow the one for which you just
+    created a branch (eg. 2.1.0 for the 2.0.x branch, and 1.4.0 for
+    the 1.3.x branch).</p></li>
+
+<li><p>Edit <tt>/subversion/trunk/subversion/bindings/javahl/src/org/apache/subversion/javahl/NativeResources.java</tt> on trunk and
+    <a href="http://svn.apache.org/r1483917">increment the version numbers in
+    <tt>init()</tt></a>.  Do not commit these changes yet.</p></li>
+
+<li><p>Edit <tt>build/run_tests.py</tt> and
+    <tt>subversion/tests/cmdline/svntest/main.py</tt> on trunk and
+    increment <tt>SVN_VER_MINOR</tt>.  Do not commit these changes
+    yet.</p></li>
+
+<li><p>Edit <tt>CHANGES</tt> on trunk to introduce a new section for the
+    upcoming release if it is not already there, and also a new section
+    for the next minor release to be made in the future.  Each section
+    starts with:</p>
+    <pre>
+      Version A.B.0
+      (?? ??? 20XX, from /branches/A.B.x)
+      http://svn.apache.org/repos/asf/subversion/tags/A.B.0
+    </pre>
+    <p>Leave the release date blank for now. It will remain this way
+    until rolling time.</p></li>
+
+<li><p>Commit these changes with a log message something like the
+    following:</p>
+    <pre>
+      Increment the trunk version number, and introduce a new CHANGES
+      section for the upcoming A.B.0 release.
+
+      * subversion/include/svn_version.h: Increment version number.
+
+      * subversion/tests/cmdline/svntest/main.py (SVN_VER_MINOR),
+        build/run_tests.py (SVN_VER_MINOR):
+          Increment version number.
+
+      * CHANGES: New section for A.B.0.
+    </pre></li>
+
+<li><p>Create a new <tt>STATUS</tt> file on the release branch.</p></li>
+
+<li><p>Ask someone with appropriate access to add the A.B.x branch to the
+       <tt>svn-role</tt> mergebot.</p></li>
+
+</ul>
+
+</div> <!-- release-branches -->
+
+
+<div class="h2" id="porting-changes">
+<h2>Porting changes to release branches
+  <a class="sectionlink" href="<!--#echo var="GUIDE_RELEASING_PAGE" -->#porting-changes"
+    title="Link to this section">&para;</a>
+</h2>
+
+<p>Once a release branch has been created, no development <i>ever</i>
+takes place there.  The only changes permitted are ones made to
+various bookkeeping files such as <tt>STATUS</tt>, and changes merged
+in from trunk.  In rare cases, a feature branch may be created from the
+A.B.x branch to address issues specific to the release branch (for example,
+to fix a bug that does not affect trunk).</p>
+
+<p>The protocol used to accept or refuse the merging of changes from
+trunk is of interest to all Subversion developers, and as such is
+documented in <a href="<!--#echo var="GUIDE_RELEASING_PAGE" -->#release-stabilization">the
+release stabilization section</a>.</p>
+
+</div> <!-- porting-changes -->
+
+
+<div class="h2" id="the-changes-file">
+<h2>Managing the CHANGES file
+  <a class="sectionlink" href="<!--#echo var="GUIDE_RELEASING_PAGE" -->#the-changes-file"
+    title="Link to this section">&para;</a>
+</h2>
+
+<p>The <tt>CHANGES</tt> file is the project changelog file.  Before a
+release, it must be brought up to date to list all changes since the
+last release.</p>
+
+<p>For patch-releases, this is fairly easy: you just need to walk
+through the commit logs for the branch since the last "golden"
+revision, and note all interesting merges.  For minor and major
+releases, this is more complex: you need to traverse the commit log on
+<em>trunk</em> since the last release branch was forked, and make note
+of all changes there.  It's the same procedure, but a lot longer, and
+somewhat more complex as it involves filtering out changesets that
+have already been backported to previous release branches and released
+from there.</p>
+
+<p>Remember that <tt>CHANGES</tt> should <em>always</em> be edited on
+trunk and then merged over to the release branch(es) when necessary.
+It is very important that all changes of all releases be documented in
+the <tt>CHANGES</tt> file on trunk, both for future reference and so that
+future release branches contain the sum of all previous change
+logs.</p>
+
+<p>Keep the bullet point for each change concise, preferably no more
+than one line long.  Sometimes that can be a challenge, but it really
+adds to the overall readability of the document.  Think to yourself:
+<i>If it takes more than one line to describe, maybe I'm getting too
+detailed?</i></p>
+
+<div class="h3" id="writing-initial-changes">
+<h3>Writing the initial content for a branch
+  <a class="sectionlink" href="<!--#echo var="GUIDE_RELEASING_PAGE" -->#writing-initial-changes"
+    title="Link to this section">&para;</a>
+</h3>
+
+<p>Run <tt>svn log --stop-on-copy ^/subversion/branches/A.B.x</tt>.
+This should give you every change ever
+made to the A.B.x line, including backports made to the A.B.x branch.
+You then need to <em>remove</em> logs of changes that have already
+been released in micro releases of the previous major/minor branch.
+Run <tt>svn log -q --stop-on-copy</tt> on the previous release
+branch, and then write a script to parse the revnums and remove them
+from your primary log output.  (Karl and Ben used to use emacs macros
+to do that, but suggest that we write a more general script.)
+(Update: nowadays, <tt>svn mergeinfo --show-revs eligible</tt>
+should simplify obtaining the set of relevant revisions&mdash;use
+the minor branch as the source, and the <em>previous</em> minor branch
+as the target.)</p>
+
+<p>Read that log from oldest to newest, summarizing points as you go.
+The trick is to know what level of detail to write at: you don't want
+to mention every tiny little commit, but you don't want to be too
+general either.  Set your filter-level by reading through a few pages
+of the <tt>CHANGES</tt> file before starting on the new section, just to
+keep things consistent.</p>
+
+</div> <!-- writing-initial-changes -->
+
+<div class="h3" id="adding-changes">
+<h3>Adding content for patch release
+  <a class="sectionlink" href="<!--#echo var="GUIDE_RELEASING_PAGE" -->#adding-changes"
+    title="Link to this section">&para;</a>
+</h3>
+
+<p>As part of <a href="<!--#echo var="GUIDE_RELEASING_PAGE" -->#release-stabilization">release
+stabilization</a>, <tt>CHANGES</tt> should be updated as bug fixes are
+ported to the release branch.  Generally, if you merge a revision or group
+of revisions (i.e., an item in <tt>STATUS</tt>) to the release branch, you
+should also add an item to <tt>CHANGES</tt> on trunk, following the same
+guidelines outlined above.  This list will then be merged to the release
+branch when a patch release is made.</p>
+
+</div> <!-- adding-changes -->
+
+</div> <!-- the-changes-file -->
+
+
+<div class="h2" id="releasing-not">
+<h2>How <em>not</em> to make a Subversion release
+  <a class="sectionlink" href="<!--#echo var="GUIDE_RELEASING_PAGE" -->#releasing-not"
+    title="Link to this section">&para;</a>
+</h2>
+
+<p>For an enlightening case study of the bungled Subversion 1.5 release
+cycle, see <a href="http://www.hyrumwright.org/papers/floss2009.pdf">this
+paper</a>.</p>
+
+</div> <!-- releasing-not -->
+
+</div> <!-- releasing -->

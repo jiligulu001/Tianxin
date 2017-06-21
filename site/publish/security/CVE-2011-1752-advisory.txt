@@ -1,0 +1,72 @@
+  Subversion HTTP servers up to 1.6.16 (inclusive) are vulnerable to a
+  remotely triggerable NULL-pointer dereference.
+
+Summary:
+========
+
+  Subversion's mod_dav_svn Apache HTTPD server module will dereference
+  a NULL pointer if asked to deliver baselined WebDAV resources.
+
+  This can lead to a DoS.  An exploit has been tested, and tools or users
+  have been observed triggering this problem in the wild.
+
+Known vulnerable:
+=================
+
+  Subversion HTTPD servers <= 1.6.16
+
+Known fixed:
+============
+
+  Subversion 1.6.17
+  svnserve (any version) is not vulnerable
+
+Details:
+========
+
+  Subversion's mod_dav_svn module implements a subset of the WebDAV
+  and DeltaV protocols to support version control operations with
+  Subversion clients and, to a limited extent, certain other
+  WebDAV-aware client programs.  The protocol dictates the existance
+  and use of so-colled "baselined resources" which do not directly
+  represent versioned files or directories, but instead represent
+  somewhat more abstract concepts.  (See the specifications of those
+  protocols for details.)  As a result, these baselined resources --
+  which are addressable using specifically formatted URLs -- are not
+  suitable for generic delivery in response to the common GET HTTP
+  request.
+
+  Because of this vulnerability, mod_dav_svn fails to notice that a
+  request submitted against the URL of a baselined resource should
+  simply return a graceful error and instead attempts to process the
+  request.  This ultimately leads to a dereference of the pointer
+  associated with the resource's repository path, which is NULL
+  because the resource cannot be said to have such a path.
+
+Severity:
+=========
+
+  A remote attacker may be able to crash a Subversion server.  Many Apache
+  servers will respawn the listener processes, but a determined attacker
+  will be able to crash these processes as they appear, denying service to
+  legitimate users.
+
+Recommendations:
+================
+
+  We recommend all users to upgrade to Subversion 1.6.17.  Users of
+  Subversion 1.5.x or 1.6.x who are unable to upgrade may apply the
+  included patch.
+  
+  New Subversion packages can be found at:
+  http://subversion.apache.org/packages.html
+
+References:
+===========
+
+  CVE-2011-1752  (Subversion)
+
+Reported by:
+============
+
+  Joe Schaefer, Apache Software Foundation

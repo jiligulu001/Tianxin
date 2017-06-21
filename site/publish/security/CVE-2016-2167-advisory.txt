@@ -1,0 +1,147 @@
+  svnserve/sasl may authenticate users using the wrong realm
+
+Summary:
+========
+
+  svnserve, the svn:// protocol server, can optionally use the Cyrus
+  SASL library for authentication, integrity protection, and encryption.
+  Due to a programming oversight, authentication against Cyrus SASL
+  would permit the remote user to specify a realm string which is
+  a prefix of the expected realm string.
+
+Known vulnerable:
+=================
+
+  Subversion 1.9.0 to 1.9.3
+  Subversion 1.5.0 to 1.8.15
+
+  Only repositories served by svnserve using SASL are affected.  For
+  a repository to be affected, both of the following must be true:
+
+  1. The output of `svnserve --version` includes the line "Cyrus SASL
+     authentication is available".
+
+  2. The svnserve.conf file includes "use-sasl = true" in the "[sasl]"
+     section.
+
+Known fixed:
+============
+
+  Subversion 1.9.4
+  Subversion 1.8.16
+
+  mod_dav_svn (any version) is not affected.
+
+  svnserve compiled without SASL support is not affected, regardless
+  of the contents of svnserve.conf files.
+
+  If the svnserve.conf file specifies 'use-sasl = false', or does not
+  specify 'use-sasl' at all, then the repository or svnserve instance
+  using that svnserve.conf file is not affected.
+
+Details:
+========
+
+  The Cyrus SASL authentication library provides a callback for
+  applications to "canonicalize" the username and realm provided by the
+  remote end.  svnserve uses that callback to enforce that either the
+  remote end specified no realm, or it specified the repository's realm
+  (as declared in the svnserve.conf file).
+
+  Due to a programming oversight, if the remote end specified a realm
+  string which is a prefix of the expected realm string, the
+  remote-specified realm string would be used in the canonicalized
+  value.  Consequently, a user who has valid credentials to a realm,
+  whose name is a prefix of the repository's realm, would be able to
+  successfully authenticate to the repository.
+
+  Such a user would still be subject to path-based authorization, if
+  enabled via the 'authz-db' or 'auth-access' svnserve.conf directives.
+
+  In theory, the erroneous realm comparison would also allow a remote
+  user to specify a realm string followed by an ASCII NUL byte and
+  possibly by more bytes thereafter.  In practice, however, control flow
+  on such inputs does not reach the vulnerable code.
+
+  Examples:
+
+  1. The user "jrandom" in the realm "foo" can successfully authenticate
+     to a repository whose realm is "foobar".
+
+Severity:
+=========
+
+  CVSSv2 Base Score: 3.6
+  CVSSv2 Base Vector: AV:N/AC:H/Au:S/C:P/I:P/A:N
+
+  Since this vulnerability presupposes rare circumstances --- namely,
+  having a valid realm name which is a string prefix of the repository's
+  realm name --- few deployments will be affected.
+
+  For affected deployments, however, this is a medium-risk
+  information disclosure and modification vulnerability.  The extent of
+  the information that may be accessed and modified by attackers depends
+  on the path-based authorization configuration in use (via the
+  'authz-db' and 'auth-access' svnserve.conf directives).
+
+Recommendations:
+================
+
+  Affected servers should be upgraded to Subversion 1.8.16 or 1.9.4.
+
+  Workarounds include:
+
+  - Use path-based authorization to deny access to usernames from other
+    realms, so they would be able to authenticate but then would have
+    authorization to nothing.
+
+  - Change realm names such that no valid realm name is a prefix of the
+    repository's realm name.
+
+References:
+===========
+
+  CVE-2016-2167 (Subversion)
+
+Reported by:
+============
+
+  Daniel Shahaf, Apache Infrastructure
+  James McCoy, Debian
+
+Patches:
+========
+
+  Patch for Subversion 1.9.3:
+[[[
+Index: subversion/svnserve/cyrus_auth.c
+===================================================================
+--- subversion/svnserve/cyrus_auth.c	(revision 1735379)
++++ subversion/svnserve/cyrus_auth.c	(working copy)
+@@ -74,6 +74,8 @@ static int canonicalize_username(sasl_conn_t *conn
+     {
+       /* The only valid realm is user_realm (i.e. the repository's realm).
+          If the user gave us another realm, complain. */
++      if (realm_len != inlen-(pos-in+1))
++        return SASL_BADPROT;
+       if (strncmp(pos+1, user_realm, inlen-(pos-in+1)) != 0)
+         return SASL_BADPROT;
+     }
+]]]
+
+  Patch for Subversion 1.8.15:
+[[[
+Index: subversion/svnserve/cyrus_auth.c
+===================================================================
+--- subversion/svnserve/cyrus_auth.c	(revision 1735379)
++++ subversion/svnserve/cyrus_auth.c	(working copy)
+@@ -74,6 +74,8 @@ static int canonicalize_username(sasl_conn_t *conn
+     {
+       /* The only valid realm is user_realm (i.e. the repository's realm).
+          If the user gave us another realm, complain. */
++      if (realm_len != inlen-(pos-in+1))
++        return SASL_BADPROT;
+       if (strncmp(pos+1, user_realm, inlen-(pos-in+1)) != 0)
+         return SASL_BADPROT;
+     }
+]]]

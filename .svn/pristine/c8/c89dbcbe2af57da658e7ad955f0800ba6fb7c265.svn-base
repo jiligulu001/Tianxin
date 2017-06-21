@@ -1,0 +1,17 @@
+<!--#if expr='"$DOCUMENT_NAME" = "issues.html" || "$DOCUMENT_NAME" = "community-guide.html"' -->
+<ul>
+  <li><a href="#reporting-bugs">How to report a bug</a></li>
+  <li><a href="#bugs-where">Where to report a bug</a></li>
+  <li><a href="#milestones">Milestone management</h1></li>
+  <li><a href="#issue-triage">Issue triage</a></li>
+  <li><a href="#security">Security</a></li>
+</ul>
+<!--#else -->
+<ul>
+  <li><a href="issues.html#reporting-bugs">How to report a bug</a></li>
+  <li><a href="issues.html#bugs-where">Where to report a bug</a></li>
+  <li><a href="issues.html#milestones">Milestone management</h1></li>
+  <li><a href="issues.html#issue-triage">Issue triage</a></li>
+  <li><a href="issues.html#security">Security</a></li>
+</ul>
+<!--#endif -->

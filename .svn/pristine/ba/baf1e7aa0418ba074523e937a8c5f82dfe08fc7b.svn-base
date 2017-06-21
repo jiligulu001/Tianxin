@@ -1,0 +1,293 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Download Apache Subversion Sources</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<style type="text/css">
+  @import url("/style/site.css");
+</style>
+</head>
+
+<body>
+<!--#include virtual="/site-banner.html" -->
+<!--#include virtual="/site-nav.html" -->
+<div id="site-content">
+<!--#include virtual="/site-notice.html" -->
+
+<h1>Download Source Code</h1>
+
+[define version]1.9.5[end]
+[define supported]1.8.17[end]
+[define prerelease]1.9.0-rc3[end]
+
+<div class="bigpoint">
+<p>The best available version of Apache Subversion
+   is:&nbsp;<a href="#recommended-release">[version]</a></p>
+</div> <!-- .bigpoint -->
+
+<p>Use the links below to download Apache Subversion from one of our mirrors.
+   You <strong>must</strong> <a href="#verifying">verify the integrity</a> of
+   the downloaded files using signatures downloaded from our main
+   directory.</p>
+   
+<p>The following are the currently supported versions of Subversion.  Older
+   releases are available from the
+   <a href="http://archive.apache.org/dist/subversion/">archive download
+   site</a>.</p>
+
+<p>The Apache Subversion project only distributes source code, but a number
+   of third parties provide binary packages for a number of platforms.  To
+   find a package for your platform, please visit the <a href="/packages.html">
+   binary packages</a> page.</p>
+
+<div class="h2" id="mirror">
+<h2>Mirror
+  <a class="sectionlink" href="#mirror"
+    title="Link to this section">&para;</a>
+</h2>
+
+<p>[if-any logo]
+   <a href="[link]"><img align="right" src="[logo]" border="0" /></a>
+   [end]
+
+   The currently selected mirror is <a href="[preferred]subversion/"><b>[preferred]</b></a>.
+   If you encounter a problem with this mirror, please select another mirror.
+   If all mirrors are failing, there are <i>backup</i> mirrors (at the end of
+   the mirrors list) that should be available.</p>
+
+<form action="/download.cgi" method="get" id="SelectMirror">
+Other mirrors:
+<select name="Preferred" onchange="submit()">
+  [if-any http]
+    [for http]<option value="[http]"[is http preferred] selected="selected"[end]>[http]</option>[end]
+  [end]  
+  [if-any ftp]
+    [for ftp]<option value="[ftp]"[is ftp preferred] selected="selected"[end]>[ftp]</option>[end]
+  [end]
+  [if-any backup]
+    [for backup]<option value="[backup]"[is backup preferred] selected="selected"[end]>[backup] (backup)</option>[end]
+  [end]
+</select>
+<input type="submit" value="Change" />
+</form>
+
+<p>You may also consult the <a href="http://www.apache.org/mirrors/">complete
+   list of mirrors</a>.</p>
+
+</div>  <!-- #mirror -->
+
+<div class="h2" id="source-releases">
+<h2>Source Releases
+  <a class="sectionlink" href="#source-releases"
+    title="Link to this section">&para;</a>
+</h2>
+
+<p>We provide source code distributions in a variety of archive types.
+   Generally, speaking, Windows users should download <tt>.zip</tt>
+   files.  Users of all other operating systems should
+   download <tt>.tar.gz</tt> or <tt>.tar.bz2</tt> files.</p>
+
+<p>Please note that the dependencies
+   distribution <tt>subversion-deps-*</tt> is no longer available in
+   1.7 and later.  See <a href="/docs/release-notes/1.7#deps" >The 1.7
+   release notes</a> for details and alternatives.</p>
+
+<div class="h3" id="recommended-release">
+<h3>Recommended Release
+  <a class="sectionlink" href="#recommended-release"
+    title="Link to this section">&para;</a>
+</h3>
+
+<p style="font-size: 150%; text-align: center;">Apache Subversion [version]</p>
+<table class="centered">
+<tr>
+  <th>File</th>
+  <th>Checksum (SHA1)</th>
+  <th>Signatures</th>
+</tr>
+<tr>
+  <td><a href="[preferred]subversion/subversion-[version].tar.bz2">subversion-[version].tar.bz2</a></td>
+  <td class="checksum">8bd6a44a1aed30c4c6b6b068488dafb44eaa6adf</td>
+  <td>[<a href="https://www.apache.org/dist/subversion/subversion-[version].tar.bz2.asc">PGP</a>]</td>
+</tr>
+<tr>
+  <td><a href="[preferred]subversion/subversion-[version].tar.gz">subversion-[version].tar.gz</a></td>
+  <td class="checksum">ac9f8ee235f1b667dd6506864af8035aaedfc2d9</td>
+  <td>[<a href="https://www.apache.org/dist/subversion/subversion-[version].tar.gz.asc">PGP</a>]</td>
+</tr>
+<tr>
+  <td><a href="[preferred]subversion/subversion-[version].zip">subversion-[version].zip</a></td>
+  <td class="checksum">3b16b5780a0cff364ec87cdce76b2fa910dbca05</td>
+  <td>[<a href="https://www.apache.org/dist/subversion/subversion-[version].zip.asc">PGP</a>]</td>
+</tr>
+</table>
+
+</div>  <!-- #recommended-release -->
+
+<div class="h3" id="supported-releases">
+<h3>Supported Release(s)
+  <a class="sectionlink" href="#supported-releases"
+    title="Link to this section">&para;</a>
+</h3>
+
+<p>In addition to the <a href="#recommended-release">recommended
+   release</a>, we generally support the latest release from at least
+   one prior release stream for security-related bugfixes only.
+   The currently supported older releases
+   are as follows:</p>
+
+<p style="font-size: 150%; text-align: center;">Apache Subversion [supported]</p>
+<table class="centered">
+<tr>
+  <th>File</th>
+  <th>Checksum (SHA1)</th>
+  <th>Signatures</th>
+</tr>
+<tr>
+  <td><a href="[preferred]subversion/subversion-[supported].tar.bz2">subversion-[supported].tar.bz2</a></td>
+  <td class="checksum">0999f5e16b146f824b952a5552826b9cb5c47b13</td>
+  <td>[<a href="https://www.apache.org/dist/subversion/subversion-[supported].tar.bz2.asc">PGP</a>]</td>
+</tr>
+<tr>
+  <td><a href="[preferred]subversion/subversion-[supported].tar.gz">subversion-[supported].tar.gz</a></td>
+  <td class="checksum">d1f8d45f97168d6271c58c5b25421cc32954c81b</td>
+  <td>[<a href="https://www.apache.org/dist/subversion/subversion-[supported].tar.gz.asc">PGP</a>]</td>
+</tr>
+<tr>
+  <td><a href="[preferred]subversion/subversion-[supported].zip">subversion-[supported].zip</a></td>
+  <td class="checksum">4f0802068c209543d516443e852ffce8a186763f</td>
+  <td>[<a href="https://www.apache.org/dist/subversion/subversion-[supported].zip.asc">PGP</a>]</td>
+</tr>
+</table>
+
+</div>  <!-- #supported-releases -->
+
+<!-- When in a pre-release phase, uncomment the following, and paste the
+     correct content after it. -->
+<!--
+<div class="h3" id="pre-releases">
+<h3>Pre-releases
+  <a class="sectionlink" href="#pre-releases"
+    title="Link to this section">&para;</a>
+</h3>
+
+<div class="notice">
+
+<p>The following releases are offered for pre-release testing.
+   The <a href="/prerelease-caveats"
+   >usual caveats</a> apply, including the fact that there are known
+   issues, and no upgrade path is promised for APIs and on-disk files
+   (working copies and repositories) between the pre-releases and the
+   final release.</p>
+  
+<p>Please report any issues to <a href="/mailing-lists.html#users-ml"
+   >users@subversion.apache.org</a>.</p>
+
+</div> --> <!-- .notice -->
+
+<!--
+<p style="font-size: 150%; text-align: center;">Subversion [prerelease]</p>
+<table class="centered">
+<tr>
+  <th>File</th>
+  <th>Checksum (SHA1)</th>
+  <th>Signatures</th>
+</tr>
+<tr>
+  <td><a href="[preferred]subversion/subversion-[prerelease].tar.bz2">subversion-[prerelease].tar.bz2</a></td>
+  <td class="checksum">26fcfa53e32e3f83724327d3fdb965dc28253260</td>
+  <td>[<a href="https://www.apache.org/dist/subversion/subversion-[prerelease].tar.bz2.asc">PGP</a>]</td>
+</tr><tr>
+  <td><a href="[preferred]subversion/subversion-[prerelease].tar.gz">subversion-[prerelease].tar.gz</a></td>
+  <td class="checksum">1c7386c0d32cf9789967d711415ccc28041295a9</td>
+  <td>[<a href="https://www.apache.org/dist/subversion/subversion-[prerelease].tar.gz.asc">PGP</a>]</td>
+</tr><tr>
+  <td><a href="[preferred]subversion/subversion-[prerelease].zip">subversion-[prerelease].zip</a></td>
+  <td class="checksum">f50cf8dd14a46c882c05f5436f1dec97169b58c0</td>
+  <td>[<a href="https://www.apache.org/dist/subversion/subversion-[prerelease].zip.asc">PGP</a>]</td>
+</tr>
+</table>
+
+</div>  --> <!-- #pre-releases -->
+
+<div class="h3" id="release-archives">
+<h3>Release archives
+  <a class="sectionlink" href="#release-archives"
+    title="Link to this section">&para;</a>
+</h3>
+
+<p>Looking for previous releases of Subversion?  All Subversion
+   releases are available for download from the
+   <a href="http://archive.apache.org/dist/subversion/" >Apache
+   distribution archive</a>.  Please note that, with the exception of
+   our <a href="#recommended-release">recommended</a> and
+   other <a href="#supported-releases">supported</a> releases,
+   distributions of Subversion found in the archives are not supported
+   by the community.  If you require support for an older version of
+   Subversion, and are not able to upgrade to a newer version,
+   consider contacting a commercial Subversion support vendor.</p>
+
+</div> <!-- #release-archives -->
+
+</div> <!-- #source-releases -->
+
+<div class="h2" id="verifying">
+<h2>Verifying the Integrity of Downloaded Files
+  <a class="sectionlink" href="#verifying"
+    title="Link to this section">&para;</a>
+</h2>
+
+<p>It is essential that you verify the integrity of the downloaded
+   files using the PGP signatures and/or file checksums.  Please read
+   <a href="http://httpd.apache.org/dev/verification.html">Verifying
+   Apache HTTP Server Releases</a> for more information on why you
+   should verify our releases.  (The same rationale applies to
+   Subversion as to HTTP Server.)</p>
+   
+<p>The PGP signatures can be verified using PGP or GPG. First download
+   the <a href="https://people.apache.org/keys/group/subversion.asc"
+   >KEYS</a> as well as the <code>asc</code> signature file for the
+   particular distribution. Make sure you get these files from the
+   <a href="http://www.apache.org/dist/subversion/" >main distribution
+   directory</a>, rather than from a mirror. Then verify the
+   signatures as follows:</p>
+
+<p><code> 
+% pgpk -a subversion.asc<br /> 
+% pgpv subversion-[version].tar.gz.asc<br /> 
+</code> 
+<em>or</em><br /> 
+<code> 
+% pgp -ka subversion.asc<br /> 
+% pgp subversion-[version].tar.gz.asc<br /> 
+</code> 
+<em>or</em><br /> 
+<code> 
+% gpg --import subversion.asc<br /> 
+% gpg --verify subversion-[version].tar.gz.asc
+</code></p>
+
+<p>Alternatively, you can verify at least the SHA1 checksum on the
+   files.  A unix program called <code>sha1</code> or <code>sha1sum</code>
+   is included in many unix distributions.  It is also available as
+   part of <a href="http://www.gnu.org/software/textutils/textutils.html"
+   >GNU Textutils</a>.</p>
+
+</div>  <!-- #verifying -->
+
+<div class="h2" id="installing">
+<h2>Building and Installing Subversion
+  <a class="sectionlink" href="#installing"
+    title="Link to this section">&para;</a>
+</h2>
+
+<p>For information about building and installing your freshly
+   downloaded source code release, see the
+   <a href="/source-code.html">Source Code</a> page.</p>
+
+</div>  <!-- #installing -->
+
+</div> <!-- #site-content -->
+</body>
+</html>

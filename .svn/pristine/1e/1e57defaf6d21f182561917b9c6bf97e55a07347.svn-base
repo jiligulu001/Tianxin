@@ -1,0 +1,240 @@
+  mod_dontdothat does not restrict requests from serf based clients.
+
+Summary:
+========
+
+  mod_dontdothat allows you to block update REPORT requests against certain
+  paths in the repository.  It expects the paths in the REPORT request
+  to be absolute URLs.  Serf based clients send relative URLs instead
+  of absolute URLs in many cases.  As a result these clients are not blocked
+  as configured by mod_dontdothat.
+
+Known vulnerable:
+=================
+
+  mod_dontdothat 1.4.0 through 1.7.13
+  mod_dontdothat 1.8.0 through 1.8.4
+
+  Note that mod_dontdothat was in contrib until 1.7.3 and contrib is not
+  included in Subversion source tarballs since 1.7.0, so Subversion 1.7.0
+  through 1.7.2 did not included mod_dontdothat (it was still available
+  from the repository tags for those versions under contrib).
+
+Known fixed:
+============
+
+  mod_dontdothat 1.7.14
+  mod_dontdothat 1.8.5 
+
+Details:
+========
+
+  mod_dontdothat allows the blocking of certain update REPORT requests based
+  on the paths of the requests.  This is typically done to block requests
+  against the root of the repository or the tags and branches directories where
+  there may be large trees and require a large amount of server resources to
+  fulfill.
+
+  Update REPORT requests are used to fulfill requests from the client for the
+  following commands:
+    checkout
+    update
+    export
+    diff (when a server URL or revision other than the BASE is specified)
+    status -u
+    copy $URL $WC
+
+  The request body for the request includes a src-path and sometimes a
+  dst-path entity.  mod_dontdothat matches those paths against the configured
+  paths to deny.  When matching the src-path and dst-path, mod_dontdothat
+  expects that an absolute URL will be provided.  However, serf clients in the
+  case of the src-path entity only provided a relative path.  Relative paths
+  have been supported by mod_dav_svn since before Subversion 1.0, but neon
+  based clients never produced them.
+
+  When a path is not an absolute URL then mod_dontdothat allowed the request.
+  As a result a serf client was not blocked by mod_dontdothat.  It's possible
+  for other clients to be modified to avoid the restrictions as well, though
+  we are unaware of anyone doing so.
+
+Severity:
+=========
+
+  CVSSv2 Base Score: 2.6
+  CVSSv2 Base Vector: AV:N/AC:H/Au:N/C:N/I:N/A:P
+
+  We consider this to be a low risk vulnerability.  mod_dontdothat is not
+  typically installed.  It is not intended or useful as an access control
+  mechanism.  Rather it exists primarily to prevent users unintentionally
+  making expensive requests against the server.
+
+  Clients may be able to use more resources than the server admin may have
+  expected and planned for based on their configuration.  This increased
+  resource usage may impact performance and the availability of the server.
+
+  A server admin who has configured mod_dontdothat would expect matching
+  update REPORT requests to be blocked, but they will not be with serf based
+  clients.  Serf was added as a http library in Subversion 1.4 as a compile
+  time option.  In 1.5 it was possible to chose it at run time, provided it
+  had been enabled at compile time.  With 1.8 it became the only supported
+  http library.
+
+  As a result clients that can evade these restrictions are in common use and
+  no special effort is required to do so.
+
+Recommendations:
+================
+
+  Admins using mod_dontdothat are advised to upgrade to 1.7.14 or 1.8.5.
+
+  It may be possible to configure http to disable all requests without an
+  absolute URL in the update REPORT requests.  However, doing so has the 
+  effect of disabling all serf based clients.  Given that serf is the only
+  http library for 1.8.x we do not recommend doing so.  
+
+References:
+===========
+
+  CVE-2013-4505  (Subversion)
+
+Reported by:
+============
+
+  Ben Reser, WANdisco 
+
+Patches:
+========
+
+Patch for Subversion 1.7.x and 1.8.x:
+[[[
+Index: tools/server-side/mod_dontdothat/mod_dontdothat.c
+===================================================================
+--- tools/server-side/mod_dontdothat/mod_dontdothat.c	(revision 1541183)
++++ tools/server-side/mod_dontdothat/mod_dontdothat.c	(working copy)
+@@ -30,6 +30,7 @@
+ #include <util_filter.h>
+ #include <ap_config.h>
+ #include <apr_strings.h>
++#include <apr_uri.h>
+ 
+ #include <expat.h>
+ 
+@@ -36,6 +37,8 @@
+ #include "mod_dav_svn.h"
+ #include "svn_string.h"
+ #include "svn_config.h"
++#include "svn_path.h"
++#include "private/svn_fspath.h"
+ 
+ module AP_MODULE_DECLARE_DATA dontdothat_module;
+ 
+@@ -161,6 +164,34 @@
+     }
+ }
+ 
++/* duplicate of dav_svn__log_err() from mod_dav_svn/util.c */
++static void
++log_dav_err(request_rec *r,
++            dav_error *err,
++            int level)
++{
++    dav_error *errscan;
++
++    /* Log the errors */
++    /* ### should have a directive to log the first or all */
++    for (errscan = err; errscan != NULL; errscan = errscan->prev) {
++        apr_status_t status;
++
++        if (errscan->desc == NULL)
++            continue;
++
++#if AP_MODULE_MAGIC_AT_LEAST(20091119,0)
++        status = errscan->aprerr;
++#else
++        status = errscan->save_errno;
++#endif
++
++        ap_log_rerror(APLOG_MARK, level, status, r,
++                      "%s  [%d, #%d]",
++                      errscan->desc, errscan->status, errscan->error_id);
++    }
++}
++
+ static svn_boolean_t
+ is_this_legal(dontdothat_filter_ctx *ctx, const char *uri)
+ {
+@@ -167,20 +198,37 @@
+   const char *relative_path;
+   const char *cleaned_uri;
+   const char *repos_name;
++  const char *uri_path;
+   int trailing_slash;
+   dav_error *derr;
+ 
+-  /* Ok, so we need to skip past the scheme, host, etc. */
+-  uri = ap_strstr_c(uri, "://");
+-  if (uri)
+-    uri = ap_strchr_c(uri + 3, '/');
++  /* uri can be an absolute uri or just a path, we only want the path to match
++   * against */
++  if (uri && svn_path_is_url(uri))
++    {
++      apr_uri_t parsed_uri;
++      apr_status_t rv = apr_uri_parse(ctx->r->pool, uri, &parsed_uri);
++      if (APR_SUCCESS != rv)
++        {
++          /* Error parsing the URI, log and reject request. */
++          ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, ctx->r,
++                        "mod_dontdothat: blocked request after failing "
++                        "to parse uri: '%s'", uri);
++          return FALSE;
++        }
++      uri_path = parsed_uri.path;
++    }
++  else
++    {
++      uri_path = uri;
++    }
+ 
+-  if (uri)
++  if (uri_path)
+     {
+       const char *repos_path;
+ 
+       derr = dav_svn_split_uri(ctx->r,
+-                               uri,
++                               uri_path,
+                                ctx->cfg->base_path,
+                                &cleaned_uri,
+                                &trailing_slash,
+@@ -194,7 +242,7 @@
+           if (! repos_path)
+             repos_path = "";
+ 
+-          repos_path = apr_psprintf(ctx->r->pool, "/%s", repos_path);
++          repos_path = svn_fspath__canonicalize(repos_path, ctx->r->pool);
+ 
+           /* First check the special cases that are always legal... */
+           for (idx = 0; idx < ctx->allow_recursive_ops->nelts; ++idx)
+@@ -228,7 +276,20 @@
+                 }
+             }
+         }
++      else
++        {
++          log_dav_err(ctx->r, derr, APLOG_ERR);
++          return FALSE;
++        }
++
+     }
++  else
++    {
++      ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, ctx->r,
++                    "mod_dontdothat: empty uri passed to is_this_legal(), "
++                    "module bug?");
++      return FALSE;
++    }
+ 
+   return TRUE;
+ }
+]]]

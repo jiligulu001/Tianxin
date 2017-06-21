@@ -34,9 +34,6 @@ public class INfo_Bean {
     private String pH;
     private String base;
 
-    public String getCurTime() {
-        return currentDate;
-    }
     public  String getDeviceName(){ return  deviceName; }
     public  void setDeviceName(String deviceName){ this.deviceName = deviceName; }
 

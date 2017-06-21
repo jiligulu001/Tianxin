@@ -1,0 +1,270 @@
+  mod_dav_svn is vulnerable to a remotely triggerable segfault DoS
+  vulnerability with certain invalid REPORT requests.
+
+Summary:
+========
+
+  Subversion's mod_dav_svn Apache HTTPD server module will crash when it
+  receives a REPORT request for some invalid formatted special URIs.
+
+  This can lead to a DoS.  There are no known instances of this problem
+  being exploited in the wild.
+
+Known vulnerable:
+=================
+
+  Subversion HTTPD servers 1.0.0 through 1.7.18 (inclusive)
+  Subversion HTTPD servers 1.8.0 through 1.8.10 (inclusive)
+
+Known fixed:
+============
+
+  Subversion 1.7.19
+  Subversion 1.8.11
+
+Details:
+========
+
+  Subversion's HTTP support is implemented as an interaction between mod_dav
+  and mod_dav_svn.  mod_dav asks mod_dav_svn to fill a resource struct when
+  a request is made.  When the resource doesn't exist in the repository the
+  repository path is calculated as a NULL.  Later mod_dav calls into
+  mod_dav_svn to actually handle the request and Subversion attempts to
+  use the repostiory path which is NULL, resulting in the SEGFAULT.
+
+Severity:
+=========
+
+  CVSSv2 Base Score: 5.0
+  CVSSv2 Base Vector: AV:N/AC:L/Au:N/C:N/I:N/A:P
+
+  We consider this to be a medium risk vulnerability.  Repositories which
+  allow for anonymous reads will be vulnerable without authentication.
+  Unfortunately, no special configuration is required and all mod_dav_svn
+  servers are vulnerable.
+
+  A remote attacker may be able to crash a Subversion server.  Many Apache
+  servers will respawn the listener processes, but a determined attacker
+  will be able to crash these processes as they appear, denying service to
+  legitimate users.  Servers using threaded MPMs will close the connection
+  on other clients being served by the same process that services the
+  request from the attacker.  In either case there is an increased
+  processing impact of restarting a process and the cost of per process
+  caches being lost.
+
+Recommendations:
+================
+
+  We recommend all users to upgrade to Subversion 1.8.11.  Users of
+  Subversion 1.7.x or 1.8.x who are unable to upgrade may apply the
+  included patch.
+
+  New Subversion packages can be found at:
+  http://subversion.apache.org/packages.html
+
+  No known workarounds are available.
+
+References:
+===========
+
+  CVE-2014-3580  (Subversion)
+
+Reported by:
+============
+
+  Evgeny Kotkov, VisualSVN
+
+Patches:
+========
+
+  Patch against 1.7.18:
+
+[[[
+Index: subversion/mod_dav_svn/reports/deleted-rev.c
+===================================================================
+--- subversion/mod_dav_svn/reports/deleted-rev.c	(revision 1624477)
++++ subversion/mod_dav_svn/reports/deleted-rev.c	(working copy)
+@@ -56,6 +56,9 @@ dav_svn__get_deleted_rev_report(const dav_resource
+   dav_error *derr = NULL;
+ 
+   /* Sanity check. */
++  if (!resource->info->repos_path)
++    return dav_svn__new_error(resource->pool, HTTP_BAD_REQUEST, 0,
++                              "The request does not specify a repository path");
+   ns = dav_svn__find_ns(doc->namespaces, SVN_XML_NAMESPACE);
+   if (ns == -1)
+     return dav_svn__new_error_tag(resource->pool, HTTP_BAD_REQUEST, 0,
+Index: subversion/mod_dav_svn/reports/file-revs.c
+===================================================================
+--- subversion/mod_dav_svn/reports/file-revs.c	(revision 1624477)
++++ subversion/mod_dav_svn/reports/file-revs.c	(working copy)
+@@ -251,6 +251,9 @@ dav_svn__file_revs_report(const dav_resource *reso
+   arb.repos = resource->info->repos;
+ 
+   /* Sanity check. */
++  if (!resource->info->repos_path)
++    return dav_svn__new_error(resource->pool, HTTP_BAD_REQUEST, 0,
++                              "The request does not specify a repository path");
+   ns = dav_svn__find_ns(doc->namespaces, SVN_XML_NAMESPACE);
+   /* ### This is done on other places, but the document element is
+      in this namespace, so is this necessary at all? */
+Index: subversion/mod_dav_svn/reports/get-location-segments.c
+===================================================================
+--- subversion/mod_dav_svn/reports/get-location-segments.c	(revision 1624477)
++++ subversion/mod_dav_svn/reports/get-location-segments.c	(working copy)
+@@ -123,6 +123,9 @@ dav_svn__get_location_segments_report(const dav_re
+   struct location_segment_baton location_segment_baton;
+ 
+   /* Sanity check. */
++  if (!resource->info->repos_path)
++    return dav_svn__new_error(resource->pool, HTTP_BAD_REQUEST, 0,
++                              "The request does not specify a repository path");
+   ns = dav_svn__find_ns(doc->namespaces, SVN_XML_NAMESPACE);
+   if (ns == -1)
+     {
+Index: subversion/mod_dav_svn/reports/get-locations.c
+===================================================================
+--- subversion/mod_dav_svn/reports/get-locations.c	(revision 1624477)
++++ subversion/mod_dav_svn/reports/get-locations.c	(working copy)
+@@ -106,6 +106,9 @@ dav_svn__get_locations_report(const dav_resource *
+                                       sizeof(svn_revnum_t));
+ 
+   /* Sanity check. */
++  if (!resource->info->repos_path)
++    return dav_svn__new_error(resource->pool, HTTP_BAD_REQUEST, 0,
++                              "The request does not specify a repository path");
+   ns = dav_svn__find_ns(doc->namespaces, SVN_XML_NAMESPACE);
+   if (ns == -1)
+     {
+Index: subversion/mod_dav_svn/reports/log.c
+===================================================================
+--- subversion/mod_dav_svn/reports/log.c	(revision 1624477)
++++ subversion/mod_dav_svn/reports/log.c	(working copy)
+@@ -307,6 +307,9 @@ dav_svn__log_report(const dav_resource *resource,
+     = apr_array_make(resource->pool, 1, sizeof(const char *));
+ 
+   /* Sanity check. */
++  if (!resource->info->repos_path)
++    return dav_svn__new_error(resource->pool, HTTP_BAD_REQUEST, 0,
++                              "The request does not specify a repository path");
+   ns = dav_svn__find_ns(doc->namespaces, SVN_XML_NAMESPACE);
+   if (ns == -1)
+     {
+Index: subversion/mod_dav_svn/reports/mergeinfo.c
+===================================================================
+--- subversion/mod_dav_svn/reports/mergeinfo.c	(revision 1624477)
++++ subversion/mod_dav_svn/reports/mergeinfo.c	(working copy)
+@@ -67,6 +67,9 @@ dav_svn__get_mergeinfo_report(const dav_resource *
+     = apr_array_make(resource->pool, 0, sizeof(const char *));
+ 
+   /* Sanity check. */
++  if (!resource->info->repos_path)
++    return dav_svn__new_error(resource->pool, HTTP_BAD_REQUEST, 0,
++                              "The request does not specify a repository path");
+   ns = dav_svn__find_ns(doc->namespaces, SVN_XML_NAMESPACE);
+   if (ns == -1)
+     {
+]]]
+
+  Patch against 1.8.10:
+
+[[[
+Index: subversion/mod_dav_svn/reports/deleted-rev.c
+===================================================================
+--- subversion/mod_dav_svn/reports/deleted-rev.c	(revision 1624477)
++++ subversion/mod_dav_svn/reports/deleted-rev.c	(working copy)
+@@ -56,6 +56,9 @@ dav_svn__get_deleted_rev_report(const dav_resource
+   dav_error *derr = NULL;
+ 
+   /* Sanity check. */
++  if (!resource->info->repos_path)
++    return dav_svn__new_error(resource->pool, HTTP_BAD_REQUEST, 0,
++                              "The request does not specify a repository path");
+   ns = dav_svn__find_ns(doc->namespaces, SVN_XML_NAMESPACE);
+   if (ns == -1)
+     return dav_svn__new_error_tag(resource->pool, HTTP_BAD_REQUEST, 0,
+Index: subversion/mod_dav_svn/reports/file-revs.c
+===================================================================
+--- subversion/mod_dav_svn/reports/file-revs.c	(revision 1624477)
++++ subversion/mod_dav_svn/reports/file-revs.c	(working copy)
+@@ -254,6 +254,9 @@ dav_svn__file_revs_report(const dav_resource *reso
+   arb.repos = resource->info->repos;
+ 
+   /* Sanity check. */
++  if (!resource->info->repos_path)
++    return dav_svn__new_error(resource->pool, HTTP_BAD_REQUEST, 0,
++                              "The request does not specify a repository path");
+   ns = dav_svn__find_ns(doc->namespaces, SVN_XML_NAMESPACE);
+   /* ### This is done on other places, but the document element is
+      in this namespace, so is this necessary at all? */
+Index: subversion/mod_dav_svn/reports/get-location-segments.c
+===================================================================
+--- subversion/mod_dav_svn/reports/get-location-segments.c	(revision 1624477)
++++ subversion/mod_dav_svn/reports/get-location-segments.c	(working copy)
+@@ -123,6 +123,9 @@ dav_svn__get_location_segments_report(const dav_re
+   struct location_segment_baton location_segment_baton;
+ 
+   /* Sanity check. */
++  if (!resource->info->repos_path)
++    return dav_svn__new_error(resource->pool, HTTP_BAD_REQUEST, 0,
++                              "The request does not specify a repository path");
+   ns = dav_svn__find_ns(doc->namespaces, SVN_XML_NAMESPACE);
+   if (ns == -1)
+     {
+Index: subversion/mod_dav_svn/reports/get-locations.c
+===================================================================
+--- subversion/mod_dav_svn/reports/get-locations.c	(revision 1624477)
++++ subversion/mod_dav_svn/reports/get-locations.c	(working copy)
+@@ -106,6 +106,9 @@ dav_svn__get_locations_report(const dav_resource *
+                                       sizeof(svn_revnum_t));
+ 
+   /* Sanity check. */
++  if (!resource->info->repos_path)
++    return dav_svn__new_error(resource->pool, HTTP_BAD_REQUEST, 0,
++                              "The request does not specify a repository path");
+   ns = dav_svn__find_ns(doc->namespaces, SVN_XML_NAMESPACE);
+   if (ns == -1)
+     {
+Index: subversion/mod_dav_svn/reports/inherited-props.c
+===================================================================
+--- subversion/mod_dav_svn/reports/inherited-props.c	(revision 1624477)
++++ subversion/mod_dav_svn/reports/inherited-props.c	(working copy)
+@@ -63,6 +63,9 @@ dav_svn__get_inherited_props_report(const dav_reso
+   apr_pool_t *iterpool;
+ 
+   /* Sanity check. */
++  if (!resource->info->repos_path)
++    return dav_svn__new_error(resource->pool, HTTP_BAD_REQUEST, 0,
++                              "The request does not specify a repository path");
+   ns = dav_svn__find_ns(doc->namespaces, SVN_XML_NAMESPACE);
+   if (ns == -1)
+     {
+Index: subversion/mod_dav_svn/reports/log.c
+===================================================================
+--- subversion/mod_dav_svn/reports/log.c	(revision 1624477)
++++ subversion/mod_dav_svn/reports/log.c	(working copy)
+@@ -307,6 +307,9 @@ dav_svn__log_report(const dav_resource *resource,
+     = apr_array_make(resource->pool, 1, sizeof(const char *));
+ 
+   /* Sanity check. */
++  if (!resource->info->repos_path)
++    return dav_svn__new_error(resource->pool, HTTP_BAD_REQUEST, 0,
++                              "The request does not specify a repository path");
+   ns = dav_svn__find_ns(doc->namespaces, SVN_XML_NAMESPACE);
+   if (ns == -1)
+     {
+Index: subversion/mod_dav_svn/reports/mergeinfo.c
+===================================================================
+--- subversion/mod_dav_svn/reports/mergeinfo.c	(revision 1624477)
++++ subversion/mod_dav_svn/reports/mergeinfo.c	(working copy)
+@@ -67,6 +67,9 @@ dav_svn__get_mergeinfo_report(const dav_resource *
+     = apr_array_make(resource->pool, 0, sizeof(const char *));
+ 
+   /* Sanity check. */
++  if (!resource->info->repos_path)
++    return dav_svn__new_error(resource->pool, HTTP_BAD_REQUEST, 0,
++                              "The request does not specify a repository path");
+   ns = dav_svn__find_ns(doc->namespaces, SVN_XML_NAMESPACE);
+   if (ns == -1)
+     {
+]]]
