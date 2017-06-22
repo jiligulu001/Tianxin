@@ -25,7 +25,6 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.lzy.okgo.OkGo;
-import com.socks.library.KLog;
 import com.tianxin.tianxin.R;
 import com.tianxin.tianxin.adapter.PlcList_Adapter;
 import com.tianxin.tianxin.adapter.PlcValue_Adapter;
@@ -49,23 +48,23 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener {
 
     @Bind(R.id.tv_home_time)
-    TextView mTvHomeTime;
-    //    @Bind(R.id.tv_home_temp)
-    //    EditText           mTvHomeTemp;
-    //    @Bind(R.id.tv_home_jacket)
-    //    EditText           mTvHomeJacket;
-    //    @Bind(R.id.tv_home_do)
-    //    EditText           mTvHomeDo;
-    //    @Bind(R.id.tv_home_ph)
-    //    EditText           mTvHomePh;
-    //    @Bind(R.id.tv_home_o2)
-    //    EditText           mTvHomeO2;
-    //    @Bind(R.id.tv_home_mix)
-    //    EditText           mTvHomeMix;
-    //    @Bind(R.id.tv_home_av)
-    //    EditText           mTvHomeAv;
-    //    @Bind(R.id.tv_home_base)
-    //EditText mTvHomeBase;
+    TextView           mTvHomeTime;
+    @Bind(R.id.tv_home_temp)
+    EditText           mTvHomeTemp;
+    @Bind(R.id.tv_home_jacket)
+    EditText           mTvHomeJacket;
+    @Bind(R.id.tv_home_do)
+    EditText           mTvHomeDo;
+    @Bind(R.id.tv_home_ph)
+    EditText           mTvHomePh;
+    @Bind(R.id.tv_home_o2)
+    EditText           mTvHomeO2;
+    @Bind(R.id.tv_home_mix)
+    EditText           mTvHomeMix;
+    @Bind(R.id.tv_home_av)
+    EditText           mTvHomeAv;
+    @Bind(R.id.tv_home_base)
+    EditText           mTvHomeBase;
     @Bind(R.id.tv_home_current_time)
     TextView           mTvHomeCurrentTime;
     @Bind(R.id.home_refresh)
@@ -77,8 +76,8 @@ public class MainActivity extends AppCompatActivity
     private PlcValue_Adapter    mPlcValue_adapter;
     private AlertDialog.Builder mBuilder;
     private WheelView           mWva;
-    private List<INfo_Bean>  mPlcList;
-    private List<PlcList_Bean> mPlcNameList;
+    private List<INfo_Bean>     mPlcList;
+    private List<PlcList_Bean>  mPlcNameList;
     private List<String> mList = new ArrayList<>();
     private Handler handler;
     private String  mUrl;
@@ -124,23 +123,23 @@ public class MainActivity extends AppCompatActivity
         //设置刷新出现的位置
         mHomeRefresh.setProgressViewEndTarget(false, 200);
 
-        //        mTvHomeTemp.setFocusable(false);
-        //        mTvHomeJacket.setFocusable(false);
-        //        mTvHomeDo.setFocusable(false);
-        //        mTvHomePh.setFocusable(false);
-        //        mTvHomeO2.setFocusable(false);
-        //        mTvHomeMix.setFocusable(false);
-        //        mTvHomeAv.setFocusable(false);
-        //        mTvHomeBase.setFocusable(false);
+        mTvHomeTemp.setFocusable(false);
+        mTvHomeJacket.setFocusable(false);
+        mTvHomeDo.setFocusable(false);
+        mTvHomePh.setFocusable(false);
+        mTvHomeO2.setFocusable(false);
+        mTvHomeMix.setFocusable(false);
+        mTvHomeAv.setFocusable(false);
+        mTvHomeBase.setFocusable(false);
 
-        //        mTvHomeTemp.setFocusableInTouchMode(false);
-        //        mTvHomeJacket.setFocusableInTouchMode(false);
-        //        mTvHomeDo.setFocusableInTouchMode(false);
-        //        mTvHomePh.setFocusableInTouchMode(false);
-        //        mTvHomeO2.setFocusableInTouchMode(false);
-        //        mTvHomeMix.setFocusableInTouchMode(false);
-        //        mTvHomeAv.setFocusableInTouchMode(false);
-        //        mTvHomeBase.setFocusableInTouchMode(false);
+        mTvHomeTemp.setFocusableInTouchMode(false);
+        mTvHomeJacket.setFocusableInTouchMode(false);
+        mTvHomeDo.setFocusableInTouchMode(false);
+        mTvHomePh.setFocusableInTouchMode(false);
+        mTvHomeO2.setFocusableInTouchMode(false);
+        mTvHomeMix.setFocusableInTouchMode(false);
+        mTvHomeAv.setFocusableInTouchMode(false);
+        mTvHomeBase.setFocusableInTouchMode(false);
 
         mPlcValue_adapter = new PlcValue_Adapter(R.layout.item_main_list);
 
@@ -163,7 +162,7 @@ public class MainActivity extends AppCompatActivity
 
     private void getPlcList() {
 
-        OkGo.get("http://"+SPCache.getString(Constants.IP,"127.0.0.1")+":"+SPCache.getString(Constants.PORT,"8089")+"/test/")
+        OkGo.get("http://" + SPCache.getString(Constants.IP, "127.0.0.1") + ":" + SPCache.getString(Constants.PORT, "8089") + "/test/")
                 .tag(this)
                 .execute(new StringDialogCallback(this) {
                     @Override
@@ -249,7 +248,7 @@ public class MainActivity extends AppCompatActivity
 
     private void getPlcInfo() {
         //OkGo.get(Constants.PLCINFO + mUrl + "/")
-        OkGo.get("http://"+SPCache.getString(Constants.IP,"127.0.0.1")+":"+SPCache.getString(Constants.PORT,"8089")+"/test/"+mUrl+"/")
+        OkGo.get("http://" + SPCache.getString(Constants.IP, "127.0.0.1") + ":" + SPCache.getString(Constants.PORT, "8089") + "/test/" + mUrl + "/")
                 .tag(this)
                 .execute(new StringDialogCallback(this) {
                     @Override
@@ -272,14 +271,14 @@ public class MainActivity extends AppCompatActivity
 
     private void display_home(INfo_Bean bean) {
         mTvHomeTime.setText("PLC设备编号" + mUrl);
-        //        mTvHomeTemp.setText(bean.getTEMP() + "℃");
-        //        mTvHomeJacket.setText(bean.getJacket_TEMP() + "℃");
-        //        mTvHomeDo.setText(bean.getDO() + "%");
-        //        mTvHomePh.setText(bean.getPH() + "%");
-        //        mTvHomeO2.setText(bean.getO2() + "%");
-        //        mTvHomeMix.setText(bean.getMix() + "rpm");
-        //        mTvHomeAv.setText(bean.getJacket_SV() + "℃");
-        //mTvHomeBase.setText(bean.getBase() + "rpm");
+        mTvHomeTemp.setText(bean.getTemp() + "℃");
+        //mTvHomeJacket.setText(bean.getJacket_TEMP() + "℃");
+        mTvHomeDo.setText(bean.getDO() + "%");
+        mTvHomePh.setText(bean.getPH() + "%");
+        mTvHomeO2.setText(bean.getO2() + "%");
+        //mTvHomeMix.setText(bean.getMix() + "rpm");
+        //mTvHomeAv.setText(bean.getJacket_SV() + "℃");
+        mTvHomeBase.setText(bean.getBase() + "rpm");
         mTvHomeCurrentTime.setText("最后刷新时间" + bean.getCurrentDate());
     }
 
