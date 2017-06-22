@@ -3,10 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/RxRxTools-library/RxRxTools-library.iml" filepath="$PROJECT_DIR$/RxRxTools-library/RxRxTools-library.iml" />
-      <module fileurl="file://$PROJECT_DIR$/RxRxTools-library/RxRxTools-library.iml" filepath="$PROJECT_DIR$/RxRxTools-library/RxRxTools-library.iml" />
-      <module fileurl="file://$PROJECT_DIR$/TianXin.iml" filepath="$PROJECT_DIR$/TianXin.iml" />
       <module fileurl="file://$PROJECT_DIR$/Tianxin.iml" filepath="$PROJECT_DIR$/Tianxin.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
