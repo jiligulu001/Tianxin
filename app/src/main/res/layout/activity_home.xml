@@ -19,6 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
+            app:navigationIcon="@mipmap/ic_back"
             app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
     </android.support.design.widget.AppBarLayout>
@@ -37,7 +38,7 @@
             android:textSize="18sp"/>
 
         <com.kyleduo.switchbutton.SwitchButton
-            android:id="@+id/sb_text_state"
+            android:id="@+id/sb_temp"
             style="@style/SwitchButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -49,13 +50,13 @@
             />
 
         <EditText
-            android:inputType="number"
+            android:id="@+id/et_temp"
             android:layout_width="110dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
+            android:inputType="number"
             />
-
-
     </LinearLayout>
+
 
 </LinearLayout>

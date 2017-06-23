@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("PLC");
+        toolbar.setTitle("实时数据");
         //toolbar.setOverflowIcon(getResources().getDrawable(R.mipmap.ic_del));
         setSupportActionBar(toolbar);
 
