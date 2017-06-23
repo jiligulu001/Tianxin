@@ -18,7 +18,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,25 +52,25 @@ public class MainActivity extends AppCompatActivity
     @Bind(R.id.tv_home_temp)
     TextView           mTvHomeTemp;
     @Bind(R.id.tv_home_do)
-    EditText           mTvHomeDo;
+    TextView           mTvHomeDo;
     @Bind(R.id.tv_home_ph)
-    EditText           mTvHomePh;
+    TextView           mTvHomePh;
     @Bind(R.id.tv_home_o2)
-    EditText           mTvHomeO2;
+    TextView           mTvHomeO2;
     @Bind(R.id.tv_home_stir)
-    EditText           mTvHomeStir;
+    TextView           mTvHomeStir;
     @Bind(R.id.tv_home_feed)
-    EditText           mTvHomeFeed;
+    TextView           mTvHomeFeed;
     @Bind(R.id.tv_home_acid)
-    EditText           mTvHomeAcid;
+    TextView           mTvHomeAcid;
     @Bind(R.id.tv_home_base)
-    EditText           mTvHomeBase;
+    TextView           mTvHomeBase;
     @Bind(R.id.tv_home_ca)
-    EditText           mTvHomeCa;
+    TextView           mTvHomeCa;
     @Bind(R.id.tv_home_n2)
-    EditText           mTvHomeN2;
+    TextView           mTvHomeN2;
     @Bind(R.id.tv_home_co2)
-    EditText           mTvHomeCo2;
+    TextView           mTvHomeCo2;
     @Bind(R.id.tv_home_current_time)
     TextView           mTvHomeCurrentTime;
     @Bind(R.id.home_refresh)
@@ -129,31 +128,6 @@ public class MainActivity extends AppCompatActivity
         mHomeRefresh.setDistanceToTriggerSync(100);
         //设置刷新出现的位置
         mHomeRefresh.setProgressViewEndTarget(false, 200);
-
-        mTvHomeTemp.setFocusable(false);
-        mTvHomeDo.setFocusable(false);
-        mTvHomePh.setFocusable(false);
-        mTvHomeO2.setFocusable(false);
-        mTvHomeStir.setFocusable(false);
-        mTvHomeFeed.setFocusable(false);
-        mTvHomeAcid.setFocusable(false);
-        mTvHomeBase.setFocusable(false);
-        mTvHomeCa.setFocusable(false);
-        mTvHomeN2.setFocusable(false);
-        mTvHomeCo2.setFocusable(false);
-
-        mTvHomeTemp.setFocusableInTouchMode(false);
-        mTvHomeDo.setFocusableInTouchMode(false);
-        mTvHomePh.setFocusableInTouchMode(false);
-        mTvHomeO2.setFocusableInTouchMode(false);
-        mTvHomeStir.setFocusableInTouchMode(false);
-        mTvHomeFeed.setFocusableInTouchMode(false);
-        mTvHomeAcid.setFocusableInTouchMode(false);
-        mTvHomeBase.setFocusableInTouchMode(false);
-        mTvHomeCa.setFocusableInTouchMode(false);
-        mTvHomeN2.setFocusableInTouchMode(false);
-        mTvHomeCo2.setFocusableInTouchMode(false);
-
         mPlcValue_adapter = new PlcValue_Adapter(R.layout.item_main_list);
 
 
@@ -318,7 +292,7 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(MainActivity.this, "设置", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.nav_send:
-                startActivity(new Intent(MainActivity.this, HomeActivity.class));
+                //startActivity(new Intent(MainActivity.this, HomeActivity.class));
                 Bundle bundle = new Bundle();
                 bundle.putString("deviceName",mUrl);
                 Intent intent = new Intent(MainActivity.this, HomeActivity.class);

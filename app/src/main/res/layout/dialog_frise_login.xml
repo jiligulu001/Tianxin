@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:hint="IP:"
-        android:inputType="number"/>
+        />
 
     <EditText
         android:id="@+id/frist_dailog_port"
@@ -20,5 +20,5 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:hint="PORT:"
-        android:inputType="number"/>
+        />
 </LinearLayout>

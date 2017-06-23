@@ -20,7 +20,6 @@ import com.tianxin.tianxin.bean.PlcList_Bean;
 import com.tianxin.tianxin.cache.SPCache;
 import com.tianxin.tianxin.callback.StringDialogCallback;
 import com.tianxin.tianxin.config.Constants;
-import com.vondear.rxtools.RxActivityUtils;
 
 import org.json.JSONObject;
 
@@ -70,9 +69,6 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
-        Bundle bundle = this.getIntent().getExtras();
-        mUrl = bundle.getString("deviceName");
-
         initView();
         initData();
         initEvent();
@@ -93,7 +89,8 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void initData() {
-        mSbTemp.isChecked();
+        Bundle bundle = this.getIntent().getExtras();
+        mUrl = bundle.getString("deviceName");
     }
 
     private void initEvent() {

@@ -45,4 +45,11 @@
         <item name="android:paddingTop">4dp</item>
         <item name="android:paddingBottom">4dp</item>
     </style>
+
+    <!--长的横向分割线的style-->
+    <style name="longline_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1px</item>
+        <item name="android:background">#cbcbcb</item>
+    </style>
 </resources>

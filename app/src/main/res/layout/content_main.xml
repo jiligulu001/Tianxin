@@ -47,8 +47,8 @@
                     android:textSize="18sp"/>
 
                 <!--<android.support.v7.widget.RecyclerView-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="match_parent">-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent">-->
 
                 <!--</android.support.v7.widget.RecyclerView>-->
                 <LinearLayout
@@ -59,9 +59,8 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="100dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
                         android:gravity="center_vertical"
                         android:text="temp:"
                         android:textColor="@color/black"
@@ -69,11 +68,14 @@
 
                     <TextView
                         android:id="@+id/tv_home_temp"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:hint="temp"/>
+                        android:gravity="center_vertical"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"/>
                 </LinearLayout>
+
+                <ImageView style="@style/longline_style"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -83,21 +85,23 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="100dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
                         android:gravity="center_vertical"
                         android:text="dO:"
                         android:textColor="@color/black"
                         android:textSize="18sp"/>
 
-                    <EditText
+                    <TextView
                         android:id="@+id/tv_home_do"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:hint="dO"/>
+                        android:gravity="center_vertical"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"/>
                 </LinearLayout>
+
+                <ImageView style="@style/longline_style"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -107,21 +111,23 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="100dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
                         android:gravity="center_vertical"
                         android:text="pH:"
                         android:textColor="@color/black"
                         android:textSize="18sp"/>
 
-                    <EditText
+                    <TextView
                         android:id="@+id/tv_home_ph"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:hint="pH"/>
+                        android:gravity="center_vertical"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"/>
                 </LinearLayout>
+
+                <ImageView style="@style/longline_style"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -131,21 +137,23 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="100dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
                         android:gravity="center_vertical"
                         android:text="stir:"
                         android:textColor="@color/black"
                         android:textSize="18sp"/>
 
-                    <EditText
+                    <TextView
                         android:id="@+id/tv_home_stir"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:hint="stir"/>
+                        android:gravity="center_vertical"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"/>
                 </LinearLayout>
+
+                <ImageView style="@style/longline_style"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -155,21 +163,23 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="100dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
                         android:gravity="center_vertical"
                         android:text="feed:"
                         android:textColor="@color/black"
                         android:textSize="18sp"/>
 
-                    <EditText
+                    <TextView
                         android:id="@+id/tv_home_feed"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:hint="feed"/>
+                        android:gravity="center_vertical"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"/>
                 </LinearLayout>
+
+                <ImageView style="@style/longline_style"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -179,21 +189,23 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="100dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
                         android:gravity="center_vertical"
                         android:text="acid:"
                         android:textColor="@color/black"
                         android:textSize="18sp"/>
 
-                    <EditText
+                    <TextView
                         android:id="@+id/tv_home_acid"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:hint="acid"/>
+                        android:gravity="center_vertical"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"/>
                 </LinearLayout>
+
+                <ImageView style="@style/longline_style"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -203,21 +215,23 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="100dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
                         android:gravity="center_vertical"
                         android:text="base:"
                         android:textColor="@color/black"
                         android:textSize="18sp"/>
 
-                    <EditText
+                    <TextView
                         android:id="@+id/tv_home_base"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:hint="base"/>
+                        android:gravity="center_vertical"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"/>
                 </LinearLayout>
+
+                <ImageView style="@style/longline_style"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -227,21 +241,23 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="100dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
                         android:gravity="center_vertical"
                         android:text="ca:"
                         android:textColor="@color/black"
                         android:textSize="18sp"/>
 
-                    <EditText
+                    <TextView
                         android:id="@+id/tv_home_ca"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:hint="ca"/>
+                        android:gravity="center_vertical"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"/>
                 </LinearLayout>
+
+                <ImageView style="@style/longline_style"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -251,21 +267,23 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="100dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
                         android:gravity="center_vertical"
                         android:text="O2:"
                         android:textColor="@color/black"
                         android:textSize="18sp"/>
 
-                    <EditText
+                    <TextView
                         android:id="@+id/tv_home_o2"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:hint="O2"/>
+                        android:gravity="center_vertical"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"/>
                 </LinearLayout>
+
+                <ImageView style="@style/longline_style"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -275,21 +293,23 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="100dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
                         android:gravity="center_vertical"
                         android:text="N2:"
                         android:textColor="@color/black"
                         android:textSize="18sp"/>
 
-                    <EditText
+                    <TextView
                         android:id="@+id/tv_home_n2"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:hint="N2"/>
+                        android:gravity="center_vertical"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"/>
                 </LinearLayout>
+
+                <ImageView style="@style/longline_style"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -299,21 +319,23 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="100dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
                         android:gravity="center_vertical"
                         android:text="CO2:"
                         android:textColor="@color/black"
                         android:textSize="18sp"/>
 
-                    <EditText
+                    <TextView
                         android:id="@+id/tv_home_co2"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:hint="CO2"/>
+                        android:gravity="center_vertical"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"/>
                 </LinearLayout>
+
+                <ImageView style="@style/longline_style"/>
 
                 <TextView
                     android:id="@+id/tv_home_current_time"
