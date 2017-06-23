@@ -50,21 +50,27 @@ public class MainActivity extends AppCompatActivity
     @Bind(R.id.tv_home_time)
     TextView           mTvHomeTime;
     @Bind(R.id.tv_home_temp)
-    EditText           mTvHomeTemp;
-    @Bind(R.id.tv_home_jacket)
-    EditText           mTvHomeJacket;
+    TextView           mTvHomeTemp;
     @Bind(R.id.tv_home_do)
     EditText           mTvHomeDo;
     @Bind(R.id.tv_home_ph)
     EditText           mTvHomePh;
     @Bind(R.id.tv_home_o2)
     EditText           mTvHomeO2;
-    @Bind(R.id.tv_home_mix)
-    EditText           mTvHomeMix;
-    @Bind(R.id.tv_home_av)
-    EditText           mTvHomeAv;
+    @Bind(R.id.tv_home_stir)
+    EditText           mTvHomeStir;
+    @Bind(R.id.tv_home_feed)
+    EditText           mTvHomeFeed;
+    @Bind(R.id.tv_home_acid)
+    EditText           mTvHomeAcid;
     @Bind(R.id.tv_home_base)
     EditText           mTvHomeBase;
+    @Bind(R.id.tv_home_ca)
+    EditText            mTvHomeCa;
+    @Bind(R.id.tv_home_n2)
+    EditText            mTvHomeN2;
+    @Bind(R.id.tv_home_co2)
+    EditText            mTvHomeCo2;
     @Bind(R.id.tv_home_current_time)
     TextView           mTvHomeCurrentTime;
     @Bind(R.id.home_refresh)
@@ -124,22 +130,28 @@ public class MainActivity extends AppCompatActivity
         mHomeRefresh.setProgressViewEndTarget(false, 200);
 
         mTvHomeTemp.setFocusable(false);
-        mTvHomeJacket.setFocusable(false);
         mTvHomeDo.setFocusable(false);
         mTvHomePh.setFocusable(false);
         mTvHomeO2.setFocusable(false);
-        mTvHomeMix.setFocusable(false);
-        mTvHomeAv.setFocusable(false);
+        mTvHomeStir.setFocusable(false);
+        mTvHomeFeed.setFocusable(false);
+        mTvHomeAcid.setFocusable(false);
         mTvHomeBase.setFocusable(false);
+        mTvHomeCa.setFocusable(false);
+        mTvHomeN2.setFocusable(false);
+        mTvHomeCo2.setFocusable(false);
 
         mTvHomeTemp.setFocusableInTouchMode(false);
-        mTvHomeJacket.setFocusableInTouchMode(false);
         mTvHomeDo.setFocusableInTouchMode(false);
         mTvHomePh.setFocusableInTouchMode(false);
         mTvHomeO2.setFocusableInTouchMode(false);
-        mTvHomeMix.setFocusableInTouchMode(false);
-        mTvHomeAv.setFocusableInTouchMode(false);
+        mTvHomeStir.setFocusableInTouchMode(false);
+        mTvHomeFeed.setFocusableInTouchMode(false);
+        mTvHomeAcid.setFocusableInTouchMode(false);
         mTvHomeBase.setFocusableInTouchMode(false);
+        mTvHomeCa.setFocusableInTouchMode(false);
+        mTvHomeN2.setFocusableInTouchMode(false);
+        mTvHomeCo2.setFocusableInTouchMode(false);
 
         mPlcValue_adapter = new PlcValue_Adapter(R.layout.item_main_list);
 
@@ -170,7 +182,8 @@ public class MainActivity extends AppCompatActivity
                         Gson gson = new Gson();
                         mPlcList = gson.fromJson(s, new TypeToken<List<INfo_Bean>>() {
                         }.getType());
-
+                        mUrl = mPlcList.get(0).getDeviceName();
+                        display_home(mPlcList.get(0));
                         for (int i = 0; i < mPlcList.size(); i++) {
                             mList.add(mPlcList.get(i).getDeviceName());
                         }
@@ -270,15 +283,18 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void display_home(INfo_Bean bean) {
-        mTvHomeTime.setText("PLC设备编号" + mUrl);
-        mTvHomeTemp.setText(bean.getTemp() + "℃");
-        //mTvHomeJacket.setText(bean.getJacket_TEMP() + "℃");
-        mTvHomeDo.setText(bean.getDO() + "%");
-        mTvHomePh.setText(bean.getPH() + "%");
-        mTvHomeO2.setText(bean.getO2() + "%");
-        //mTvHomeMix.setText(bean.getMix() + "rpm");
-        //mTvHomeAv.setText(bean.getJacket_SV() + "℃");
-        mTvHomeBase.setText(bean.getBase() + "rpm");
+        mTvHomeTime.setText("PLC设备编号：" + mUrl);
+        mTvHomeTemp.setText(bean.getTemp() +" " + "℃");
+        mTvHomeDo.setText(bean.getDO() + " "+ "%");
+        mTvHomePh.setText(bean.getPH() + " ");
+        mTvHomeStir.setText(bean.getStir() + " " + "rpm");
+        mTvHomeFeed.setText(bean.getFeed() + " " + "rpm");
+        mTvHomeAcid.setText(bean.getAcid() + " " + "rpm");
+        mTvHomeBase.setText(bean.getBase() + " " + "rpm");
+        mTvHomeCa.setText(bean.getCa() + " " + "%");
+        mTvHomeO2.setText(bean.getO2() + " " + "%");
+        mTvHomeN2.setText(bean.getN2() + " " + "%");
+        mTvHomeCo2.setText(bean.getCo2() + " " + "%");
         mTvHomeCurrentTime.setText("最后刷新时间" + bean.getCurrentDate());
     }
 
@@ -295,7 +311,7 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(MainActivity.this, "我的信息", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.nav_slideshow:
-                Toast.makeText(MainActivity.this, "切换PLC", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "报警信息", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.nav_manage:
                 Toast.makeText(MainActivity.this, "设置", Toast.LENGTH_SHORT).show();
