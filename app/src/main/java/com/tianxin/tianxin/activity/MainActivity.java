@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.lzy.okgo.OkGo;
+import com.socks.library.KLog;
 import com.tianxin.tianxin.R;
 import com.tianxin.tianxin.adapter.PlcList_Adapter;
 import com.tianxin.tianxin.adapter.PlcValue_Adapter;
@@ -173,7 +174,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void getPlcList() {
-
+        KLog.d("http://" + SPCache.getString(Constants.IP, "127.0.0.1") + ":" + SPCache.getString(Constants.PORT, "8089"));
         OkGo.get("http://" + SPCache.getString(Constants.IP, "127.0.0.1") + ":" + SPCache.getString(Constants.PORT, "8089") + "/test/")
                 .tag(this)
                 .execute(new StringDialogCallback(this) {
@@ -318,6 +319,11 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_send:
                 startActivity(new Intent(MainActivity.this, HomeActivity.class));
+                Bundle bundle = new Bundle();
+                bundle.putString("deviceName",mUrl);
+                Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
                 break;
             case R.id.nav_share:
                 show_outofAPP();

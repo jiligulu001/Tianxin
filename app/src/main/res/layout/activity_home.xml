@@ -31,7 +31,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="Temp"
             android:textColor="@color/background_dark"
@@ -51,6 +51,176 @@
 
         <EditText
             android:id="@+id/et_temp"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:inputType="number"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="48dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="Do"
+            android:textColor="@color/background_dark"
+            android:textSize="18sp"/>
+
+        <com.kyleduo.switchbutton.SwitchButton
+            android:id="@+id/sb_do"
+            style="@style/SwitchButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/white"
+            android:textSize="16dp"
+            app:kswTextOff="Off"
+            app:kswTextOn="On"
+            />
+
+        <EditText
+            android:id="@+id/et_do"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:inputType="number"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="48dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="pH"
+            android:textColor="@color/background_dark"
+            android:textSize="18sp"/>
+
+        <com.kyleduo.switchbutton.SwitchButton
+            android:id="@+id/sb_ph"
+            style="@style/SwitchButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/white"
+            android:textSize="16dp"
+            app:kswTextOff="Off"
+            app:kswTextOn="On"
+            />
+
+        <EditText
+            android:id="@+id/et_ph"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:inputType="number"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="48dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="Stir"
+            android:textColor="@color/background_dark"
+            android:textSize="18sp"/>
+
+        <com.kyleduo.switchbutton.SwitchButton
+            android:id="@+id/sb_stir"
+            style="@style/SwitchButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/white"
+            android:textSize="16dp"
+            app:kswTextOff="Off"
+            app:kswTextOn="On"
+            />
+
+        <EditText
+            android:id="@+id/et_stir"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:inputType="number"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="48dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="Feed"
+            android:textColor="@color/background_dark"
+            android:textSize="18sp"/>
+
+        <com.kyleduo.switchbutton.SwitchButton
+            android:id="@+id/sb_feed"
+            style="@style/SwitchButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/white"
+            android:textSize="16dp"
+            app:kswTextOff="Off"
+            app:kswTextOn="On"
+            />
+
+        <EditText
+            android:id="@+id/et_feed"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:inputType="number"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="48dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="Acid"
+            android:textColor="@color/background_dark"
+            android:textSize="18sp"/>
+
+        <com.kyleduo.switchbutton.SwitchButton
+            android:id="@+id/sb_acid"
+            style="@style/SwitchButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/white"
+            android:textSize="16dp"
+            app:kswTextOff="Off"
+            app:kswTextOn="On"
+            />
+
+        <EditText
+            android:id="@+id/et_acid"
             android:layout_width="110dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
