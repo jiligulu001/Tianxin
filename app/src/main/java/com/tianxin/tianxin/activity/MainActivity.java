@@ -67,11 +67,11 @@ public class MainActivity extends AppCompatActivity
     @Bind(R.id.tv_home_base)
     EditText           mTvHomeBase;
     @Bind(R.id.tv_home_ca)
-    EditText            mTvHomeCa;
+    EditText           mTvHomeCa;
     @Bind(R.id.tv_home_n2)
-    EditText            mTvHomeN2;
+    EditText           mTvHomeN2;
     @Bind(R.id.tv_home_co2)
-    EditText            mTvHomeCo2;
+    EditText           mTvHomeCo2;
     @Bind(R.id.tv_home_current_time)
     TextView           mTvHomeCurrentTime;
     @Bind(R.id.home_refresh)
@@ -285,17 +285,17 @@ public class MainActivity extends AppCompatActivity
 
     private void display_home(INfo_Bean bean) {
         mTvHomeTime.setText("PLC设备编号：" + mUrl);
-        mTvHomeTemp.setText(bean.getTemp() +" " + "℃");
-        mTvHomeDo.setText(bean.getDO() + " "+ "%");
+        mTvHomeTemp.setText(bean.getTemp() + " ℃");
+        mTvHomeDo.setText(bean.getDO() + " %");
         mTvHomePh.setText(bean.getPH() + " ");
-        mTvHomeStir.setText(bean.getStir() + " " + "rpm");
-        mTvHomeFeed.setText(bean.getFeed() + " " + "rpm");
-        mTvHomeAcid.setText(bean.getAcid() + " " + "rpm");
-        mTvHomeBase.setText(bean.getBase() + " " + "rpm");
-        mTvHomeCa.setText(bean.getCa() + " " + "%");
-        mTvHomeO2.setText(bean.getO2() + " " + "%");
-        mTvHomeN2.setText(bean.getN2() + " " + "%");
-        mTvHomeCo2.setText(bean.getCo2() + " " + "%");
+        mTvHomeStir.setText(bean.getStir() + " rpm");
+        mTvHomeFeed.setText(bean.getFeed() + " rpm");
+        mTvHomeAcid.setText(bean.getAcid() + " rpm");
+        mTvHomeBase.setText(bean.getBase() + " rpm");
+        mTvHomeCa.setText(bean.getCa() + " %");
+        mTvHomeO2.setText(bean.getO2() + " %");
+        mTvHomeN2.setText(bean.getN2() + " %");
+        mTvHomeCo2.setText(bean.getCo2() + " %");
         mTvHomeCurrentTime.setText("最后刷新时间" + bean.getCurrentDate());
     }
 
