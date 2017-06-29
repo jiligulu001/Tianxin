@@ -11,6 +11,7 @@ android {
         versionCode 1
         versionName "1.0"
         vectorDrawables.useSupportLibrary = true
+
     }
     buildTypes {
         /**
@@ -47,6 +48,8 @@ dependencies {
     //完全仿微信的图片选择，并且提供了多种图片加载接口，选择图片后可以旋转，可以裁剪成矩形或圆形，可以配置各种其他的参数
     //主要是常用自定义控件的类库
     //透明导航栏
+    //compile 'cn.jiguang.sdk:jpush:3.0.6'
+    //compile 'cn,jiguang.sdk:jcore:1.1.3'
     compile project(':RxRxTools-library')
     //recyclviwe的封装adapter 说明：https://github.com/CymChad/BaseRecyclerViewAdapterHelper/wiki
     compile 'com.android.support:appcompat-v7:25.3.1'
