@@ -67,8 +67,6 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        JPushInterface.setDebugMode(true);
-        JPushInterface.init(this);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
         initView();

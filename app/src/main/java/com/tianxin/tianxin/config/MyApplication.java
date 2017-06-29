@@ -14,6 +14,8 @@ import com.tianxin.tianxin.utils.PreferenceSaveObjectUtils;
 
 import java.util.logging.Level;
 
+import cn.jpush.android.api.JPushInterface;
+
 
 /**
  * Created by PC大佬 on 2017/3/30.
@@ -26,6 +28,8 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        JPushInterface.setDebugMode(true);
+        JPushInterface.init(this);
         mInstance = this;
         mContext = getApplicationContext();// 1.上下文
         initOkGo();
