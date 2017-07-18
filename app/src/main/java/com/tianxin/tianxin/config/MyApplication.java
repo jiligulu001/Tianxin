@@ -2,6 +2,7 @@ package com.tianxin.tianxin.config;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheEntity;
@@ -28,8 +29,10 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        JPushInterface.setDebugMode(true);
-        JPushInterface.init(this);
+//        JPushInterface.setDebugMode(true);
+//        JPushInterface.init(this);
+
+
         mInstance = this;
         mContext = getApplicationContext();// 1.上下文
         initOkGo();
@@ -54,6 +57,9 @@ public class MyApplication extends Application {
     public static Context getContext() {
         return mContext;
     }
+
+
+
 
     /**
      * 对OKgo的配置初始化

@@ -8,8 +8,8 @@ android {
         applicationId "com.tianxin.tianxin"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "1.1"
         vectorDrawables.useSupportLibrary = true
         ndk {
             //选择要添加的对应cpu类型的.so库。

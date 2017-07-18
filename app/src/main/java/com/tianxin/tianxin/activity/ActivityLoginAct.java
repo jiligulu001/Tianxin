@@ -2,6 +2,7 @@ package com.tianxin.tianxin.activity;
 
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -40,14 +41,16 @@ import com.vondear.rxtools.activity.AndroidBug5497Workaround;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Set;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Call;
 import okhttp3.Response;
-
-
+import cn.jpush.android.api.JPushInterface;
+import cn.jpush.android.api.TagAliasCallback;
+import android.content.Context;
 public class ActivityLoginAct extends BaseActivity {
     @Bind(R.id.logo)
     ImageView      mLogo;
@@ -86,6 +89,9 @@ public class ActivityLoginAct extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_act);
         ButterKnife.bind(this);
+        JPushInterface.setDebugMode(true);
+        JPushInterface.init(this);
+
 
         if (isFullScreen(this)) {
             AndroidBug5497Workaround.assistActivity(this);
@@ -265,7 +271,7 @@ public class ActivityLoginAct extends BaseActivity {
         }
     }
 
-    private void doLogin(String username, String password) {
+    private void doLogin(final String username, String password) {
         HashMap<String, String> params = new HashMap<>();
         params.put("username", username);
         params.put("password", password);
@@ -277,6 +283,17 @@ public class ActivityLoginAct extends BaseActivity {
                 .execute(new StringDialogCallback(this) {
                     @Override
                     public void onSuccess(String s, Call call, Response response) {
+                        JPushInterface.setAlias(getApplicationContext(),username,new TagAliasCallback() {
+                            @Override
+                            public void gotResult(int arg0, String arg1, Set<String> arg2) {
+                                Log.d(" 绑定极光", "[initJpush] 设置别名：" + "arg0：" + arg0 + "arg1:" + arg1 + ",arg2:" + arg2);
+                                if (arg0 != 0) {
+
+
+                                }
+                            }
+
+                        });
                         Toast.makeText(ActivityLoginAct.this, "登录成功", Toast.LENGTH_SHORT).show();
                         RxActivityUtils.skipActivityAndFinish(ActivityLoginAct.this, MainActivity.class);
                         SPCache.putBoolean(Constants.IS_FIRST,false);
