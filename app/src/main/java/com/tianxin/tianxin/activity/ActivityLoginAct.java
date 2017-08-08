@@ -26,10 +26,13 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.lzy.okgo.OkGo;
 import com.socks.library.KLog;
 import com.tianxin.tianxin.R;
 import com.tianxin.tianxin.base.BaseActivity;
+import com.tianxin.tianxin.bean.Token_Bean;
 import com.tianxin.tianxin.cache.SPCache;
 import com.tianxin.tianxin.callback.StringDialogCallback;
 import com.tianxin.tianxin.config.Constants;
@@ -41,6 +44,7 @@ import com.vondear.rxtools.activity.AndroidBug5497Workaround;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 import butterknife.Bind;
@@ -89,8 +93,7 @@ public class ActivityLoginAct extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_act);
         ButterKnife.bind(this);
-        JPushInterface.setDebugMode(true);
-        JPushInterface.init(this);
+
 
 
         if (isFullScreen(this)) {
@@ -271,24 +274,31 @@ public class ActivityLoginAct extends BaseActivity {
         }
     }
 
-    private void doLogin(final String username, String password) {
+    private void doLogin(final String username, final String password) {
         HashMap<String, String> params = new HashMap<>();
         params.put("username", username);
         params.put("password", password);
         JSONObject jsonObject = new JSONObject(params);
-        OkGo.post("http://"+SPCache.getString(Constants.IP,"127.0.0.1")+":"+SPCache.getString(Constants.PORT,"8089")+"/login/")
+        OkGo.post("http://"+SPCache.getString(Constants.IP,"127.0.0.1")+":"+SPCache.getString(Constants.PORT,"8089")+"/api-token-auth/login/")
         //OkGo.post(Constants.LOGIN)
                 .tag(this)
                 .upJson(jsonObject)
                 .execute(new StringDialogCallback(this) {
                     @Override
                     public void onSuccess(String s, Call call, Response response) {
+                        Gson gson = new Gson();
+                        Token_Bean tokenjson = gson.fromJson(s, Token_Bean.class);
+                        String tokenString = tokenjson.getTokenString();
+
+
+
+                        SPCache.putString(Constants.MYTOKEN, tokenString);
+
                         JPushInterface.setAlias(getApplicationContext(),username,new TagAliasCallback() {
                             @Override
                             public void gotResult(int arg0, String arg1, Set<String> arg2) {
                                 Log.d(" 绑定极光", "[initJpush] 设置别名：" + "arg0：" + arg0 + "arg1:" + arg1 + ",arg2:" + arg2);
                                 if (arg0 != 0) {
-
 
                                 }
                             }
@@ -303,7 +313,7 @@ public class ActivityLoginAct extends BaseActivity {
                     @Override
                     public void onError(Call call, Response response, Exception e) {
                         super.onError(call, response, e);
-                        Toast.makeText(ActivityLoginAct.this, "链接服务器失败", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ActivityLoginAct.this, "连接服务器失败", Toast.LENGTH_SHORT).show();
                     }
                 });
     }

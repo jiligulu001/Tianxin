@@ -43,4 +43,7 @@ public final class Constants {
     public static       String  IP           = "ip";
     public static       String  PORT         = "port";
     public static       String  long_login   = "long_login";
+    public static       String  USERNAME     = "name";
+    public static       String  PASSWORD     = "password";
+    public static       String  MYTOKEN      = "token";
 }

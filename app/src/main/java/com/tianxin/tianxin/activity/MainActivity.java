@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.lzy.okgo.OkGo;
+import com.lzy.okgo.model.HttpHeaders;
 import com.socks.library.KLog;
 import com.tianxin.tianxin.R;
 import com.tianxin.tianxin.adapter.PlcList_Adapter;
@@ -36,7 +37,10 @@ import com.tianxin.tianxin.config.Constants;
 import com.tianxin.tianxin.view.WheelView;
 import com.vondear.rxtools.RxActivityUtils;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.Bind;
@@ -98,6 +102,7 @@ public class MainActivity extends AppCompatActivity
         //toolbar.setOverflowIcon(getResources().getDrawable(R.mipmap.ic_del));
         setSupportActionBar(toolbar);
 
+
         //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         //        fab.setOnClickListener(new View.OnClickListener() {
         //            @Override
@@ -148,10 +153,14 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void getPlcList() {
-        KLog.d("http://" + SPCache.getString(Constants.IP, "127.0.0.1") + ":" + SPCache.getString(Constants.PORT, "8089"));
+        String token = SPCache.getString(Constants.MYTOKEN,"aa");
+        HttpHeaders mCommonHeaders = new HttpHeaders();
+        mCommonHeaders.put("Authorization","JWT "+token);
+        HashMap<String, String> params = new HashMap<>();
         OkGo.get("http://" + SPCache.getString(Constants.IP, "127.0.0.1") + ":" + SPCache.getString(Constants.PORT, "8089") + "/test/")
+                .headers(mCommonHeaders)
                 .tag(this)
-                .execute(new StringDialogCallback(this) {
+                .execute(new StringDialogCallback(MainActivity.this) {
                     @Override
                     public void onSuccess(String s, Call call, Response response) {
                         Gson gson = new Gson();
@@ -170,6 +179,7 @@ public class MainActivity extends AppCompatActivity
                         Toast.makeText(MainActivity.this, "链接服务器失败", Toast.LENGTH_SHORT).show();
                     }
                 });
+
     }
 
     @Override
@@ -235,8 +245,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void getPlcInfo() {
+        String token = SPCache.getString(Constants.MYTOKEN,"aa");
+        HttpHeaders mCommonHeaders = new HttpHeaders();
+        mCommonHeaders.put("Authorization","JWT "+token);
         //OkGo.get(Constants.PLCINFO + mUrl + "/")
         OkGo.get("http://" + SPCache.getString(Constants.IP, "127.0.0.1") + ":" + SPCache.getString(Constants.PORT, "8089") + "/test/" + mUrl + "/")
+                .headers(mCommonHeaders)
                 .tag(this)
                 .execute(new StringDialogCallback(this) {
                     @Override

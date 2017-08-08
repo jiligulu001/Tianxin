@@ -10,10 +10,13 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+import android.support.v7.app.AlertDialog;
+import android.content.DialogInterface;
 
 import com.google.gson.Gson;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.lzy.okgo.OkGo;
+import com.lzy.okgo.model.HttpHeaders;
 import com.socks.library.KLog;
 import com.tianxin.tianxin.R;
 import com.tianxin.tianxin.bean.PlcList_Bean;
@@ -62,6 +65,8 @@ public class HomeActivity extends AppCompatActivity {
     @Bind(R.id.container)
     LinearLayout mContainer;
     private String  mUrl;
+
+
 
 
     @Override
@@ -117,16 +122,49 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
+    private void createAlertDiag(){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+        builder.setTitle("提示：");
+        builder.setMessage("无权限进行此操作！");
+        builder.setPositiveButton(R.string.sure, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //SPCache.clear();
+            }
+        });
+//        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//
+//            }
+//        });
+        builder.show();
+    }
+
     private void getPlcList() {
-       // KLog.d("http://" + SPCache.getString(Constants.IP, "127.0.0.1") + ":" + SPCache.getString(Constants.PORT, "8089") + "/testSetting/" + mUrl);
+
+        String token = SPCache.getString(Constants.MYTOKEN,"aa");
+        HttpHeaders mCommonHeaders = new HttpHeaders();
+        mCommonHeaders.put("Authorization","JWT "+token);
         OkGo.get("http://" + SPCache.getString(Constants.IP, "127.0.0.1") + ":" + SPCache.getString(Constants.PORT, "8089") + "/testSetting/" + mUrl + "/")
+                .headers(mCommonHeaders)
                 .tag(this)
                 .execute(new StringDialogCallback(this) {
                     @Override
                     public void onSuccess(String s, Call call, Response response) {
+
                         Gson gson = new Gson();
                         PlcList_Bean mPlcList = gson.fromJson(s, PlcList_Bean.class);
-                        display_home(mPlcList);
+                        if(mPlcList.getTempSwitch().equals(" "))
+                        {
+                            KLog.d("&&&&&&&&&&&&&&&&&&&&&&&");
+                            createAlertDiag();
+                        }
+                        else
+                        {
+                            display_home(mPlcList);
+                        }
+
                     }
 
                     @Override
@@ -200,7 +238,13 @@ public class HomeActivity extends AppCompatActivity {
 
         JSONObject jsonObject1 = new JSONObject(valueParams);
         JSONObject jsonObject2 = new JSONObject(switchParams);
+
+
+        String token = SPCache.getString(Constants.MYTOKEN,"aa");
+        HttpHeaders mCommonHeaders = new HttpHeaders();
+        mCommonHeaders.put("Authorization","JWT "+token);
         OkGo.post("http://"+SPCache.getString(Constants.IP,"127.0.0.1")+":"+SPCache.getString(Constants.PORT,"8089")+"/testSetting/"+mUrl+"/")
+                .headers(mCommonHeaders)
                 //OkGo.post(Constants.LOGIN)
                 .tag(this)
                 .upJson(jsonObject1)
@@ -219,6 +263,7 @@ public class HomeActivity extends AppCompatActivity {
                     }
                 });
         OkGo.post("http://"+SPCache.getString(Constants.IP,"127.0.0.1")+":"+SPCache.getString(Constants.PORT,"8089")+"/testSetting/"+mUrl+"/")
+                .headers(mCommonHeaders)
                 //OkGo.post(Constants.LOGIN)
                 .tag(this)
                 .upJson(jsonObject2)
