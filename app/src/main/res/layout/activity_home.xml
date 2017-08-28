@@ -33,9 +33,9 @@
         <TextView
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:text="Temp"
+            android:text="温度"
             android:textColor="@color/background_dark"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
         <com.kyleduo.switchbutton.SwitchButton
             android:id="@+id/sb_temp"
@@ -67,9 +67,9 @@
         <TextView
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:text="Do"
+            android:text="溶氧"
             android:textColor="@color/background_dark"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
         <com.kyleduo.switchbutton.SwitchButton
             android:id="@+id/sb_do"
@@ -101,9 +101,9 @@
         <TextView
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:text="pH"
+            android:text="酸碱"
             android:textColor="@color/background_dark"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
         <com.kyleduo.switchbutton.SwitchButton
             android:id="@+id/sb_ph"
@@ -135,9 +135,9 @@
         <TextView
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:text="Stir"
+            android:text="搅拌"
             android:textColor="@color/background_dark"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
         <com.kyleduo.switchbutton.SwitchButton
             android:id="@+id/sb_stir"
@@ -169,9 +169,9 @@
         <TextView
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:text="Feed"
+            android:text="压力"
             android:textColor="@color/background_dark"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
         <com.kyleduo.switchbutton.SwitchButton
             android:id="@+id/sb_feed"
@@ -203,9 +203,9 @@
         <TextView
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:text="Acid"
+            android:text="称重"
             android:textColor="@color/background_dark"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
         <com.kyleduo.switchbutton.SwitchButton
             android:id="@+id/sb_acid"

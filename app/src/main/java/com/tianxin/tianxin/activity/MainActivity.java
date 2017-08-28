@@ -293,17 +293,8 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         switch (id) {
-            case R.id.nav_camera:
-                Toast.makeText(MainActivity.this, "了解天信和反应器", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.nav_gallery:
-                Toast.makeText(MainActivity.this, "我的信息", Toast.LENGTH_SHORT).show();
-                break;
             case R.id.nav_slideshow:
                 Toast.makeText(MainActivity.this, "报警信息", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.nav_manage:
-                Toast.makeText(MainActivity.this, "设置", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.nav_send:
                 //startActivity(new Intent(MainActivity.this, HomeActivity.class));

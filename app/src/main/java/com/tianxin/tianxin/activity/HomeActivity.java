@@ -1,6 +1,7 @@
 package com.tianxin.tianxin.activity;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -65,7 +66,7 @@ public class HomeActivity extends AppCompatActivity {
     @Bind(R.id.container)
     LinearLayout mContainer;
     private String  mUrl;
-
+    boolean is_canclick = true;
 
 
 
@@ -82,6 +83,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void initView() {
+
         mToolbar.setTitle("设定值");
         mToolbar.setOverflowIcon(getResources().getDrawable(R.mipmap.ic_back));
         setSupportActionBar(mToolbar);
@@ -155,9 +157,10 @@ public class HomeActivity extends AppCompatActivity {
 
                         Gson gson = new Gson();
                         PlcList_Bean mPlcList = gson.fromJson(s, PlcList_Bean.class);
-                        if(mPlcList.getTempSwitch().equals(" "))
+
+                        if(mPlcList.getTemp() == 0.0)
                         {
-                            KLog.d("&&&&&&&&&&&&&&&&&&&&&&&");
+                            is_canclick = false;
                             createAlertDiag();
                         }
                         else
@@ -198,8 +201,10 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        //Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.setting_menu, menu);
+        //Inflate the menu; this adds items to the action bar if it is present.
+         //return is_show;
+        //
 
         return true;
     }
@@ -211,8 +216,13 @@ public class HomeActivity extends AppCompatActivity {
         //as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.setting_sure:
-                Toast.makeText(HomeActivity.this, "点击了确定", Toast.LENGTH_SHORT).show();
-                DoPostData();
+                if (is_canclick) {
+                    Toast.makeText(HomeActivity.this, "点击了确定", Toast.LENGTH_SHORT).show();
+                    DoPostData();
+                }
+                else {
+                    finish();
+                }
                 break;
             default:
                 break;

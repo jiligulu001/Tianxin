@@ -59,12 +59,13 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/textView4"
                         android:layout_width="100dp"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
-                        android:text="temp:"
+                        android:text="温度"
                         android:textColor="@color/black"
-                        android:textSize="16sp"/>
+                        android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/tv_home_temp"
@@ -85,12 +86,13 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/textView"
                         android:layout_width="100dp"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
-                        android:text="dO:"
+                        android:text="溶氧"
                         android:textColor="@color/black"
-                        android:textSize="18sp"/>
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/tv_home_do"
@@ -114,9 +116,9 @@
                         android:layout_width="100dp"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
-                        android:text="pH:"
+                        android:text="酸碱"
                         android:textColor="@color/black"
-                        android:textSize="18sp"/>
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/tv_home_ph"
@@ -140,9 +142,9 @@
                         android:layout_width="100dp"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
-                        android:text="stir:"
+                        android:text="搅拌"
                         android:textColor="@color/black"
-                        android:textSize="18sp"/>
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/tv_home_stir"
@@ -166,9 +168,9 @@
                         android:layout_width="100dp"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
-                        android:text="feed:"
+                        android:text="入料"
                         android:textColor="@color/black"
-                        android:textSize="18sp"/>
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/tv_home_feed"
@@ -192,9 +194,9 @@
                         android:layout_width="100dp"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
-                        android:text="acid:"
+                        android:text="出料"
                         android:textColor="@color/black"
-                        android:textSize="18sp"/>
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/tv_home_acid"
@@ -218,9 +220,9 @@
                         android:layout_width="100dp"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
-                        android:text="base:"
+                        android:text="碱泵"
                         android:textColor="@color/black"
-                        android:textSize="18sp"/>
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/tv_home_base"
@@ -241,12 +243,13 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/textView2"
                         android:layout_width="100dp"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
-                        android:text="ca:"
+                        android:text="压力"
                         android:textColor="@color/black"
-                        android:textSize="18sp"/>
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/tv_home_ca"
@@ -267,12 +270,13 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/textView3"
                         android:layout_width="100dp"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
-                        android:text="O2:"
+                        android:text="称重"
                         android:textColor="@color/black"
-                        android:textSize="18sp"/>
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/tv_home_o2"
