@@ -16,8 +16,8 @@ public class Message_Adapter extends BaseQuickAdapter<Msg_Bean, BaseViewHolder> 
 
     @Override
     protected void convert(BaseViewHolder helper, Msg_Bean item) {
-        helper.setText(R.id.tv_name,item.getName());
-        helper.setText(R.id.tv_desc,item.getContent());
-        helper.setText(R.id.tv_time,item.getCurrentDate());
+        helper.setText(R.id.tv_name,"设备编号:"+item.getName());
+        helper.setText(R.id.tv_desc,"报警内容:"+item.getContent());
+        helper.setText(R.id.tv_time,"报警时间:"+item.getCurrentDate());
     }
 }
