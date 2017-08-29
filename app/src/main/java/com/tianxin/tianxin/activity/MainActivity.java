@@ -29,6 +29,7 @@ import com.socks.library.KLog;
 import com.tianxin.tianxin.R;
 import com.tianxin.tianxin.adapter.PlcList_Adapter;
 import com.tianxin.tianxin.adapter.PlcValue_Adapter;
+import com.tianxin.tianxin.activity.MessageActivity;
 import com.tianxin.tianxin.bean.INfo_Bean;
 import com.tianxin.tianxin.bean.PlcList_Bean;
 import com.tianxin.tianxin.cache.SPCache;
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity
     TextView           mTvHomeDo;
     @Bind(R.id.tv_home_ph)
     TextView           mTvHomePh;
-    @Bind(R.id.tv_home_o2)
+    @Bind(R.id.tv_home_o2)  //称重
     TextView           mTvHomeO2;
     @Bind(R.id.tv_home_stir)
     TextView           mTvHomeStir;
@@ -69,7 +70,7 @@ public class MainActivity extends AppCompatActivity
     TextView           mTvHomeAcid;
     @Bind(R.id.tv_home_base)
     TextView           mTvHomeBase;
-    @Bind(R.id.tv_home_ca)
+    @Bind(R.id.tv_home_ca) //压力
     TextView           mTvHomeCa;
     @Bind(R.id.tv_home_n2)
     TextView           mTvHomeN2;
@@ -136,7 +137,7 @@ public class MainActivity extends AppCompatActivity
         mPlcValue_adapter = new PlcValue_Adapter(R.layout.item_main_list);
 
 
-        initData();
+       // initData();
     }
 
     private void initData() {
@@ -294,7 +295,10 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         switch (id) {
             case R.id.nav_slideshow:
-                Toast.makeText(MainActivity.this, "报警信息", Toast.LENGTH_SHORT).show();
+                Bundle bundle1 = new Bundle();
+                Intent intent1 = new Intent(MainActivity.this, MessageActivity.class);
+                startActivity(intent1);
+                //Toast.makeText(MainActivity.this, "报警信息", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.nav_send:
                 //startActivity(new Intent(MainActivity.this, HomeActivity.class));
