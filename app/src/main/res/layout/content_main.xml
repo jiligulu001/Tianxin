@@ -28,13 +28,12 @@
                 android:orientation="vertical">
 
                 <ImageView
-
                     android:layout_width="match_parent"
                     android:layout_height="120dp"
                     android:adjustViewBounds="true"
                     android:gravity="center_vertical"
                     android:scaleType="fitXY"
-                    android:src="@drawable/pic11"/>
+                    android:src="@mipmap/plc1"/>
 
                 <TextView
                     android:id="@+id/tv_home_time"
@@ -65,7 +64,7 @@
                         android:gravity="center_vertical"
                         android:text="温度"
                         android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"/>
 
                     <TextView
                         android:id="@+id/tv_home_temp"
@@ -92,7 +91,7 @@
                         android:gravity="center_vertical"
                         android:text="溶氧"
                         android:textColor="@color/black"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"/>
 
                     <TextView
                         android:id="@+id/tv_home_do"
@@ -118,7 +117,7 @@
                         android:gravity="center_vertical"
                         android:text="酸碱"
                         android:textColor="@color/black"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"/>
 
                     <TextView
                         android:id="@+id/tv_home_ph"
@@ -144,7 +143,7 @@
                         android:gravity="center_vertical"
                         android:text="搅拌"
                         android:textColor="@color/black"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"/>
 
                     <TextView
                         android:id="@+id/tv_home_stir"
@@ -170,7 +169,7 @@
                         android:gravity="center_vertical"
                         android:text="入料"
                         android:textColor="@color/black"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"/>
 
                     <TextView
                         android:id="@+id/tv_home_feed"
@@ -196,7 +195,7 @@
                         android:gravity="center_vertical"
                         android:text="出料"
                         android:textColor="@color/black"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"/>
 
                     <TextView
                         android:id="@+id/tv_home_acid"
@@ -222,7 +221,7 @@
                         android:gravity="center_vertical"
                         android:text="碱泵"
                         android:textColor="@color/black"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"/>
 
                     <TextView
                         android:id="@+id/tv_home_base"
@@ -249,7 +248,7 @@
                         android:gravity="center_vertical"
                         android:text="压力"
                         android:textColor="@color/black"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"/>
 
                     <TextView
                         android:id="@+id/tv_home_ca"
@@ -276,7 +275,7 @@
                         android:gravity="center_vertical"
                         android:text="称重"
                         android:textColor="@color/black"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"/>
 
                     <TextView
                         android:id="@+id/tv_home_o2"
